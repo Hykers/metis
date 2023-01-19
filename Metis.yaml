@@ -593,7 +593,7 @@ paths:
         - $ref: '#/components/parameters/dataSet'
         - $ref: '#/components/parameters/includeAttributes'
     post:
-      summary: ''
+      summary: Создание записи в справочнике
       operationId: createItem
       responses:
         '200':
