@@ -4,7 +4,7 @@ x-stoplight:
 info:
   title: Metis
   version: '0.1'
-  description: OpenAPI спецификация АИС УМД "Метида"
+  description: OpenAPI спецификация АИС УМД "Метида" тест
   contact:
     name: Жуков Николай Александрович
     url: 'https://t.me/Hykers'
