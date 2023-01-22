@@ -193,11 +193,46 @@ paths:
           description: Объект не найден
         '500':
           description: Внутренняя ошибка сервера
-      operationId: getClass
+      operationId: getClassifier
       description: Получение конкретного классификатора
       tags:
         - classifiers
       parameters: []
+  '/classifiers/{classifierCode}/class':
+    parameters:
+      - schema:
+          type: string
+        name: classifierCode
+        in: path
+        required: true
+        description: Уникальный в рамках Системы код классификатора
+    post:
+      summary: Создание класса
+      tags:
+        - classifiers
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    $ref: '#/components/schemas/Classifier'
+                required:
+                  - content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Внутренняя ошибка сервера
+      operationId: post-classifiers-classifierCode-class
+      description: Создание класса
   '/v1/classifiers/{classifiersCode}/class/{classCode}':
     parameters:
       - schema:
@@ -684,6 +719,366 @@ paths:
       parameters:
         - $ref: '#/components/parameters/dataSet'
         - $ref: '#/components/parameters/includeAttributes'
+  /v1/proposal:
+    get:
+      summary: Получение списка всех заявок
+      tags:
+        - proposal
+      operationId: getProposals
+      description: Постраничное получение заявок Системы
+      parameters:
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/filter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Proposal'
+                  pageable:
+                    type: object
+                    description: Параметры пагинации данных
+                    properties:
+                      sort:
+                        type: object
+                        description: Параметры сортировки
+                        properties:
+                          sorted:
+                            type: boolean
+                            description: Признак наличия сортировки заданной пользователем
+                          unsorted:
+                            type: boolean
+                            description: Признак отсутствия сортировки заданной пользователем
+                          empty:
+                            type: boolean
+                            description: Признак наличия сортировки
+                      pageSize:
+                        type: integer
+                        description: Количество элементов на странице
+                        format: int32
+                        example: 17
+                      pageNumber:
+                        type: integer
+                        description: Номер отображаемой страницы
+                        format: int32
+                        example: 1
+                      offset:
+                        type: integer
+                        description: Смещение по отношению к первой странице с учётом её размера
+                        format: int32
+                        example: 20
+                      paged:
+                        type: boolean
+                        description: Признак постраничного отображения данных
+                      unpaged:
+                        type: boolean
+                        description: Признак отсутствия постраничного отображения данных
+                  totalPages:
+                    type: integer
+                    description: Общее количество страниц
+                    format: int32
+                    example: 1
+                  totalElements:
+                    type: integer
+                    description: Общее количество элеметов
+                    format: int32
+                    example: 15
+                  first:
+                    type: boolean
+                    description: Признак первой страницы
+                  last:
+                    type: boolean
+                    description: Признак последней страницы
+                  sort:
+                    type: object
+                    description: Параметры сортировки
+                    properties:
+                      sorted:
+                        type: boolean
+                        description: Признак наличия сортировки заданной пользователем
+                      unsorted:
+                        type: boolean
+                        description: Признак отсутствия сортировки заданной пользователей
+                      empty:
+                        type: boolean
+                        description: Признак наличия сортировки
+                  numberofElements:
+                    type: integer
+                    description: Количество элементов на странице- фактическое
+                    format: int32
+                    example: 17
+                  size:
+                    type: integer
+                    description: |
+                      Количество элементов на странице
+                    format: int32
+                    example: 20
+                  number:
+                    type: integer
+                    description: Номер страницы
+                    example: 1
+                    format: int32
+                  empty:
+                    type: boolean
+                    description: Признак наличия content
+                required:
+                  - content
+                  - pageable
+                  - totalPages
+                  - totalElements
+                  - first
+                  - last
+                  - sort
+                  - numberofElements
+                  - size
+                  - number
+                  - empty
+              examples: {}
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Внутренняя ошибка сервера
+    post:
+      summary: Создание заявки
+      tags:
+        - proposal
+      operationId: postProposals
+      description: Создание заявки
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Proposal'
+                required:
+                  - content
+              examples: {}
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Внутренняя ошибка сервера
+  '/v1/proposal/{proposalCode}':
+    get:
+      summary: Получение заявки
+      tags:
+        - proposal
+      operationId: getProposal
+      description: Получение заявки
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    $ref: '#/components/schemas/Proposal'
+                required:
+                  - content
+              examples: {}
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+        '500':
+          description: Внутренняя ошибка сервера
+    parameters:
+      - schema:
+          type: string
+        name: proposalCode
+        in: path
+        required: true
+  /v1/attributes:
+    get:
+      summary: Получение атрибутов
+      operationId: getAttributes
+      tags:
+        - Attributes
+      description: Постраничное получение атрибутов Системы
+      parameters:
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/filter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Attribute'
+                  pageable:
+                    type: object
+                    description: Параметры пагинации данных
+                    properties:
+                      sort:
+                        type: object
+                        description: Параметры сортировки
+                        properties:
+                          sorted:
+                            type: boolean
+                            description: Признак наличия сортировки заданной пользователем
+                          unsorted:
+                            type: boolean
+                            description: Признак отсутствия сортировки заданной пользователем
+                          empty:
+                            type: boolean
+                            description: Признак наличия сортировки
+                      pageSize:
+                        type: integer
+                        description: Количество элементов на странице
+                        format: int32
+                        example: 17
+                      pageNumber:
+                        type: integer
+                        description: Номер отображаемой страницы
+                        format: int32
+                        example: 1
+                      offset:
+                        type: integer
+                        description: Смещение по отношению к первой странице с учётом её размера
+                        format: int32
+                        example: 20
+                      paged:
+                        type: boolean
+                        description: Признак постраничного отображения данных
+                      unpaged:
+                        type: boolean
+                        description: Признак отсутствия постраничного отображения данных
+                  totalPages:
+                    type: integer
+                    description: Общее количество страниц
+                    format: int32
+                    example: 1
+                  totalElements:
+                    type: integer
+                    description: Общее количество элеметов
+                    format: int32
+                    example: 15
+                  first:
+                    type: boolean
+                    description: Признак первой страницы
+                  last:
+                    type: boolean
+                    description: Признак последней страницы
+                  sort:
+                    type: object
+                    description: Параметры сортировки
+                    properties:
+                      sorted:
+                        type: boolean
+                        description: Признак наличия сортировки заданной пользователем
+                      unsorted:
+                        type: boolean
+                        description: Признак отсутствия сортировки заданной пользователей
+                      empty:
+                        type: boolean
+                        description: Признак наличия сортировки
+                  numberofElements:
+                    type: integer
+                    description: Количество элементов на странице- фактическое
+                    format: int32
+                    example: 17
+                  size:
+                    type: integer
+                    description: |
+                      Количество элементов на странице
+                    format: int32
+                    example: 20
+                  number:
+                    type: integer
+                    description: Номер страницы
+                    example: 1
+                    format: int32
+                  empty:
+                    type: boolean
+                    description: Признак наличия content
+                required:
+                  - content
+                  - pageable
+                  - totalPages
+                  - totalElements
+                  - first
+                  - last
+                  - sort
+                  - numberofElements
+                  - size
+                  - number
+                  - empty
+              examples: {}
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Внутренняя ошибка сервера
+  '/v1/attributes/{attributesCode}':
+    parameters:
+      - schema:
+          type: string
+        name: attributesCode
+        in: path
+        required: true
+    get:
+      summary: Получение атрибута
+      operationId: getAttribute
+      description: Получение атрибута
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    $ref: '#/components/schemas/Attribute'
+                required:
+                  - content
+              examples: {}
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+        '500':
+          description: Внутренняя ошибка сервера
+      tags:
+        - attributes
 components:
   securitySchemes:
     Authorization:
@@ -1304,6 +1699,7 @@ components:
           type: string
           description: Уникальный в рамках справочника код записи
           example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
         classifierCode:
           type: string
           description: Уникальный код класса или уникальный код самого классификатора (если справочник плоский)
@@ -1369,7 +1765,6 @@ components:
             oneOf:
               - $ref: '#/components/schemas/CellValue'
               - $ref: '#/components/schemas/CellRange'
-            description: Один из объектов ячейки (в зависимости от признака "диапазон" у атрибута)
           readOnly: true
       required:
         - code
@@ -1872,6 +2267,235 @@ components:
       required:
         - value
         - alterValue
+      readOnly: true
+    Proposal:
+      type: object
+      title: Заявка
+      description: Заявка
+      examples: []
+      properties:
+        initial_proposal_body_id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор первичной версии записи в рамках заявки
+          readOnly: true
+        working_proposal_body_id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор рабочей версии записи в рамках заявки
+          readOnly: true
+        refinement_proposal_body_id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор уточненной версии записи в рамках заявки
+          readOnly: true
+        directory_id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор справочника в который будет добавлена запись или в котором она будет изменена
+          readOnly: true
+        directory_item_id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор изменяемой или созданной записи
+          readOnly: true
+        initial_directory_item_name:
+          type: string
+          example: Насос циркуляционный UPS 40-50
+          description: 'Первичное наименование записи, которое определил инициатор при создании заявки или редактировании в статусе "Черновик"'
+        type:
+          type: string
+          example: CREATE
+          description: 'CREATE (  Создание записи),  UPDATE (  Изменение записи)'
+        refinement:
+          type: boolean
+          example: false
+          description: Признак уточняемой заявки
+          readOnly: true
+        directory_item_status:
+          type: string
+          example: На уточнении
+          description: Статус записи
+          readOnly: true
+        directory_status_model:
+          type: string
+          example: COUNTERPARTIES
+          description: Код статусной модели справочника
+        visibility:
+          type: boolean
+          example: true
+          description: Признак видимости заявки (скрытия)
+          readOnly: true
+        status:
+          type: string
+          example: Отклонена
+          description: Статус заявки
+          readOnly: true
+        validation_report:
+          type: string
+          description: Отчет о непройденной валидации
+          readOnly: true
+        initiator_id:
+          type: string
+          description: Уникальный идентификатор инициатора
+          readOnly: true
+        executor_id:
+          type: string
+          description: Уникальный идентификатор исполнителя (эксперта)
+          readOnly: true
+        updated_status_at:
+          type: string
+          format: date-time
+          example: '2022-12-25T17:32:28Z'
+          description: Дата и время обновления статуса заявки
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          example: '2022-12-25T17:32:28Z'
+          description: Дата и время создания записи
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          example: '2022-12-25T17:32:28Z'
+          description: Дата и время обновления записи
+          readOnly: true
+        deleted_at:
+          type: string
+          format: date-time
+          example: '2022-12-25T17:32:28Z'
+          description: Дата и время логического удаления записи
+          readOnly: true
+        directoryItem:
+          $ref: '#/components/schemas/DefaultDirectoryItem'
+      required:
+        - initial_proposal_body_id
+        - directory_id
+        - initial_directory_item_name
+        - type
+        - refinement
+        - directory_status_model
+        - visibility
+        - status
+        - initiator_id
+        - updated_status_at
+        - created_at
+        - updated_at
+        - directoryItem
+      readOnly: true
+    ProposalBody:
+      type: object
+      title: Версии записи в заявке
+      description: Версии записи в заявке
+      properties:
+        classifier_id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор класса (в рамках справочника) в который будет добавлена запись или в котором она будет изменена
+          readOnly: true
+        master_directory_id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор справочника эталонной записи к которой привязывается заявка при попытке создать дубль или эталонной записи к которой привязывается блокируемая запись
+          readOnly: true
+        master_directory_item_id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор эталонной записи к которой привязывается заявка при попытке создать дубль или эталонной записи к которой привязывается блокируемая запись
+          readOnly: true
+        master_directory_code:
+          type: string
+          description: Код справочника эталонной записи к которой привязывается заявка при попытке создать дубль или эталонной записи к которой привязывается блокируемая запись
+          readOnly: true
+        master_directory_item_code:
+          type: string
+          description: Код эталонной записи к которой привязывается заявка при попытке создать дубль или эталонной записи к которой привязывается блокируемая запись
+          readOnly: true
+        current_directory_item_name:
+          type: string
+          description: 'Наименование записи. Может быть первичное, рабочее и уточненное'
+          readOnly: true
+      readOnly: true
+    ProposalItemCell:
+      type: object
+      title: Ячейка записи
+      description: Ячейка записи
+      properties:
+        proposal_body_id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор версии записи в рамках заявки
+          readOnly: true
+        attribute_id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор атрибута
+          readOnly: true
+      required:
+        - proposal_body_id
+        - attribute_id
+      readOnly: true
+    ProposalCellParameter:
+      type: object
+      title: Значение параметра ячейки
+      description: Значение параметра ячейки
+      properties:
+        proposal_item_cell_id:
+          type: string
+          description: Уникальный идентификатор ячейки
+          readOnly: true
+        attribute_parameter_id:
+          type: string
+          description: Уникальный идентификатор параметра
+          readOnly: true
+        value_id:
+          type: string
+          description: Уникальный идентификатор значения
+          readOnly: true
+        directory_item_directory_id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор справочника
+          readOnly: true
+        directory_item_id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор записи
+          readOnly: true
+      required:
+        - proposal_item_cell_id
+        - attribute_parameter_id
+        - directory_item_directory_id
+        - directory_item_id
+      readOnly: true
+    ProposalDirectoryItemStatusDetail:
+      type: object
+      title: Детали статуса записи
+      description: Детали статуса записи
+      properties:
+        reason:
+          type: string
+          description: Расширение назначения статуса
+          readOnly: true
+        master_directory_item_code:
+          type: string
+          description: Код эталонной записи
+          readOnly: true
+        master_directory_item_directory_code:
+          type: string
+          description: Код справочника эталонной записи
+          readOnly: true
+        master_directory_item_id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор эталонной записи
+          readOnly: true
+        master_directory_item_directory_id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор справочника эталонной записи
+          readOnly: true
       readOnly: true
   examples:
     ModelValueOther:
