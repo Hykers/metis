@@ -1982,7 +1982,7 @@ components:
         ProposalItemCell:
           $ref: '#/components/schemas/ProposalItemCell'
         ProposalValue:
-          $ref: '#/components/schemas/ProposalValue'          
+          $ref: '#/components/schemas/ProposalValue'
       required:
         - attributeCode
       readOnly: true
@@ -2474,7 +2474,7 @@ components:
         ProposalItemCell:
           $ref: '#/components/schemas/ProposalItemCell'
         ProposalValue:
-          $ref: '#/components/schemas/ProposalValue'           
+          $ref: '#/components/schemas/ProposalValue'
       required:
         - proposal_item_cell_id
         - attribute_parameter_id
@@ -2537,32 +2537,29 @@ components:
         value_text:
           type: string
           description: Мультиязычное текстовое значение
-          readOnly: true  
         type_code:
           type: string
           description: Код типа значения
-          readOnly: true   
+          readOnly: true
         value_int:
           type: integer
           example: 1
           description: Значение целого числа
-          readOnly: true
         value_real:
           type: integer
           example: 1
           description: Значение вещественного числа
-          readOnly: true  
         value_date:
           type: string
           format: date
-          example: '2022-12-25'          
+          example: '2022-12-25'
           description: Значение даты
-          readOnly: true  
         value_bool:
           type: boolean
           example: true
           description: Логическое значение
-          readOnly: true                                                       
+          default: true
+          readOnly: true
       required:
         - type_code
       readOnly: true
