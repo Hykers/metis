@@ -1979,6 +1979,10 @@ components:
               - $ref: '#/components/schemas/ValueOther'
             description: Один из объектов значения (в зависимости от типа)
           readOnly: true
+        ProposalItemCell:
+          $ref: '#/components/schemas/ProposalItemCell'
+        ProposalValue:
+          $ref: '#/components/schemas/ProposalValue'          
       required:
         - attributeCode
       readOnly: true
@@ -2416,6 +2420,8 @@ components:
           type: string
           description: 'Наименование записи. Может быть первичное, рабочее и уточненное'
           readOnly: true
+        Proposal:
+          $ref: '#/components/schemas/Proposal'
       readOnly: true
     ProposalItemCell:
       type: object
@@ -2432,6 +2438,8 @@ components:
           example: 1
           description: Уникальный идентификатор атрибута
           readOnly: true
+        ProposalBody:
+          $ref: '#/components/schemas/ProposalBody'
       required:
         - proposal_body_id
         - attribute_id
@@ -2463,6 +2471,10 @@ components:
           example: 1
           description: Уникальный идентификатор записи
           readOnly: true
+        ProposalItemCell:
+          $ref: '#/components/schemas/ProposalItemCell'
+        ProposalValue:
+          $ref: '#/components/schemas/ProposalValue'           
       required:
         - proposal_item_cell_id
         - attribute_parameter_id
@@ -2496,6 +2508,63 @@ components:
           example: 1
           description: Уникальный идентификатор справочника эталонной записи
           readOnly: true
+        Proposal:
+          $ref: '#/components/schemas/Proposal'
+      readOnly: true
+    ProposalValue:
+      type: object
+      title: Значение
+      description: Значение
+      properties:
+        value_directory_item_directory_id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор-ссылка на справочник в котором хранится запись на которую ссылаются
+          readOnly: true
+        value_directory_item_id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор-ссылка на запись справочника
+          readOnly: true
+        value_directory_item_version_id:
+          type: string
+          description: Уникальный идентификатор-ссылка на запись справочника
+          readOnly: true
+        value_classifier_version_id:
+          type: string
+          description: Уникальный идентификатор-ссылка на класс
+          readOnly: true
+        value_text:
+          type: string
+          description: Мультиязычное текстовое значение
+          readOnly: true  
+        type_code:
+          type: string
+          description: Код типа значения
+          readOnly: true   
+        value_int:
+          type: integer
+          example: 1
+          description: Значение целого числа
+          readOnly: true
+        value_real:
+          type: integer
+          example: 1
+          description: Значение вещественного числа
+          readOnly: true  
+        value_date:
+          type: string
+          format: date
+          example: '2022-12-25'          
+          description: Значение даты
+          readOnly: true  
+        value_bool:
+          type: boolean
+          example: true
+          description: Логическое значение
+          readOnly: true                                                       
+      required:
+        - type_code
       readOnly: true
   examples:
     ModelValueOther:
