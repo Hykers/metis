@@ -719,7 +719,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/dataSet'
         - $ref: '#/components/parameters/includeAttributes'
-  /v1/proposal:
+  /v1/proposals:
     get:
       summary: Получение списка всех заявок
       tags:
@@ -873,9 +873,12 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
+        '422':
+          description: Допущена логическая ошибка
         '500':
           description: Внутренняя ошибка сервера
-  '/v1/proposal/{proposalCode}':
+    parameters: []
+  '/v1/proposals/{proposalsCode}':
     get:
       summary: Получение заявки
       tags:
@@ -912,7 +915,7 @@ paths:
     parameters:
       - schema:
           type: string
-        name: proposalCode
+        name: proposalsCode
         in: path
         required: true
   /v1/attributes:
@@ -1206,7 +1209,7 @@ components:
         - code
         - name
       readOnly: true
-    ItemsWithAttributesCollection:
+    ItemWithAttributesCollection:
       title: Коллекция записей с атрибутами
       type: object
       description: Коллекция записей с атрибутами
@@ -1354,7 +1357,9 @@ components:
         - attributes
         - wrapper
       readOnly: true
-    ItemsWithoutAttributesCollection:
+      x-stoplight:
+        id: 4dbd97840650f
+    ItemWithoutAttributesCollection:
       type: object
       title: Коллекция записей без атрибутов
       description: Коллекция записей без атрибутов
@@ -1496,6 +1501,8 @@ components:
       required:
         - wrapper
       readOnly: true
+      x-stoplight:
+        id: b85d57398c4eb
     ItemWithoutAttributes:
       type: object
       description: Запись без атрибутов
@@ -2278,32 +2285,17 @@ components:
       description: Заявка
       examples: []
       properties:
-        initial_proposal_body_id:
-          type: integer
-          example: 1
-          description: Уникальный идентификатор первичной версии записи в рамках заявки
-          readOnly: true
-        working_proposal_body_id:
-          type: integer
-          example: 1
-          description: Уникальный идентификатор рабочей версии записи в рамках заявки
-          readOnly: true
-        refinement_proposal_body_id:
-          type: integer
-          example: 1
-          description: Уникальный идентификатор уточненной версии записи в рамках заявки
-          readOnly: true
-        directory_id:
-          type: integer
+        directoryCode:
+          type: string
           example: 1
           description: Уникальный идентификатор справочника в который будет добавлена запись или в котором она будет изменена
           readOnly: true
-        directory_item_id:
-          type: integer
+        directoryItemCode:
+          type: string
           example: 1
           description: Уникальный идентификатор изменяемой или созданной записи
           readOnly: true
-        initial_directory_item_name:
+        initialDirectoryItemName:
           type: string
           example: Насос циркуляционный UPS 40-50
           description: 'Первичное наименование записи, которое определил инициатор при создании заявки или редактировании в статусе "Черновик"'
@@ -2311,20 +2303,23 @@ components:
           type: string
           example: CREATE
           description: 'CREATE (  Создание записи),  UPDATE (  Изменение записи)'
+          enum:
+            - CREATE
+            - UPDATE
         refinement:
           type: boolean
           example: false
           description: Признак уточняемой заявки
           readOnly: true
-        directory_item_status:
+        directoryItemStatus:
           type: string
           example: На уточнении
           description: Статус записи
+          enum:
+            - Эталон
+            - Блокированная
+            - Неактуальная
           readOnly: true
-        directory_status_model:
-          type: string
-          example: COUNTERPARTIES
-          description: Код статусной модели справочника
         visibility:
           type: boolean
           example: true
@@ -2334,89 +2329,85 @@ components:
           type: string
           example: Отклонена
           description: Статус заявки
+          enum:
+            - Выполнено
+            - Отклонено без обработки
+            - Отклонено без ответа
+            - Отклонено
+            - Заявки находящиеся без изменений заданное количество времени
+            - Черновик
+            - Новая
+            - В работе
+            - Уточнение
+            - Ошибка
+            - Ошибка обработки
           readOnly: true
-        validation_report:
+        validationReport:
           type: string
           description: Отчет о непройденной валидации
           readOnly: true
-        initiator_id:
+        initiatorId:
           type: string
           description: Уникальный идентификатор инициатора
           readOnly: true
-        executor_id:
+        executorId:
           type: string
           description: Уникальный идентификатор исполнителя (эксперта)
           readOnly: true
-        updated_status_at:
+        statusUpdatedAt:
           type: string
           format: date-time
           example: '2022-12-25T17:32:28Z'
           description: Дата и время обновления статуса заявки
           readOnly: true
-        created_at:
+        createdAt:
           type: string
           format: date-time
           example: '2022-12-25T17:32:28Z'
           description: Дата и время создания записи
           readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          example: '2022-12-25T17:32:28Z'
-          description: Дата и время обновления записи
-          readOnly: true
-        deleted_at:
-          type: string
-          format: date-time
-          example: '2022-12-25T17:32:28Z'
-          description: Дата и время логического удаления записи
-          readOnly: true
-        directoryItem:
-          $ref: '#/components/schemas/DefaultDirectoryItem'
+        body:
+          $ref: '#/components/schemas/ProposalBody'
       required:
-        - initial_proposal_body_id
-        - directory_id
-        - initial_directory_item_name
+        - directoryCode
+        - initialDirectoryItemName
         - type
         - refinement
-        - directory_status_model
         - visibility
         - status
         - initiator_id
-        - updated_status_at
         - created_at
-        - updated_at
-        - directoryItem
+        - body
       readOnly: true
     ProposalBody:
       type: object
       title: Версии записи в заявке
       description: Версии записи в заявке
       properties:
-        classifier_id:
-          type: integer
+        classifierId:
+          type: object
           example: 1
           description: Уникальный идентификатор класса (в рамках справочника) в который будет добавлена запись или в котором она будет изменена
           readOnly: true
-        master_directory_id:
-          type: integer
+        masterDirectoryId:
+          type: object
           example: 1
           description: Уникальный идентификатор справочника эталонной записи к которой привязывается заявка при попытке создать дубль или эталонной записи к которой привязывается блокируемая запись
           readOnly: true
-        master_directory_item_id:
-          type: integer
+        masterDirectoryItemId:
+          type: object
           example: 1
           description: Уникальный идентификатор эталонной записи к которой привязывается заявка при попытке создать дубль или эталонной записи к которой привязывается блокируемая запись
           readOnly: true
-        master_directory_code:
+        masterDirectoryCode:
           type: string
           description: Код справочника эталонной записи к которой привязывается заявка при попытке создать дубль или эталонной записи к которой привязывается блокируемая запись
           readOnly: true
-        master_directory_item_code:
+        masterDirectoryItemCode:
           type: string
           description: Код эталонной записи к которой привязывается заявка при попытке создать дубль или эталонной записи к которой привязывается блокируемая запись
           readOnly: true
-        current_directory_item_name:
+        currentDirectoryItemName:
           type: string
           description: 'Наименование записи. Может быть первичное, рабочее и уточненное'
           readOnly: true
@@ -2428,12 +2419,12 @@ components:
       title: Ячейка записи
       description: Ячейка записи
       properties:
-        proposal_body_id:
-          type: integer
+        proposalBodyId:
+          type: object
           example: 1
           description: Уникальный идентификатор версии записи в рамках заявки
           readOnly: true
-        attribute_id:
+        attributeId:
           type: integer
           example: 1
           description: Уникальный идентификатор атрибута
@@ -2441,32 +2432,32 @@ components:
         ProposalBody:
           $ref: '#/components/schemas/ProposalBody'
       required:
-        - proposal_body_id
-        - attribute_id
+        - proposalBodyId
+        - attributeId
       readOnly: true
     ProposalCellParameter:
       type: object
       title: Значение параметра ячейки
       description: Значение параметра ячейки
       properties:
-        proposal_item_cell_id:
-          type: string
+        proposalItemCellId:
+          type: object
           description: Уникальный идентификатор ячейки
           readOnly: true
-        attribute_parameter_id:
+        attributeParameterId:
           type: string
           description: Уникальный идентификатор параметра
           readOnly: true
-        value_id:
-          type: string
+        valueId:
+          type: object
           description: Уникальный идентификатор значения
           readOnly: true
-        directory_item_directory_id:
+        directoryItemDirectoryId:
           type: integer
           example: 1
           description: Уникальный идентификатор справочника
           readOnly: true
-        directory_item_id:
+        directoryItemId:
           type: integer
           example: 1
           description: Уникальный идентификатор записи
@@ -2476,10 +2467,10 @@ components:
         ProposalValue:
           $ref: '#/components/schemas/ProposalValue'
       required:
-        - proposal_item_cell_id
-        - attribute_parameter_id
-        - directory_item_directory_id
-        - directory_item_id
+        - proposalItemCellId
+        - attributeParameterId
+        - directoryItemDirectoryId
+        - directoryItemId
       readOnly: true
     ProposalDirectoryItemStatusDetail:
       type: object
@@ -2490,20 +2481,20 @@ components:
           type: string
           description: Расширение назначения статуса
           readOnly: true
-        master_directory_item_code:
+        masterDirectoryItemCode:
           type: string
           description: Код эталонной записи
           readOnly: true
-        master_directory_item_directory_code:
+        masterDirectoryItemDirectoryCode:
           type: string
           description: Код справочника эталонной записи
           readOnly: true
-        master_directory_item_id:
+        masterDirectoryItemId:
           type: integer
           example: 1
           description: Уникальный идентификатор эталонной записи
           readOnly: true
-        master_directory_item_directory_id:
+        masterDirectoryItemDirectoryId:
           type: integer
           example: 1
           description: Уникальный идентификатор справочника эталонной записи
@@ -2516,52 +2507,52 @@ components:
       title: Значение
       description: Значение
       properties:
-        value_directory_item_directory_id:
+        valueDirectoryItemDirectoryId:
           type: integer
           example: 1
           description: Уникальный идентификатор-ссылка на справочник в котором хранится запись на которую ссылаются
           readOnly: true
-        value_directory_item_id:
+        valueDirectoryItemId:
           type: integer
           example: 1
           description: Уникальный идентификатор-ссылка на запись справочника
           readOnly: true
-        value_directory_item_version_id:
+        valueDirectoryItemVersionId:
           type: string
           description: Уникальный идентификатор-ссылка на запись справочника
           readOnly: true
-        value_classifier_version_id:
+        valueClassifierVersionId:
           type: string
           description: Уникальный идентификатор-ссылка на класс
           readOnly: true
-        value_text:
+        valueText:
           type: string
           description: Мультиязычное текстовое значение
-        type_code:
+        typeCode:
           type: string
           description: Код типа значения
           readOnly: true
-        value_int:
+        valueInt:
           type: integer
           example: 1
           description: Значение целого числа
-        value_real:
+        valueReal:
           type: integer
           example: 1
           description: Значение вещественного числа
-        value_date:
+        valueDate:
           type: string
           format: date
           example: '2022-12-25'
           description: Значение даты
-        value_bool:
+        valueBool:
           type: boolean
           example: true
           description: Логическое значение
           default: true
           readOnly: true
       required:
-        - type_code
+        - typeCode
       readOnly: true
   examples:
     ModelValueOther:
