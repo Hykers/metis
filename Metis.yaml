@@ -1231,8 +1231,8 @@ components:
         statusModel:
           type: string
           enum:
-            - MATERIAL_AND_TECHNICAL_RESOURCES
             - COUNTERPARTIES
+            - DEFAULT
           description: Код статусной модели
           readOnly: true
       required:
@@ -1625,7 +1625,7 @@ components:
             rus: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
             eng: Pump circulation UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
             tur: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
-          blocked: false
+          lock: false
           reasonCode: OUTDATED
           masterItemCode: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
           validFrom: '2022-09-01 07:18:10.983153+00'
@@ -1661,7 +1661,7 @@ components:
               maxLength: 500
               description: на турецком языке
               example: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
-        blocked:
+        lock:
           type: boolean
           default: false
           description: 'Признак блокировки для изменения записи, в момент существования заявки на её изменение'
@@ -1706,7 +1706,7 @@ components:
         - code
         - classifierCode
         - name
-        - blocked
+        - lock
         - validFrom
     DefaultDirectoryItem:
       title: Запись справочника по умолчанию
@@ -1719,7 +1719,7 @@ components:
             rus: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
             eng: Pump circulation UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
             tur: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
-          blocked: false
+          lock: false
           reasonCode: OUTDATED
           validFrom: '2022-09-01 07:18:10.983153+00'
           validTo: '2022-09-01 07:18:10.983153+00'
@@ -1763,7 +1763,7 @@ components:
               maxLength: 500
               description: на турецком языке
               example: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
-        blocked:
+        lock:
           type: boolean
           default: false
           description: 'Признак блокировки для изменения записи, в момент существования заявки на её изменение'
@@ -1807,7 +1807,7 @@ components:
         - code
         - classifierCode
         - name
-        - blocked
+        - lock
         - validFrom
     ShortDirectoryItem:
       type: object
@@ -1821,7 +1821,7 @@ components:
             rus: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
             eng: Pump circulation UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
             tur: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
-          blocked: false
+          lock: false
           reasonCode: OUTDATED
           masterItemCode: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
           validFrom: '2022-09-01 07:18:10.983153+00'
@@ -1863,7 +1863,7 @@ components:
               example: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
               readOnly: true
           readOnly: true
-        blocked:
+        lock:
           type: boolean
           default: false
           description: 'Признак блокировки для изменения записи, в момент существования заявки на её изменение'
@@ -1901,7 +1901,7 @@ components:
         - code
         - classifierCode
         - name
-        - blocked
+        - lock
         - validFrom
       readOnly: true
     Attribute:
@@ -1948,7 +1948,7 @@ components:
           type: boolean
           description: Признак "Список значений"
           readOnly: true
-        enum:
+        enumeration:
           type: boolean
           description: Признак "Перечисление значений"
           readOnly: true
@@ -1982,7 +1982,7 @@ components:
         - code
         - name
         - list
-        - enum
+        - enumeration
         - range
         - typeCode
       readOnly: true
@@ -2047,13 +2047,7 @@ components:
       type: object
       title: Значение строка
       description: Значение атрибута с типом "Строка"
-      examples:
-        - type: TEXT
-          value:
-            default: насос
-            rus: насос
-            eng: pump
-            tur: pompa
+      examples: []
       properties:
         type:
           type: string
@@ -2080,6 +2074,13 @@ components:
               description: на турецком языке
               example: pompa
               readOnly: true
+            anotherLanguage:
+              type: string
+              description: на любом другом языке
+            byDefault:
+              type: string
+              description: 'на языке по умолчанию, установленном в Системе'
+              example: насос
           readOnly: true
       required:
         - type
@@ -2182,13 +2183,7 @@ components:
       type: object
       title: Перечисляемое значение строка
       description: Перечисляемое значение атрибута с типом "Строка"
-      examples:
-        - type: TEXT
-          value:
-            default: насос
-            rus: насос
-            eng: pump
-            tur: pompa
+      examples: []
       properties:
         type:
           type: string
@@ -2215,12 +2210,13 @@ components:
               description: на турецком языке
               example: pompa
               readOnly: true
-            another_language:
+            anotherLanguage:
               type: string
               description: на любом другом языке
-            bydefault:
+            byDefault:
               type: string
               description: 'на языке по умолчанию, установленном в Системе'
+              example: насос
           readOnly: true
       required:
         - type
