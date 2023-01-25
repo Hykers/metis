@@ -153,6 +153,12 @@ paths:
                   - size
                   - number
                   - empty
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
         '500':
           description: Внутренняя ошибка сервера
       operationId: getClassifiers
@@ -229,6 +235,8 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
+        '422':
+          description: Unprocessable Entity (WebDAV)
         '500':
           description: Внутренняя ошибка сервера
       operationId: post-classifiers-classifierCode-class
@@ -296,6 +304,10 @@ paths:
                     $ref: '#/components/schemas/Classifier'
                 required:
                   - content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
         '404':
           description: Not Found
         '500':
@@ -327,6 +339,10 @@ paths:
                     $ref: '#/components/schemas/Classifier'
                 required:
                   - content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
         '404':
           description: Not Found
         '500':
@@ -358,6 +374,10 @@ paths:
                     $ref: '#/components/schemas/Classifier'
                 required:
                   - content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
         '404':
           description: Not Found
         '500':
@@ -528,6 +548,8 @@ paths:
           $ref: '#/components/responses/401-unauthorized'
         '403':
           $ref: '#/components/responses/403-forbidden'
+        '404':
+          description: Not Found
         '500':
           description: Внутренняя ошибка сервера
     parameters: []
@@ -652,6 +674,8 @@ paths:
           $ref: '#/components/responses/401-unauthorized'
         '403':
           $ref: '#/components/responses/403-forbidden'
+        '404':
+          description: Not Found
         '422':
           description: Допущена логическая ошибка
         '500':
@@ -846,6 +870,8 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
+        '404':
+          description: Not Found
         '500':
           description: Внутренняя ошибка сервера
     post:
@@ -873,12 +899,14 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
+        '404':
+          description: Not Found
         '422':
           description: Допущена логическая ошибка
         '500':
           description: Внутренняя ошибка сервера
     parameters: []
-  '/v1/proposals/{proposalsCode}':
+  '/v1/proposals/{proposalsId}':
     get:
       summary: Получение заявки
       tags:
@@ -915,7 +943,7 @@ paths:
     parameters:
       - schema:
           type: string
-        name: proposalsCode
+        name: proposalsId
         in: path
         required: true
   /v1/attributes:
@@ -1045,6 +1073,8 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
+        '404':
+          description: Not Found
         '500':
           description: Внутренняя ошибка сервера
   '/v1/attributes/{attributesCode}':
