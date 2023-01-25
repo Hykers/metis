@@ -7,6 +7,9 @@ info:
     name: Жуков Николай Александрович
     url: 'https://t.me/Hykers'
     email: nzhukov@phoenixit.ru
+  license:
+    name: Commercial
+    url: 'https://www.example.com'
 servers:
   - url: 'https://metida.at-consulting.ru/api/integration'
     description: ATK_DEMO
@@ -27,6 +30,10 @@ tags:
     description: Работа со справочниками
   - name: classifiers
     description: Работа с классификаторами
+  - name: attributes
+    description: Работа с атрибутами
+  - name: proposal
+    description: Работа с заявками
 paths:
   /v1/classifiers:
     get:
@@ -520,7 +527,7 @@ paths:
                           eng: string
                           tur: string
                         itemCounter: 0
-                        statusModel: MATERIAL_AND_TECHNICAL_RESOURCES
+                        statusModel: COUNTERPARTIES
                         order: 0
                     pageable:
                       sort:
@@ -587,7 +594,7 @@ paths:
                         eng: string
                         tur: string
                       itemCounter: 0
-                      statusModel: MATERIAL_AND_TECHNICAL_RESOURCES
+                      statusModel: COUNTERPARTIES
                       order: 0
         '401':
           $ref: '#/components/responses/401-unauthorized'
@@ -951,7 +958,7 @@ paths:
       summary: Получение атрибутов
       operationId: getAttributes
       tags:
-        - Attributes
+        - attributes
       description: Постраничное получение атрибутов Системы
       parameters:
         - $ref: '#/components/parameters/size'
@@ -1131,6 +1138,13 @@ components:
           type: object
           description: Наименование класса
           properties:
+            byDefault:
+              type: string
+              description: на русском языке
+              minLength: 1
+              maxLength: 500
+              example: Материально-технические ресурсы
+              readOnly: true
             rus:
               type: string
               description: на русском языке
@@ -1151,6 +1165,13 @@ components:
               minLength: 1
               maxLength: 500
               example: Malzeme ve teknik kaynaklar
+              readOnly: true
+            anotherLanguage:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на любом другом языке
+              example: ___
               readOnly: true
           readOnly: true
         sectionCode:
@@ -1172,28 +1193,12 @@ components:
         - name
         - visibility
       description: Классификатор
-      examples:
-        - code: string
-          name:
-            default: Материально-технические ресурсы
-            rus: Материально-технические ресурсы
-            eng: Material and technical resources
-            tur: Malzeme ve teknik kaynaklar
-          sectionCode: DATA_MODEL_MANAGEMENT
-          visibility: true
-          order: 1
+      examples: []
     Directory:
       type: object
       title: Справочник
       description: Справочник
-      examples:
-        - code: material_and_technical_resources
-          name:
-            default: Материально-технические ресурсы
-            rus: Материально-технические ресурсы
-            eng: Material and technical resources
-            tur: Malzeme ve teknik kaynaklar
-          statusModel: MATERIAL_AND_TECHNICAL_RESOURCES
+      examples: {}
       properties:
         code:
           type: string
@@ -1204,8 +1209,13 @@ components:
           type: object
           description: Наименование справочника
           properties:
-            default:
+            byDefault:
               type: string
+              minLength: 1
+              maxLength: 500
+              example: Материально-технические ресурсы
+              description: на русском языке
+              readOnly: true
             rus:
               type: string
               minLength: 1
@@ -1226,6 +1236,13 @@ components:
               maxLength: 500
               example: Malzeme ve teknik kaynaklar
               description: на турецком языке
+              readOnly: true
+            anotherLanguage:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на любом другом языке
+              example: ___
               readOnly: true
           readOnly: true
         statusModel:
@@ -1387,8 +1404,6 @@ components:
         - attributes
         - wrapper
       readOnly: true
-      x-stoplight:
-        id: 4dbd97840650f
     ItemWithoutAttributesCollection:
       type: object
       title: Коллекция записей без атрибутов
@@ -1531,8 +1546,6 @@ components:
       required:
         - wrapper
       readOnly: true
-      x-stoplight:
-        id: b85d57398c4eb
     ItemWithoutAttributes:
       type: object
       description: Запись без атрибутов
@@ -1569,8 +1582,6 @@ components:
       readOnly: true
     TechnicalAttributesItem:
       title: TechnicalAttributesItem
-      x-stoplight:
-        id: ipuvoa8a76slx
       type: object
       description: Технические атрибуты записи
       properties:
@@ -1588,6 +1599,11 @@ components:
           type: object
           description: Наименование записи. Мультиязычное текстовое поле.
           properties:
+            byDefault:
+              type: string
+              description: Наименование записи на русском языке
+              example: Продукция
+              readOnly: true
             rus:
               type: string
               description: Наименование записи на русском языке
@@ -1603,33 +1619,21 @@ components:
               description: Наименование записи на турецком языке
               example: Ürün
               readOnly: true
+            anotherLanguage:
+              type: string
+              description: на любом другом языке
+              example: ___
+              readOnly: true
       required:
         - id
         - code
         - name
-      examples:
-        - id: '1'
-          code: 8e48c190-8edb-4a58-a146-d7fea8c264f3
-          name:
-            rus: Продукция
-            eng: Products
-            tur: Ürün
+      examples: []
     FullDirectoryItem:
       title: Полная запись справочника
       type: object
       description: 'Запись плоского справочника или справочника с мастер данными, где есть все атрибуты'
-      examples:
-        - code: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
-          classifierCode: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
-          name:
-            rus: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
-            eng: Pump circulation UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
-            tur: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
-          lock: false
-          reasonCode: OUTDATED
-          masterItemCode: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
-          validFrom: '2022-09-01 07:18:10.983153+00'
-          validTo: '2022-09-01 07:18:10.983153+00'
+      examples: []
       properties:
         code:
           type: string
@@ -1643,6 +1647,12 @@ components:
           type: object
           description: Наименования записи
           properties:
+            byDefault:
+              type: string
+              example: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              maxLength: 500
+              minLength: 1
+              description: на русском языке
             rus:
               type: string
               example: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
@@ -1661,6 +1671,13 @@ components:
               maxLength: 500
               description: на турецком языке
               example: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+            anotherLanguage:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на любом другом языке
+              example: ___
+              readOnly: true
         lock:
           type: boolean
           default: false
@@ -1712,25 +1729,7 @@ components:
       title: Запись справочника по умолчанию
       type: object
       description: 'Запись плоского справочника или справочника с мастер данными, где есть атрибуты только корневого класса классификатора'
-      examples:
-        - code: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
-          classifierCode: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
-          name:
-            rus: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
-            eng: Pump circulation UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
-            tur: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
-          lock: false
-          reasonCode: OUTDATED
-          validFrom: '2022-09-01 07:18:10.983153+00'
-          validTo: '2022-09-01 07:18:10.983153+00'
-          cells:
-            - attributeCode: pump_type
-              values:
-                - type: TEXT
-                  value:
-                    rus: насос
-                    eng: pump
-                    tur: pompa
+      examples: []
       properties:
         code:
           type: string
@@ -1745,6 +1744,12 @@ components:
           type: object
           description: Наименования записи
           properties:
+            byDefault:
+              type: string
+              example: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              maxLength: 500
+              minLength: 1
+              description: на русском языке
             rus:
               type: string
               example: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
@@ -1763,6 +1768,13 @@ components:
               maxLength: 500
               description: на турецком языке
               example: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+            anotherLanguage:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на любом другом языке
+              example: ___
+              readOnly: true
         lock:
           type: boolean
           default: false
@@ -1813,19 +1825,7 @@ components:
       type: object
       title: Краткая запись справочника
       description: 'Запись плоского справочника или справочника с мастер данными, где нет атрибутов'
-      examples:
-        - code: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
-          classifierCode: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
-          name:
-            default: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
-            rus: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
-            eng: Pump circulation UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
-            tur: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
-          lock: false
-          reasonCode: OUTDATED
-          masterItemCode: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
-          validFrom: '2022-09-01 07:18:10.983153+00'
-          validTo: '2022-09-01 07:18:10.983153+00'
+      examples: []
       properties:
         code:
           type: string
@@ -1841,6 +1841,13 @@ components:
           type: object
           description: Наименования записи
           properties:
+            byDefault:
+              type: string
+              example: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              maxLength: 500
+              minLength: 1
+              description: на русском языке
+              readOnly: true
             rus:
               type: string
               example: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
@@ -1861,6 +1868,13 @@ components:
               maxLength: 500
               description: на турецком языке
               example: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              readOnly: true
+            anotherLanguage:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на любом другом языке
+              example: ___
               readOnly: true
           readOnly: true
         lock:
@@ -1908,6 +1922,7 @@ components:
       type: object
       title: Атрибут
       examples: []
+      description: Атрибут
       properties:
         code:
           type: string
@@ -1918,6 +1933,13 @@ components:
           type: object
           description: Наименования атрибута
           properties:
+            byDefault:
+              type: string
+              description: на русском языке
+              minLength: 1
+              maxLength: 500
+              example: Вид насоса
+              readOnly: true
             rus:
               type: string
               description: на русском языке
@@ -1938,6 +1960,13 @@ components:
               minLength: 1
               maxLength: 500
               example: tip pompa
+            anotherLanguage:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на любом другом языке
+              example: ___
+              readOnly: true
           readOnly: true
         description:
           type: string
@@ -1976,7 +2005,6 @@ components:
               - $ref: '#/components/schemas/EnumValueString'
               - $ref: '#/components/schemas/EnumValueRef'
               - $ref: '#/components/schemas/EnumValueOther'
-            description: Один из объектов значения (в зависимости от типа)
           readOnly: true
       required:
         - code
@@ -1986,20 +2014,11 @@ components:
         - range
         - typeCode
       readOnly: true
-      description: Атрибут
     CellValue:
       type: object
       title: Ячейка значений
       description: Ячейка без диапазонов
-      examples:
-        - attributeCode: pump_type
-          values:
-            - type: TEXT
-              value:
-                default: насос
-                rus: насос
-                eng: pump
-                tur: pompa
+      examples: []
       properties:
         attributeCode:
           type: string
@@ -2059,6 +2078,10 @@ components:
           type: object
           description: Значение
           properties:
+            byDefault:
+              type: string
+              description: 'на языке по умолчанию, установленном в Системе'
+              example: насос
             rus:
               type: string
               description: на русском языке
@@ -2077,10 +2100,7 @@ components:
             anotherLanguage:
               type: string
               description: на любом другом языке
-            byDefault:
-              type: string
-              description: 'на языке по умолчанию, установленном в Системе'
-              example: насос
+              example: ___
           readOnly: true
       required:
         - type
@@ -2154,8 +2174,7 @@ components:
       required:
         - classCode
       readOnly: true
-      examples:
-        - classCode: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+      examples: []
       description: Значение ссылка на класс классификатора
     DirectoryItemRef:
       type: object
@@ -2176,9 +2195,7 @@ components:
         - directoryItemCode
       readOnly: true
       description: Значение ссылка на запись справочника
-      examples:
-        - directoryCode: material_and_technical_resources
-          directoryItemCode: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+      examples: []
     EnumValueString:
       type: object
       title: Перечисляемое значение строка
@@ -2195,6 +2212,10 @@ components:
           type: object
           description: Значение
           properties:
+            byDefault:
+              type: string
+              description: 'на языке по умолчанию, установленном в Системе'
+              example: насос
             rus:
               type: string
               description: на русском языке
@@ -2213,10 +2234,7 @@ components:
             anotherLanguage:
               type: string
               description: на любом другом языке
-            byDefault:
-              type: string
-              description: 'на языке по умолчанию, установленном в Системе'
-              example: насос
+              example: ___
           readOnly: true
       required:
         - type
@@ -2286,7 +2304,7 @@ components:
       title: Диапазон
       description: Диапазон
       examples:
-        Range:
+        examplesRange:
           $ref: '#/components/examples/ModelRange'
       properties:
         value:
@@ -2313,12 +2331,12 @@ components:
       properties:
         directoryCode:
           type: string
-          example: 1
+          example: region
           description: Уникальный идентификатор справочника в который будет добавлена запись или в котором она будет изменена
           readOnly: true
         directoryItemCode:
           type: string
-          example: 1
+          example: 5ee994c5-59df-4a7b-b6d3-ff04ff652e22
           description: Уникальный идентификатор изменяемой или созданной записи
           readOnly: true
         initialDirectoryItemName:
@@ -2339,7 +2357,7 @@ components:
           readOnly: true
         directoryItemStatus:
           type: string
-          example: На уточнении
+          example: Эталон
           description: Статус записи
           enum:
             - Эталон
@@ -2353,7 +2371,7 @@ components:
           readOnly: true
         status:
           type: string
-          example: Отклонена
+          example: Отклонено
           description: Статус заявки
           enum:
             - Выполнено
@@ -2401,8 +2419,6 @@ components:
         - refinement
         - visibility
         - status
-        - initiator_id
-        - created_at
         - body
       readOnly: true
     ProposalBody:
@@ -2589,32 +2605,46 @@ components:
     ModelValueRefClass:
       description: Пример значения ссылки на класс
       value:
-        - type: CLASSIFIER_ID
-          valueRef:
-            classCode: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+        type: CLASSIFIER_ID
+        valueRef:
+          classCode: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
     ModelValueRefItem:
       description: Пример значения ссылки на запись
       value:
-        - type: DIRECTORY_ITEM_ID
-          valueRef:
-            directoryCode: material_and_technical_resources
-            directoryItemCode: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+        type: DIRECTORY_ITEM_ID
+        valueRef:
+          directoryCode: material_and_technical_resources
+          directoryItemCode: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
     ModelRange:
       description: Пример диапазона
       value:
-        - type: TEXT
+        value:
+          type: TEXT
           value:
-            default: насос
+            byDefault: насос
             rus: насос
             eng: pump
             tur: pompa
-      alterValue:
-        - type: TEXT
+            anotherLanguage: ___
+        alterValue:
+          type: TEXT
           value:
-            default: насос
+            byDefault: насос
             rus: насос
             eng: pump
             tur: pompa
+            anotherLanguage: ___
+    ModelDirectory:
+      description: Пример справочника
+      value:
+        code: material_and_technical_resources
+        name:
+          byDefault: Материально-технические ресурсы
+          rus: Материально-технические ресурсы
+          eng: Material and technical resources
+          tur: Malzeme ve teknik kaynaklar
+          anotherLanguage: ___
+        statusModel: MATERIAL_AND_TECHNICAL_RESOURCES
   parameters:
     size:
       name: size
