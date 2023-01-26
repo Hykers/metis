@@ -32,15 +32,17 @@ servers:
   - url: 'http://dev.usmt.phoenixit.ru/nsi/api/integration'
     description: MSX_DEV
 tags:
-  - name: items
-    description: Работа с записями справочника
   - name: directories
     description: Работа со справочниками
+  - name: items
+    description: Работа с записями справочника
   - name: classifiers
     description: Работа с классификаторами
+  - name: class
+    description: Работа с классами
   - name: attributes
     description: Работа с атрибутами
-  - name: proposal
+  - name: proposals
     description: Работа с заявками
 paths:
   /v1/classifiers:
@@ -271,7 +273,7 @@ paths:
         required: true
         description: Уникальный код классификатора в рамках системы
     get:
-      summary: Получение конкретного класса
+      summary: Получение класса классификатора
       responses:
         '200':
           description: Успех
@@ -294,10 +296,10 @@ paths:
           description: Внутренняя ошибка сервера
       operationId: getClass
       description: Получение конкретного класса
-      tags:
-        - classifiers
       parameters: []
-  '/v1/classifiers/{classifiersCode}/attributes':
+      tags:
+        - class
+  '/v1/classifiers/{classifiersCode}/class/{classCode}/attributes':
     parameters:
       - schema:
           type: string
@@ -305,8 +307,14 @@ paths:
         in: path
         required: true
         description: Уникальный код классификатора в рамках системы
+      - schema:
+          type: string
+        name: classCode
+        in: path
+        required: true
+        description: Уникальный код классификатора в рамках системы
     get:
-      summary: Получение конкретного классификатора
+      summary: Получение атрибутов класса
       responses:
         '200':
           description: Успех
@@ -330,9 +338,9 @@ paths:
       operationId: getClassAttributes
       description: Получение конкретного классификатора
       tags:
-        - classifiers
+        - class
       parameters: []
-  '/v1/classifiers/{classifiersCode}/children':
+  '/v1/classifiers/{classifiersCode}/class/{classCode}/children':
     parameters:
       - schema:
           type: string
@@ -340,8 +348,14 @@ paths:
         in: path
         required: true
         description: Уникальный код классификатора в рамках системы
+      - schema:
+          type: string
+        name: classCode
+        in: path
+        required: true
+        description: Уникальный код классификатора в рамках системы
     get:
-      summary: Получение конкретного классификатора
+      summary: Получение детей класса
       responses:
         '200':
           description: Успех
@@ -365,9 +379,9 @@ paths:
       operationId: getClassChildren
       description: Получение конкретного классификатора
       tags:
-        - classifiers
+        - class
       parameters: []
-  '/v1/classifiers/{classifiersCode}/parents':
+  '/v1/classifiers/{classifiersCode}/class/{classCode}/parents':
     parameters:
       - schema:
           type: string
@@ -375,8 +389,14 @@ paths:
         in: path
         required: true
         description: Уникальный код классификатора в рамках системы
+      - schema:
+          type: string
+        name: classCode
+        in: path
+        required: true
+        description: Уникальный код классификатора в рамках системы
     get:
-      summary: Получение конкретного классификатора
+      summary: Получение родителей класса
       responses:
         '200':
           description: Успех
@@ -399,9 +419,9 @@ paths:
           description: Внутренняя ошибка сервера
       operationId: getClassParents
       description: Получение конкретного классификатора
-      tags:
-        - classifiers
       parameters: []
+      tags:
+        - class
   /v1/directories:
     get:
       summary: Получение справочников
@@ -713,7 +733,7 @@ paths:
     get:
       summary: Получение списка всех заявок
       tags:
-        - proposal
+        - proposals
       operationId: getProposals
       description: Постраничное получение заявок Системы
       parameters:
@@ -843,7 +863,7 @@ paths:
     post:
       summary: Создание заявки
       tags:
-        - proposal
+        - proposals
       operationId: postProposals
       description: Создание заявки
       responses:
@@ -875,8 +895,6 @@ paths:
   '/v1/proposals/{proposalsId}':
     get:
       summary: Получение заявки
-      tags:
-        - proposal
       operationId: getProposal
       description: Получение заявки
       parameters: []
@@ -906,6 +924,8 @@ paths:
                 properties: {}
         '500':
           description: Внутренняя ошибка сервера
+      tags:
+        - proposals
     parameters:
       - schema:
           type: string
