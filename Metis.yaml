@@ -516,41 +516,6 @@ paths:
                   - size
                   - number
                   - empty
-              examples:
-                Example:
-                  value:
-                    content:
-                      - code: string
-                        name:
-                          default: string
-                          rus: string
-                          eng: string
-                          tur: string
-                        itemCounter: 0
-                        statusModel: COUNTERPARTIES
-                        order: 0
-                    pageable:
-                      sort:
-                        sorted: true
-                        unsorted: true
-                        empty: true
-                      pageSize: 17
-                      pageNumber: 1
-                      offset: 20
-                      paged: true
-                      unpaged: true
-                    totalPages: 1
-                    totalElements: 15
-                    first: true
-                    last: true
-                    sort:
-                      sorted: true
-                      unsorted: true
-                      empty: true
-                    numberofElements: 17
-                    size: 20
-                    number: 1
-                    empty: true
         '401':
           $ref: '#/components/responses/401-unauthorized'
         '403':
@@ -583,19 +548,6 @@ paths:
                 properties:
                   content:
                     $ref: '#/components/schemas/Directory'
-              examples:
-                Example:
-                  value:
-                    content:
-                      code: string
-                      name:
-                        default: string
-                        rus: string
-                        eng: string
-                        tur: string
-                      itemCounter: 0
-                      statusModel: COUNTERPARTIES
-                      order: 0
         '401':
           $ref: '#/components/responses/401-unauthorized'
         '403':
@@ -953,6 +905,7 @@ paths:
         name: proposalsId
         in: path
         required: true
+        description: Заявка
   /v1/attributes:
     get:
       summary: Получение атрибутов
@@ -1091,6 +1044,7 @@ paths:
         name: attributesCode
         in: path
         required: true
+        description: Атрибут
     get:
       summary: Получение атрибута
       operationId: getAttribute
@@ -2340,9 +2294,39 @@ components:
           description: Уникальный идентификатор изменяемой или созданной записи
           readOnly: true
         initialDirectoryItemName:
-          type: string
-          example: Насос циркуляционный UPS 40-50
+          type: object
           description: 'Первичное наименование записи, которое определил инициатор при создании заявки или редактировании в статусе "Черновик"'
+          properties:
+            byDefault:
+              type: string
+              minLength: 1
+              maxLength: 500
+              example: Насос циркуляционный 40
+              description: на русском языке
+            rus:
+              type: string
+              minLength: 1
+              maxLength: 500
+              example: Насос циркуляционный 40
+              description: на русском языке
+            eng:
+              type: string
+              minLength: 1
+              maxLength: 500
+              example: Circulation pump 40
+              description: на английском языке
+            tur:
+              type: string
+              minLength: 1
+              maxLength: 500
+              example: Sirkülasyon pompası 40
+              description: на турецком языке
+            anotherLanguage:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на любом другом языке
+              example: ___
         type:
           type: string
           example: CREATE
@@ -2426,18 +2410,19 @@ components:
       title: Версии записи в заявке
       description: Версии записи в заявке
       properties:
-        classifierId:
-          type: object
-          example: 1
+        classifierCode:
+          type: string
           description: Уникальный идентификатор класса (в рамках справочника) в который будет добавлена запись или в котором она будет изменена
+          format: uuid
+          example: 1532d301-6bf3-4b04-a78c-9da6c5970322
           readOnly: true
         masterDirectoryId:
-          type: object
+          type: integer
           example: 1
           description: Уникальный идентификатор справочника эталонной записи к которой привязывается заявка при попытке создать дубль или эталонной записи к которой привязывается блокируемая запись
           readOnly: true
         masterDirectoryItemId:
-          type: object
+          type: integer
           example: 1
           description: Уникальный идентификатор эталонной записи к которой привязывается заявка при попытке создать дубль или эталонной записи к которой привязывается блокируемая запись
           readOnly: true
@@ -2462,17 +2447,15 @@ components:
       description: Ячейка записи
       properties:
         proposalBodyId:
-          type: object
-          example: 1
+          type: integer
           description: Уникальный идентификатор версии записи в рамках заявки
+          example: 1
           readOnly: true
         attributeId:
           type: integer
           example: 1
           description: Уникальный идентификатор атрибута
           readOnly: true
-        ProposalBody:
-          $ref: '#/components/schemas/ProposalBody'
       required:
         - proposalBodyId
         - attributeId
@@ -2483,16 +2466,22 @@ components:
       description: Значение параметра ячейки
       properties:
         proposalItemCellId:
-          type: object
+          type: string
           description: Уникальный идентификатор ячейки
+          format: uuid
+          example: 1532d301-6bf3-4b04-a78c-9da6c5970324
           readOnly: true
         attributeParameterId:
           type: string
           description: Уникальный идентификатор параметра
+          example: 1532d301-6bf3-4b04-a78c-9da6c5970325
+          format: uuid
           readOnly: true
         valueId:
-          type: object
+          type: string
           description: Уникальный идентификатор значения
+          format: uuid
+          example: 1532d301-6bf3-4b04-a78c-9da6c5970323
           readOnly: true
         directoryItemDirectoryId:
           type: integer
@@ -2504,10 +2493,6 @@ components:
           example: 1
           description: Уникальный идентификатор записи
           readOnly: true
-        ProposalItemCell:
-          $ref: '#/components/schemas/ProposalItemCell'
-        ProposalValue:
-          $ref: '#/components/schemas/ProposalValue'
       required:
         - proposalItemCellId
         - attributeParameterId
@@ -2541,8 +2526,13 @@ components:
           example: 1
           description: Уникальный идентификатор справочника эталонной записи
           readOnly: true
-        Proposal:
-          $ref: '#/components/schemas/Proposal'
+        proposalId:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор заявки          
+          readOnly: true
+      required:
+        - proposalId
       readOnly: true
     ProposalValue:
       type: object
