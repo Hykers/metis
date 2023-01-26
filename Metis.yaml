@@ -2,7 +2,14 @@ openapi: 3.1.0
 info:
   title: Metis
   version: '0.1'
-  description: OpenAPI спецификация АИС УМД "Метида"
+  description: |-
+    # Правила, использованные при написании OpenAPI:
+    1. Все атрибуты должны иметь продуктивный пример - как минимум для понимания того, что может прийти, а как максимум для генерации тестового JSON для проверки ошибок при дизайне спецификации
+    2. Необходимо отдельно описывать продуктивный пример модели (в Examples) в следующих случаях (для того, чтобы показать все возможные состояния):
+        - если у модели есть атрибут с разными типами данных - например String и Integer
+        - eсли у модели есть вилка из других моделей (allOf, anyOf, oneOf)
+    3. Необходимо отдельно описывать модель (в Models) для того, чтобы использовать её в нескольких конечных точках или других моделях
+    4. Наименование моделей должно быть похоже на словосочетание из прилагательного и существительного (например: запись справочника (item directory) - это справочная запись (directoryItem)
   contact:
     name: Жуков Николай Александрович
     url: 'https://t.me/Hykers'
@@ -10,6 +17,7 @@ info:
   license:
     name: Commercial
     url: 'https://www.example.com'
+  summary: OpenAPI спецификация АИС УМД "Метида"
 servers:
   - url: 'https://metida.at-consulting.ru/api/integration'
     description: ATK_DEMO
@@ -586,10 +594,9 @@ paths:
           content:
             application/json:
               schema:
-                description: Один из объектов (в зависимости от значения includeAttributes)
                 oneOf:
-                  - $ref: '#/components/schemas/ItemWithoutAttributes'
-                  - $ref: '#/components/schemas/ItemWithAttributes'
+                  - $ref: '#/components/schemas/ItemWithoutAttributesCollection'
+                  - $ref: '#/components/schemas/ItemWithAttributesCollection'
               examples: {}
         '401':
           $ref: '#/components/responses/401-unauthorized'
@@ -1147,12 +1154,10 @@ components:
         - name
         - visibility
       description: Классификатор
-      examples: []
     Directory:
       type: object
       title: Справочник
       description: Справочник
-      examples: {}
       properties:
         code:
           type: string
@@ -1239,23 +1244,12 @@ components:
           properties:
             content:
               type: array
-              description: Краткие записи справочника
+              description: 'Множество записей, соотвествующих одному из объектов записи (в зависимости от значения dataSet)'
               items:
                 oneOf:
-                  - description: Когда параметр запроса dataSet = full
-                    behavior: Read Only
-                    items:
-                      $ref: '#/components/schemas/FullDirectoryItem'
-                  - description: Когда параметр запроса dataSet = default
-                    behavior: Read Only
-                    items:
-                      $ref: '#/components/schemas/DefaultDirectoryItem'
-                  - behavior: Read Only
-                    description: Когда параметр запроса dataSet = short
-                    items:
-                      $ref: '#/components/schemas/ShortDirectoryItem'
-                description: Один из объектов записи (в зависимости от значения dataSet)
-                type: array
+                  - $ref: '#/components/schemas/FullDirectoryItem'
+                  - $ref: '#/components/schemas/DefaultDirectoryItem'
+                  - $ref: '#/components/schemas/ShortDirectoryItem'
               readOnly: true
             pageable:
               type: object
@@ -1382,23 +1376,12 @@ components:
           properties:
             content:
               type: array
-              description: Записи
+              description: 'Множество записей, соотвествующих одному из объектов записи (в зависимости от значения dataSet)'
               items:
                 oneOf:
-                  - description: Когда параметр запроса dataSet = full
-                    behavior: Read Only
-                    items:
-                      $ref: '#/components/schemas/FullDirectoryItem'
-                  - description: Когда параметр запроса dataSet = default
-                    behavior: Read Only
-                    items:
-                      $ref: '#/components/schemas/DefaultDirectoryItem'
-                  - behavior: Read Only
-                    description: Когда параметр запроса dataSet = short
-                    items:
-                      $ref: '#/components/schemas/ShortDirectoryItem'
-                description: Один из объектов записи (в зависимости от значения dataSet)
-                type: array
+                  - $ref: '#/components/schemas/FullDirectoryItem'
+                  - $ref: '#/components/schemas/DefaultDirectoryItem'
+                  - $ref: '#/components/schemas/ShortDirectoryItem'
               readOnly: true
             pageable:
               type: object
@@ -2460,80 +2443,6 @@ components:
         - proposalBodyId
         - attributeId
       readOnly: true
-    ProposalCellParameter:
-      type: object
-      title: Значение параметра ячейки
-      description: Значение параметра ячейки
-      properties:
-        proposalItemCellId:
-          type: string
-          description: Уникальный идентификатор ячейки
-          format: uuid
-          example: 1532d301-6bf3-4b04-a78c-9da6c5970324
-          readOnly: true
-        attributeParameterId:
-          type: string
-          description: Уникальный идентификатор параметра
-          example: 1532d301-6bf3-4b04-a78c-9da6c5970325
-          format: uuid
-          readOnly: true
-        valueId:
-          type: string
-          description: Уникальный идентификатор значения
-          format: uuid
-          example: 1532d301-6bf3-4b04-a78c-9da6c5970323
-          readOnly: true
-        directoryItemDirectoryId:
-          type: integer
-          example: 1
-          description: Уникальный идентификатор справочника
-          readOnly: true
-        directoryItemId:
-          type: integer
-          example: 1
-          description: Уникальный идентификатор записи
-          readOnly: true
-      required:
-        - proposalItemCellId
-        - attributeParameterId
-        - directoryItemDirectoryId
-        - directoryItemId
-      readOnly: true
-    ProposalDirectoryItemStatusDetail:
-      type: object
-      title: Детали статуса записи
-      description: Детали статуса записи
-      properties:
-        reason:
-          type: string
-          description: Расширение назначения статуса
-          readOnly: true
-        masterDirectoryItemCode:
-          type: string
-          description: Код эталонной записи
-          readOnly: true
-        masterDirectoryItemDirectoryCode:
-          type: string
-          description: Код справочника эталонной записи
-          readOnly: true
-        masterDirectoryItemId:
-          type: integer
-          example: 1
-          description: Уникальный идентификатор эталонной записи
-          readOnly: true
-        masterDirectoryItemDirectoryId:
-          type: integer
-          example: 1
-          description: Уникальный идентификатор справочника эталонной записи
-          readOnly: true
-        proposalId:
-          type: integer
-          example: 1
-          description: Уникальный идентификатор заявки          
-          readOnly: true
-      required:
-        - proposalId
-      readOnly: true
     ProposalValue:
       type: object
       title: Значение
@@ -2624,17 +2533,6 @@ components:
             eng: pump
             tur: pompa
             anotherLanguage: ___
-    ModelDirectory:
-      description: Пример справочника
-      value:
-        code: material_and_technical_resources
-        name:
-          byDefault: Материально-технические ресурсы
-          rus: Материально-технические ресурсы
-          eng: Material and technical resources
-          tur: Malzeme ve teknik kaynaklar
-          anotherLanguage: ___
-        statusModel: MATERIAL_AND_TECHNICAL_RESOURCES
   parameters:
     size:
       name: size
@@ -2674,7 +2572,7 @@ components:
       schema:
         type: string
         example: 'EQ,param,value'
-      description: ' Фильтр. Параметр фильтра должен состоять из кода условия, кода атрибута и значения. В параметре можно задать следующие условия (зависят от типа атрибута): GT - больше, GE - больше или равно, LT - меньше, LE - меньше или равно, EQ - равно (полное совпадение), NE - не равно, EQ_IGNORE_CASE - равно (полное совпадение без учёта регистра), STARTS_WITH - начинается с, ENDS_IN - оканчивается на, IN - список значений, LIKE - равно (частичное совпадение), NOT_LIKE - не равно (частичное совпадение), LIKE_IGNORE_CASE - равно (частичное совпадение без учёта регистра), NOT_LIKE_IGNORE_CASE - не равно (частичное совпадение без учёта регистра), FTS - полнотекстовый поиск, IS_NULL - отсутствие значения. При фильтрации по атрибуту, который имеет тип CLASSIFIER_ID (ссылка на класс), в значении необоходимо указывать код классификатора и код класса через спец. символ "|". При фильтрации по атрибуту, который имеет тип CLASSDIRECTORY_ITEM_IDIFIER_ID (ссылка на запись), в значении необоходимо указывать код справочника и код записи через спец. символ "|". '
+      description: 'Фильтр. Параметр фильтра должен состоять из кода условия, кода атрибута и значения. В параметре можно задать следующие условия (зависят от типа атрибута): GT - больше, GE - больше или равно, LT - меньше, LE - меньше или равно, EQ - равно (полное совпадение), NE - не равно, EQ_IGNORE_CASE - равно (полное совпадение без учёта регистра), STARTS_WITH - начинается с, ENDS_IN - оканчивается на, IN - список значений, LIKE - равно (частичное совпадение), NOT_LIKE - не равно (частичное совпадение), LIKE_IGNORE_CASE - равно (частичное совпадение без учёта регистра), NOT_LIKE_IGNORE_CASE - не равно (частичное совпадение без учёта регистра), FTS - полнотекстовый поиск, IS_NULL - отсутствие значения. При фильтрации по атрибуту, который имеет тип CLASSIFIER_ID (ссылка на класс), в значении необоходимо указывать код классификатора и код класса через спец. символ "|". При фильтрации по атрибуту, который имеет тип CLASSDIRECTORY_ITEM_IDIFIER_ID (ссылка на запись), в значении необоходимо указывать код справочника и код записи через спец. символ "|". '
     dataSet:
       name: dataSet
       in: query
@@ -2685,7 +2583,9 @@ components:
           - FULL
           - DEFAULT
           - SHORT
-      description: 'Требуемый набор данных - полный, дефолтный и краткий'
+        example: FULL
+        default: DEFAULT
+      description: 'Требуемый набор данных - `полный`, `по умолчанию` и `краткий`. `Полный` набор - запись плоского справочника или справочника с мастер данными, имеет все атрибуты. Набор `по умолчанию` - запись плоского справочника или справочника с мастер данными, где есть атрибуты только корневого класса классификатора. `Краткий` набор - запись плоского справочника или справочника с мастер данными, где нет атрибутов'
     includeAttributes:
       name: includeAttributes
       in: query
