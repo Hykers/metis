@@ -47,7 +47,7 @@ tags:
 paths:
   /v1/classifiers:
     get:
-      summary: Получение списка всех классификаторов
+      summary: Получение классификаторов
       tags:
         - classifiers
       responses:
@@ -179,7 +179,7 @@ paths:
         '500':
           description: Внутренняя ошибка сервера
       operationId: getClassifiers
-      description: Получение списка всех классификаторов
+      description: Постраничное получение классификаторов
       parameters:
         - $ref: '#/components/parameters/size'
         - $ref: '#/components/parameters/page'
@@ -195,7 +195,7 @@ paths:
         required: true
         description: Уникальный код классификатора в рамках системы
     get:
-      summary: Получение конкретного классификатора
+      summary: Получение классификатора
       responses:
         '200':
           description: Успех
@@ -221,43 +221,6 @@ paths:
       tags:
         - classifiers
       parameters: []
-  '/classifiers/{classifierCode}/class':
-    parameters:
-      - schema:
-          type: string
-        name: classifierCode
-        in: path
-        required: true
-        description: Уникальный в рамках Системы код классификатора
-    post:
-      summary: Создание класса
-      tags:
-        - classifiers
-      responses:
-        '200':
-          description: OK
-          headers: {}
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  content:
-                    $ref: '#/components/schemas/Classifier'
-                required:
-                  - content
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-        '422':
-          description: Unprocessable Entity (WebDAV)
-        '500':
-          description: Внутренняя ошибка сервера
-      operationId: post-classifiers-classifierCode-class
-      description: Создание класса
   '/v1/classifiers/{classifiersCode}/class/{classCode}':
     parameters:
       - schema:
@@ -277,15 +240,7 @@ paths:
       responses:
         '200':
           description: Успех
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  content:
-                    $ref: '#/components/schemas/Classifier'
-                required:
-                  - content
+          content: {}
         '401':
           $ref: '#/components/responses/401-unauthorized'
         '403':
@@ -299,47 +254,6 @@ paths:
       parameters: []
       tags:
         - class
-  '/v1/classifiers/{classifiersCode}/class/{classCode}/attributes':
-    parameters:
-      - schema:
-          type: string
-        name: classifiersCode
-        in: path
-        required: true
-        description: Уникальный код классификатора в рамках системы
-      - schema:
-          type: string
-        name: classCode
-        in: path
-        required: true
-        description: Уникальный код классификатора в рамках системы
-    get:
-      summary: Получение атрибутов класса
-      responses:
-        '200':
-          description: Успех
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  content:
-                    $ref: '#/components/schemas/Classifier'
-                required:
-                  - content
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-        '500':
-          description: Внутренняя ошибка сервера
-      operationId: getClassAttributes
-      description: Получение конкретного классификатора
-      tags:
-        - class
-      parameters: []
   '/v1/classifiers/{classifiersCode}/class/{classCode}/children':
     parameters:
       - schema:
@@ -365,7 +279,7 @@ paths:
                 type: object
                 properties:
                   content:
-                    $ref: '#/components/schemas/Classifier'
+                    $ref: '#/components/schemas/Class'
                 required:
                   - content
         '401':
@@ -406,7 +320,7 @@ paths:
                 type: object
                 properties:
                   content:
-                    $ref: '#/components/schemas/Classifier'
+                    $ref: '#/components/schemas/Class'
                 required:
                   - content
         '401':
@@ -1111,41 +1025,43 @@ components:
     Classifier:
       title: Классификатор
       type: object
+      description: Классификатор
+      examples: []
       properties:
         code:
           type: string
-          description: Код класса
+          description: Уникальный код классификатора в рамках системы
+          example: okpd2
         name:
           type: object
-          description: Наименование класса
+          description: Наименование классификатора
           properties:
             byDefault:
               type: string
               description: на русском языке
               minLength: 1
               maxLength: 500
-              example: Материально-технические ресурсы
               readOnly: true
             rus:
               type: string
               description: на русском языке
               minLength: 1
               maxLength: 500
-              example: Материально-технические ресурсы
+              example: ОКПД2
               readOnly: true
             eng:
               type: string
               description: на английском языке
               minLength: 1
               maxLength: 500
-              example: Material and technical resources
+              example: Pan-Russian product classification by economic activity
               readOnly: true
             tur:
               type: string
               description: на турецком языке
               minLength: 1
               maxLength: 500
-              example: Malzeme ve teknik kaynaklar
+              example: Ekonomik faaliyete göre Pan-Rus ürün sınıflandırması
               readOnly: true
             anotherLanguage:
               type: string
@@ -1155,25 +1071,116 @@ components:
               example: ___
               readOnly: true
           readOnly: true
-        sectionCode:
+        type:
           type: string
-          description: 'Раздел меню, где необходимо отображать классификатор (1-ый уровень).'
-          example: DATA_MODEL_MANAGEMENT
-          readOnly: true
-        visibility:
-          type: boolean
-          description: Признак видимости класса. Используется только для 1-ого уровня
-          readOnly: true
-        order:
-          type: integer
           format: int32
-          example: 1
-          description: Порядок отображения классификаторов на главной странице. Используется только для 1-ого уровня
+          x-stoplight:
+            id: b55asiek0msiy
+          enum:
+            - INTERNAL
+            - EXTERNAL
+            - LOCAL
+          default: LOCAL
+          description: |-
+            Тип классификатора:
+            1. LOCAL - ведется в НСИ
+            2. INTERNAL - ведется не в НСИ (внутриплатформы)
+            3. EXTERNAL - ведется не в НСИ (в интеренете)
+        validFrom:
+          type: string
+          x-stoplight:
+            id: ai5hston1qvlz
+          description: Дата и время начала действия
+          format: date-time
+          example: '2023-04-10 15:45:18.300693+00'
+          readOnly: true
+        validTo:
+          type: string
+          x-stoplight:
+            id: bp1vlx9orsc1r
+          description: Дата и время окончания действия
+          format: date-time
           readOnly: true
       required:
+        - code
         - name
-        - visibility
-      description: Классификатор
+        - validFrom
+    Class:
+      title: Класс
+      x-stoplight:
+        id: 9591vmq9mgvz8
+      type: object
+      description: Класс классификатора
+      examples: []
+      properties:
+        code:
+          type: string
+          description: Уникальный код класса в рамках классификатора
+          example: ee211860-4018-4b9b-8a12-42f6066ef01d
+        businessCode:
+          type: string
+          x-stoplight:
+            id: w9w9svk0am78c
+          description: Уникальный в рамках классификатора бизнесовый код класса
+          example: 50.10.12.000
+        name:
+          type: object
+          description: Наименование класса
+          properties:
+            byDefault:
+              type: string
+              description: на русском языке
+              minLength: 1
+              maxLength: 500
+              readOnly: true
+            rus:
+              type: string
+              description: на русском языке
+              minLength: 1
+              maxLength: 500
+              example: Услуги по заграничным и каботажным перевозкам пассажиров круизными судами
+              readOnly: true
+            eng:
+              type: string
+              description: на английском языке
+              minLength: 1
+              maxLength: 500
+              example: Overseas and coastal cruise passenger services
+              readOnly: true
+            tur:
+              type: string
+              description: на турецком языке
+              minLength: 1
+              maxLength: 500
+              example: Denizaşırı ve kıyı yolcu hizmetleri
+              readOnly: true
+            anotherLanguage:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на любом другом языке
+              example: ___
+              readOnly: true
+          readOnly: true
+        validFrom:
+          type: string
+          x-stoplight:
+            id: ai5hston1qvlz
+          description: Дата и время начала действия
+          format: date-time
+          example: '2023-04-10 15:45:18.300693+00'
+          readOnly: true
+        validTo:
+          type: string
+          x-stoplight:
+            id: bp1vlx9orsc1r
+          description: Дата и время окончания действия
+          format: date-time
+          readOnly: true
+      required:
+        - code
+        - name
+        - validFrom
     Directory:
       type: object
       title: Справочник
