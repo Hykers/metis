@@ -1346,11 +1346,8 @@ components:
         - validFrom
     Class:
       title: Класс
-      x-stoplight:
-        id: 9591vmq9mgvz8
       type: object
       description: Класс классификатора
-      examples: []
       properties:
         code:
           type: string
@@ -1358,8 +1355,6 @@ components:
           example: ee211860-4018-4b9b-8a12-42f6066ef01d
         businessCode:
           type: string
-          x-stoplight:
-            id: w9w9svk0am78c
           description: Уникальный в рамках классификатора бизнесовый код класса
           example: 50.10.12.000
         name:
@@ -1403,16 +1398,12 @@ components:
           readOnly: true
         validFrom:
           type: string
-          x-stoplight:
-            id: ai5hston1qvlz
           description: Дата и время начала действия
           format: date-time
           example: '2023-04-10 15:45:18.300693+00'
           readOnly: true
         validTo:
           type: string
-          x-stoplight:
-            id: bp1vlx9orsc1r
           description: Дата и время окончания действия
           format: date-time
           readOnly: true
@@ -1421,74 +1412,79 @@ components:
         - name
         - validFrom
     treeNode:
-      title: Класс
-      type: object
-      description: Класс классификатора
-      properties:
-        code:
-          type: string
-          description: Уникальный код класса в рамках классификатора
-          example: ee211860-4018-4b9b-8a12-42f6066ef01d
-        businessCode:
-          type: string
-          description: Уникальный в рамках классификатора бизнесовый код класса
-          example: 50.10.12.000
-        name:
-          type: object
-          description: Наименование класса
+      oneOf:
+        - $ref: '#/components/schemas/Class'
+        - type: object
+          description: Класс классификатора
           properties:
-            byDefault:
+            code:
               type: string
-              description: на русском языке
-              minLength: 1
-              maxLength: 500
-              readOnly: true
-            rus:
+              description: Уникальный код класса в рамках классификатора
+              example: ee211860-4018-4b9b-8a12-42f6066ef01d
+            businessCode:
               type: string
-              description: на русском языке
-              minLength: 1
-              maxLength: 500
-              example: Услуги по заграничным и каботажным перевозкам пассажиров круизными судами
+              description: Уникальный в рамках классификатора бизнесовый код класса
+              example: 50.10.12.000
+            parentCode:
+              $ref: '#/components/schemas/treeNode'
+              description: Класс-родитель
+            name:
+              type: object
+              description: Наименование класса
+              properties:
+                byDefault:
+                  type: string
+                  description: на русском языке
+                  minLength: 1
+                  maxLength: 500
+                  readOnly: true
+                rus:
+                  type: string
+                  description: на русском языке
+                  minLength: 1
+                  maxLength: 500
+                  example: Услуги по заграничным и каботажным перевозкам пассажиров круизными судами
+                  readOnly: true
+                eng:
+                  type: string
+                  description: на английском языке
+                  minLength: 1
+                  maxLength: 500
+                  example: Overseas and coastal cruise passenger services
+                  readOnly: true
+                tur:
+                  type: string
+                  description: на турецком языке
+                  minLength: 1
+                  maxLength: 500
+                  example: Denizaşırı ve kıyı yolcu hizmetleri
+                  readOnly: true
+                anotherLanguage:
+                  type: string
+                  minLength: 1
+                  maxLength: 500
+                  description: на любом другом языке
+                  example: ___
+                  readOnly: true
               readOnly: true
-            eng:
+            validFrom:
               type: string
-              description: на английском языке
-              minLength: 1
-              maxLength: 500
-              example: Overseas and coastal cruise passenger services
+              description: Дата и время начала действия
+              format: date-time
+              example: '2023-04-10 15:45:18.300693+00'
               readOnly: true
-            tur:
+            validTo:
               type: string
-              description: на турецком языке
-              minLength: 1
-              maxLength: 500
-              example: Denizaşırı ve kıyı yolcu hizmetleri
+              description: Дата и время окончания действия
+              format: date-time
               readOnly: true
-            anotherLanguage:
-              type: string
-              minLength: 1
-              maxLength: 500
-              description: на любом другом языке
-              example: ___
-              readOnly: true
-          readOnly: true
-        validFrom:
-          type: string
-          description: Дата и время начала действия
-          format: date-time
-          example: '2023-04-10 15:45:18.300693+00'
-          readOnly: true
-        validTo:
-          type: string
-          x-stoplight:
-            id: bp1vlx9orsc1r
-          description: Дата и время окончания действия
-          format: date-time
-          readOnly: true
-      required:
-        - code
-        - name
-        - validFrom
+          required:
+            - code
+            - parentCode
+            - name
+            - validFrom
+      title: Древовидный узел класса
+      description: Один из объектов (в зависимости от наличия родителя)
     Directory:
       type: object
       title: Справочник
