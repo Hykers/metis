@@ -208,6 +208,7 @@ paths:
                     $ref: '#/components/schemas/Classifier'
                 required:
                   - content
+              examples: {}
         '401':
           $ref: '#/components/responses/401-unauthorized'
         '403':
@@ -221,7 +222,139 @@ paths:
       tags:
         - classifiers
       parameters: []
-  '/v1/classifiers/{classifiersCode}/class/{classCode}':
+  '/v1/classifiers/{classifiersCode}/classes':
+    parameters:
+      - schema:
+          type: string
+        name: classifiersCode
+        in: path
+        required: true
+        description: Уникальный код классификатора в рамках системы
+    get:
+      summary: Получение классов классификатора
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Class'
+                  pageable:
+                    type: object
+                    description: Параметры пагинации данных
+                    properties:
+                      sort:
+                        type: object
+                        description: Параметры сортировки
+                        properties:
+                          sorted:
+                            type: boolean
+                            description: Признак наличия сортировки заданной пользователем
+                          unsorted:
+                            type: boolean
+                            description: Признак отсутствия сортировки заданной пользователем
+                          empty:
+                            type: boolean
+                            description: Признак наличия сортировки
+                      pageSize:
+                        type: integer
+                        description: Количество элементов на странице
+                        format: int32
+                        example: 17
+                      pageNumber:
+                        type: integer
+                        description: Номер отображаемой страницы
+                        format: int32
+                        example: 1
+                      offset:
+                        type: integer
+                        description: Смещение по отношению к первой странице с учётом её размера
+                        format: int32
+                        example: 20
+                      paged:
+                        type: boolean
+                        description: Признак постраничного отображения данных
+                      unpaged:
+                        type: boolean
+                        description: Признак отсутствия постраничного отображения данных
+                  totalPages:
+                    type: integer
+                    description: Общее количество страниц
+                    format: int32
+                    example: 1
+                  totalElements:
+                    type: integer
+                    description: Общее количество элеметов
+                    format: int32
+                    example: 15
+                  first:
+                    type: boolean
+                    description: Признак первой страницы
+                  last:
+                    type: boolean
+                    description: Признак последней страницы
+                  sort:
+                    type: object
+                    description: Параметры сортировки
+                    properties:
+                      sorted:
+                        type: boolean
+                        description: Признак наличия сортировки заданной пользователем
+                      unsorted:
+                        type: boolean
+                        description: Признак отсутствия сортировки заданной пользователей
+                      empty:
+                        type: boolean
+                        description: Признак наличия сортировки
+                  numberofElements:
+                    type: integer
+                    description: Количество элементов на странице- фактическое
+                    format: int32
+                    example: 17
+                  size:
+                    type: integer
+                    description: |
+                      Количество элементов на странице
+                    format: int32
+                    example: 20
+                  number:
+                    type: integer
+                    description: Номер страницы
+                    example: 1
+                    format: int32
+                  empty:
+                    type: boolean
+                    description: Признак наличия content
+                required:
+                  - content
+                  - pageable
+                  - totalPages
+                  - totalElements
+                  - first
+                  - last
+                  - sort
+                  - numberofElements
+                  - size
+                  - number
+                  - empty
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '500':
+          description: Внутренняя ошибка сервера
+      operationId: getClasses
+      description: Постраничное получение классов 1-ого уровня конкретного классификатора
+      tags:
+        - classifiers
+      parameters: []
+  '/v1/classifiers/{classifiersCode}/classes/{classCode}':
     parameters:
       - schema:
           type: string
@@ -240,7 +373,16 @@ paths:
       responses:
         '200':
           description: Успех
-          content: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    $ref: '#/components/schemas/Class'
+                    x-stoplight:
+                      id: iyhzx5zy7nm3r
+              examples: {}
         '401':
           $ref: '#/components/responses/401-unauthorized'
         '403':
@@ -250,11 +392,11 @@ paths:
         '500':
           description: Внутренняя ошибка сервера
       operationId: getClass
-      description: Получение конкретного класса
+      description: Получение конкретного класса конкретного классификатора
       parameters: []
       tags:
         - class
-  '/v1/classifiers/{classifiersCode}/class/{classCode}/children':
+  '/v1/classifiers/{classifiersCode}/classes/{classCode}/children':
     parameters:
       - schema:
           type: string
@@ -279,23 +421,120 @@ paths:
                 type: object
                 properties:
                   content:
-                    $ref: '#/components/schemas/Class'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Class'
+                  pageable:
+                    type: object
+                    description: Параметры пагинации данных
+                    properties:
+                      sort:
+                        type: object
+                        description: Параметры сортировки
+                        properties:
+                          sorted:
+                            type: boolean
+                            description: Признак наличия сортировки заданной пользователем
+                          unsorted:
+                            type: boolean
+                            description: Признак отсутствия сортировки заданной пользователем
+                          empty:
+                            type: boolean
+                            description: Признак наличия сортировки
+                      pageSize:
+                        type: integer
+                        description: Количество элементов на странице
+                        format: int32
+                        example: 17
+                      pageNumber:
+                        type: integer
+                        description: Номер отображаемой страницы
+                        format: int32
+                        example: 1
+                      offset:
+                        type: integer
+                        description: Смещение по отношению к первой странице с учётом её размера
+                        format: int32
+                        example: 20
+                      paged:
+                        type: boolean
+                        description: Признак постраничного отображения данных
+                      unpaged:
+                        type: boolean
+                        description: Признак отсутствия постраничного отображения данных
+                  totalPages:
+                    type: integer
+                    description: Общее количество страниц
+                    format: int32
+                    example: 1
+                  totalElements:
+                    type: integer
+                    description: Общее количество элеметов
+                    format: int32
+                    example: 15
+                  first:
+                    type: boolean
+                    description: Признак первой страницы
+                  last:
+                    type: boolean
+                    description: Признак последней страницы
+                  sort:
+                    type: object
+                    description: Параметры сортировки
+                    properties:
+                      sorted:
+                        type: boolean
+                        description: Признак наличия сортировки заданной пользователем
+                      unsorted:
+                        type: boolean
+                        description: Признак отсутствия сортировки заданной пользователей
+                      empty:
+                        type: boolean
+                        description: Признак наличия сортировки
+                  numberofElements:
+                    type: integer
+                    description: Количество элементов на странице- фактическое
+                    format: int32
+                    example: 17
+                  size:
+                    type: integer
+                    description: |
+                      Количество элементов на странице
+                    format: int32
+                    example: 20
+                  number:
+                    type: integer
+                    description: Номер страницы
+                    example: 1
+                    format: int32
+                  empty:
+                    type: boolean
+                    description: Признак наличия content
                 required:
                   - content
+                  - pageable
+                  - totalPages
+                  - totalElements
+                  - first
+                  - last
+                  - sort
+                  - numberofElements
+                  - size
+                  - number
+                  - empty
+              examples: {}
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/401-unauthorized'
         '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+          $ref: '#/components/responses/403-forbidden'
         '500':
           description: Внутренняя ошибка сервера
       operationId: getClassChildren
-      description: Получение конкретного классификатора
+      description: 'Постраничное получение классов конкретного классификатора, являющихся прямыми потомками (шаг в один уровень)'
       tags:
         - class
       parameters: []
-  '/v1/classifiers/{classifiersCode}/class/{classCode}/parents':
+  '/v1/classifiers/{classifiersCode}/classes/{classCode}/parents':
     parameters:
       - schema:
           type: string
@@ -320,19 +559,18 @@ paths:
                 type: object
                 properties:
                   content:
-                    $ref: '#/components/schemas/Class'
+                    $ref: '#/components/schemas/treeNode'
                 required:
                   - content
+              examples: {}
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/401-unauthorized'
         '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+          $ref: '#/components/responses/403-forbidden'
         '500':
           description: Внутренняя ошибка сервера
       operationId: getClassParents
-      description: Получение конкретного классификатора
+      description: 'Постраничное получение классов конкретного классификатора, являющихся родителями (вся иерархия)'
       parameters: []
       tags:
         - class
@@ -541,7 +779,7 @@ paths:
         '500':
           description: Внутренняя ошибка сервера
       operationId: getItems
-      description: Постраничное получение записей справочника
+      description: Постраничное получение записей конкретного справочника
       parameters:
         - $ref: '#/components/parameters/size'
         - $ref: '#/components/parameters/page'
@@ -639,7 +877,7 @@ paths:
         '500':
           description: Внутренняя ошибка сервера
       operationId: getItem
-      description: Получение конкретной записи справочника
+      description: Получение конкретной записи конкретного справочника
       parameters:
         - $ref: '#/components/parameters/dataSet'
         - $ref: '#/components/parameters/includeAttributes'
@@ -1104,6 +1342,7 @@ components:
       required:
         - code
         - name
+        - type
         - validFrom
     Class:
       title: Класс
@@ -1166,6 +1405,75 @@ components:
           type: string
           x-stoplight:
             id: ai5hston1qvlz
+          description: Дата и время начала действия
+          format: date-time
+          example: '2023-04-10 15:45:18.300693+00'
+          readOnly: true
+        validTo:
+          type: string
+          x-stoplight:
+            id: bp1vlx9orsc1r
+          description: Дата и время окончания действия
+          format: date-time
+          readOnly: true
+      required:
+        - code
+        - name
+        - validFrom
+    treeNode:
+      title: Класс
+      type: object
+      description: Класс классификатора
+      properties:
+        code:
+          type: string
+          description: Уникальный код класса в рамках классификатора
+          example: ee211860-4018-4b9b-8a12-42f6066ef01d
+        businessCode:
+          type: string
+          description: Уникальный в рамках классификатора бизнесовый код класса
+          example: 50.10.12.000
+        name:
+          type: object
+          description: Наименование класса
+          properties:
+            byDefault:
+              type: string
+              description: на русском языке
+              minLength: 1
+              maxLength: 500
+              readOnly: true
+            rus:
+              type: string
+              description: на русском языке
+              minLength: 1
+              maxLength: 500
+              example: Услуги по заграничным и каботажным перевозкам пассажиров круизными судами
+              readOnly: true
+            eng:
+              type: string
+              description: на английском языке
+              minLength: 1
+              maxLength: 500
+              example: Overseas and coastal cruise passenger services
+              readOnly: true
+            tur:
+              type: string
+              description: на турецком языке
+              minLength: 1
+              maxLength: 500
+              example: Denizaşırı ve kıyı yolcu hizmetleri
+              readOnly: true
+            anotherLanguage:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на любом другом языке
+              example: ___
+              readOnly: true
+          readOnly: true
+        validFrom:
+          type: string
           description: Дата и время начала действия
           format: date-time
           example: '2023-04-10 15:45:18.300693+00'
