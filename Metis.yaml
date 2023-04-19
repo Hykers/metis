@@ -188,12 +188,7 @@ paths:
     parameters: []
   '/v1/classifiers/{classifiersCode}':
     parameters:
-      - schema:
-          type: string
-        name: classifiersCode
-        in: path
-        required: true
-        description: Уникальный код классификатора в рамках системы
+      - $ref: '#/components/parameters/classifiersCode'
     get:
       summary: Получение классификатора
       responses:
@@ -224,12 +219,7 @@ paths:
       parameters: []
   '/v1/classifiers/{classifiersCode}/classes':
     parameters:
-      - schema:
-          type: string
-        name: classifiersCode
-        in: path
-        required: true
-        description: Уникальный код классификатора в рамках системы
+      - $ref: '#/components/parameters/classifiersCode'
     get:
       summary: Получение классов классификатора
       responses:
@@ -350,24 +340,14 @@ paths:
         '500':
           description: Внутренняя ошибка сервера
       operationId: getClasses
-      description: Постраничное получение классов 1-ого уровня конкретного классификатора
+      description: Постраничное получение классов первого уровня конкретного классификатора
       tags:
         - classifiers
       parameters: []
   '/v1/classifiers/{classifiersCode}/classes/{classCode}':
     parameters:
-      - schema:
-          type: string
-        name: classCode
-        in: path
-        required: true
-        description: Уникальный код класса в рамках системы
-      - schema:
-          type: string
-        name: classifiersCode
-        in: path
-        required: true
-        description: Уникальный код классификатора в рамках системы
+      - $ref: '#/components/parameters/classifiersCode'
+      - $ref: '#/components/parameters/classCode'
     get:
       summary: Получение класса классификатора
       responses:
@@ -398,18 +378,8 @@ paths:
         - class
   '/v1/classifiers/{classifiersCode}/classes/{classCode}/children':
     parameters:
-      - schema:
-          type: string
-        name: classifiersCode
-        in: path
-        required: true
-        description: Уникальный код классификатора в рамках системы
-      - schema:
-          type: string
-        name: classCode
-        in: path
-        required: true
-        description: Уникальный код классификатора в рамках системы
+      - $ref: '#/components/parameters/classifiersCode'
+      - $ref: '#/components/parameters/classCode'
     get:
       summary: Получение детей класса
       responses:
@@ -536,18 +506,8 @@ paths:
       parameters: []
   '/v1/classifiers/{classifiersCode}/classes/{classCode}/parents':
     parameters:
-      - schema:
-          type: string
-        name: classifiersCode
-        in: path
-        required: true
-        description: Уникальный код классификатора в рамках системы
-      - schema:
-          type: string
-        name: classCode
-        in: path
-        required: true
-        description: Уникальный код классификатора в рамках системы
+      - $ref: '#/components/parameters/classifiersCode'
+      - $ref: '#/components/parameters/classCode'
     get:
       summary: Получение родителей класса
       responses:
@@ -2926,6 +2886,22 @@ components:
         default: false
         example: false
       description: Требуемый признак включения атрибутов
+    classifiersCode:
+      name: classifiersCode
+      in: path
+      required: true
+      schema:
+        type: string
+        example: okpd2
+      description: Уникальный код классификатора в рамках системы
+    classCode:
+      name: classCode
+      in: path
+      required: true
+      schema:
+        type: string
+        example: ee211860-4018-4b9b-8a12-42f6066ef01d
+      description: Уникальный код классификатора в рамках системы
   responses:
     403-forbidden:
       description: Учетной записи недостаточно прав
