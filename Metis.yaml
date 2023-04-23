@@ -519,10 +519,10 @@ paths:
                 type: object
                 properties:
                   content:
-                    $ref: '#/components/schemas/treeNode'
-                required:
-                  - content
-              examples: {}
+                    oneOf:
+                      - $ref: '#/components/schemas/UpClassesHierarchy'
+                      - $ref: '#/components/schemas/DownClassesHierarchy'
+                    description: Один из объектов (в зависимости от значения direction)
         '401':
           $ref: '#/components/responses/401-unauthorized'
         '403':
@@ -530,8 +530,9 @@ paths:
         '500':
           description: Внутренняя ошибка сервера
       operationId: getClassParents
-      description: 'Древовидное получение классов конкретного классификатора, являющихся предками (от прямого предка до корня)'
-      parameters: []
+      description: 'Древовидное получение классов конкретного классификатора, являющихся предками (от прямого предка до корня или от корня до прямого предка)'
+      parameters:
+        - $ref: '#/components/parameters/direction'
       tags:
         - class
   /v1/directories:
@@ -1371,7 +1372,7 @@ components:
         - code
         - name
         - validFrom
-    treeNode:
+    UpClassesHierarchy:
       oneOf:
         - $ref: '#/components/schemas/Class'
           description: Класс классификатора без предка
@@ -1387,7 +1388,7 @@ components:
               description: Уникальный в рамках классификатора бизнесовый код класса
               example: 50.10.12.000
             parentCode:
-              $ref: '#/components/schemas/treeNode'
+              $ref: '#/components/schemas/UpClassesHierarchy'
               description: Класс-предок
             name:
               type: object
@@ -1444,8 +1445,89 @@ components:
             - parentCode
             - name
             - validFrom
-      title: Древовидный узел класса
-      description: Один из объектов (в зависимости от наличия предка)
+      x-stoplight:
+        id: babebc78663d6
+      title: Иерархия классов "вверх"
+      description: Иерархия классов от прямого предка до корня
+    DownClassesHierarchy:
+      oneOf:
+        - $ref: '#/components/schemas/Class'
+          description: Класс классификатора без предка
+        - type: object
+          description: Класс классификатора с предком
+          properties:
+            code:
+              type: string
+              description: Уникальный код класса в рамках классификатора
+              example: ee211860-4018-4b9b-8a12-42f6066ef01d
+            businessCode:
+              type: string
+              description: Уникальный в рамках классификатора бизнесовый код класса
+              example: 50.10.12.000
+            childCode:
+              $ref: '#/components/schemas/DownClassesHierarchy'
+              description: Класс-предок
+              x-stoplight:
+                id: nirm1sz3g6sk1
+            name:
+              type: object
+              description: Наименование класса
+              properties:
+                byDefault:
+                  type: string
+                  description: на русском языке
+                  minLength: 1
+                  maxLength: 500
+                  readOnly: true
+                rus:
+                  type: string
+                  description: на русском языке
+                  minLength: 1
+                  maxLength: 500
+                  example: Услуги по заграничным и каботажным перевозкам пассажиров круизными судами
+                  readOnly: true
+                eng:
+                  type: string
+                  description: на английском языке
+                  minLength: 1
+                  maxLength: 500
+                  example: Overseas and coastal cruise passenger services
+                  readOnly: true
+                tur:
+                  type: string
+                  description: на турецком языке
+                  minLength: 1
+                  maxLength: 500
+                  example: Denizaşırı ve kıyı yolcu hizmetleri
+                  readOnly: true
+                anotherLanguage:
+                  type: string
+                  minLength: 1
+                  maxLength: 500
+                  description: на любом другом языке
+                  example: ___
+                  readOnly: true
+              readOnly: true
+            validFrom:
+              type: string
+              description: Дата и время начала действия
+              format: date-time
+              example: '2023-04-10 15:45:18.300693+00'
+              readOnly: true
+            validTo:
+              type: string
+              description: Дата и время окончания действия
+              format: date-time
+              readOnly: true
+          required:
+            - code
+            - childCode
+            - name
+            - validFrom
+      x-stoplight:
+        id: nuyu2o83l668t
+      title: Иерархия классов "вниз"
+      description: Иерархия классов от корня до прямого предка
     Directory:
       type: object
       title: Справочник
@@ -2903,6 +2985,17 @@ components:
         type: string
         example: ee211860-4018-4b9b-8a12-42f6066ef01d
       description: Уникальный код классификатора в рамках системы
+    direction:
+      name: direction
+      in: query
+      required: true
+      schema:
+        type: string
+        enum:
+          - Up
+          - Down
+        default: Up
+      description: 'Направление ветви иерархии:  Up - от прямого предка к корню, Down - от корня к прямому предку'
   responses:
     403-forbidden:
       description: Учетной записи недостаточно прав
