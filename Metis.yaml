@@ -411,7 +411,7 @@ paths:
         required: true
         description: Уникальный код классификатора в рамках системы
     get:
-      summary: Получение детей класса
+      summary: Получение потомков класса
       responses:
         '200':
           description: Успех
@@ -549,7 +549,7 @@ paths:
         required: true
         description: Уникальный код классификатора в рамках системы
     get:
-      summary: Получение родителей класса
+      summary: Получение предков класса
       responses:
         '200':
           description: Успех
@@ -570,7 +570,7 @@ paths:
         '500':
           description: Внутренняя ошибка сервера
       operationId: getClassParents
-      description: 'Постраничное получение классов конкретного классификатора, являющихся родителями (вся иерархия)'
+      description: 'Древовидное получение классов конкретного классификатора, являющихся предками (от прямого предка до корня)'
       parameters: []
       tags:
         - class
@@ -1414,8 +1414,9 @@ components:
     treeNode:
       oneOf:
         - $ref: '#/components/schemas/Class'
+          description: Класс классификатора без предка
         - type: object
-          description: Класс классификатора
+          description: Класс классификатора с предком
           properties:
             code:
               type: string
@@ -1427,7 +1428,7 @@ components:
               example: 50.10.12.000
             parentCode:
               $ref: '#/components/schemas/treeNode'
-              description: Класс-родитель
+              description: Класс-предок
             name:
               type: object
               description: Наименование класса
@@ -1484,7 +1485,7 @@ components:
             - name
             - validFrom
       title: Древовидный узел класса
-      description: Один из объектов (в зависимости от наличия родителя)
+      description: Один из объектов (в зависимости от наличия предка)
     Directory:
       type: object
       title: Справочник
