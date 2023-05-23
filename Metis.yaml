@@ -176,6 +176,8 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
+        '414':
+          $ref: '#/components/responses/414-uri-long'
         '500':
           description: Внутренняя ошибка сервера
       operationId: getClassifiers
@@ -663,6 +665,8 @@ paths:
           $ref: '#/components/responses/403-forbidden'
         '404':
           description: Not Found
+        '414':
+          $ref: '#/components/responses/414-uri-long'
         '500':
           description: Внутренняя ошибка сервера
     parameters: []
@@ -737,6 +741,8 @@ paths:
           $ref: '#/components/responses/403-forbidden'
         '404':
           description: Объект не найден
+        '414':
+          $ref: '#/components/responses/414-uri-long'
         '500':
           description: Внутренняя ошибка сервера
       operationId: getItems
@@ -789,6 +795,7 @@ paths:
               oneOf:
                 - $ref: '#/components/schemas/ItemWithAttributes'
                 - $ref: '#/components/schemas/ItemWithoutAttributes'
+            examples: {}
   '/v1/directories/{directoryCode}/items/{itemCode}':
     parameters:
       - schema:
@@ -971,6 +978,8 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
+        '414':
+          $ref: '#/components/responses/414-uri-long'
         '500':
           description: Внутренняя ошибка сервера
     post:
@@ -1175,6 +1184,8 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
+        '414':
+          $ref: '#/components/responses/414-uri-long'
         '500':
           description: Внутренняя ошибка сервера
   '/v1/attributes/{attributesCode}':
@@ -3009,5 +3020,13 @@ components:
         application/json:
           schema:
             type: object
+    414-uri-long:
+      description: 'Слишком длинный URI. Если используется GET с Query параметром Filter, где много условий - необходимо использовать POST '
+      content:
+        application/json:
+          schema:
+            properties:
+              id:
+                type: string
 security:
   - Authorization: []
