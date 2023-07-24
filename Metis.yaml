@@ -403,20 +403,20 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/ItemWithoutAttributesCollection'
-                  - $ref: '#/components/schemas/ItemWithAttributesCollection'
+                  - $ref: '#/components/schemas/ItemWithoutAttributesCollectionV1'
+                  - $ref: '#/components/schemas/ItemWithAttributesCollectionV1'
               examples: {}
         '401':
           $ref: '#/components/responses/401-unauthorized'
         '403':
           $ref: '#/components/responses/403-forbidden'
         '404':
-          description: Объект не найден
+          $ref: '#/components/responses/404-not-found'
         '414':
           $ref: '#/components/responses/414-uri-long'
         '500':
-          description: Внутренняя ошибка сервера
-      operationId: getItems
+          $ref: '#/components/responses/500-server-error'
+      operationId: getItemsV1
       description: |
         **Постраничное получение актуальных версий записей или классов**
 
@@ -471,7 +471,7 @@ paths:
       - $ref: '#/components/parameters/directoryCode'
       - $ref: '#/components/parameters/itemCode'
     get:
-      summary: Получение элемента объекта НСИ
+      summary: Получение элемента
       tags:
         - items
         - v1
@@ -482,8 +482,8 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: '#/components/schemas/ItemWithoutAttributes'
-                  - $ref: '#/components/schemas/ItemWithAttributes'
+                  - $ref: '#/components/schemas/ItemWithoutAttributesV1'
+                  - $ref: '#/components/schemas/ItemWithAttributesV1'
                 description: Один из объектов (в зависимости от значения includeAttributes)
               examples: {}
         '401':
@@ -491,20 +491,11 @@ paths:
         '403':
           $ref: '#/components/responses/403-forbidden'
         '404':
-          description: Объект не найден
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                  argument:
-                    type: string
+          $ref: '#/components/responses/404-not-found'
         '500':
-          description: Внутренняя ошибка сервера
-      operationId: getItem
-      description: Получение конкретной записи или класса
+          $ref: '#/components/responses/500-server-error'
+      operationId: getItemV1
+      description: Получение актуальной версии конкретной записи или класса
       parameters:
         - $ref: '#/components/parameters/dataSet'
         - $ref: '#/components/parameters/includeAttributes'
@@ -523,8 +514,8 @@ paths:
 
         Особенности фильтрации
 
-        1. Фильтр может использовать один параметр или несколько. Для фильтрации по нескольким параметрам необходимо несколько раз указать Query Parameter `filter`, соединив их символом `&`.
-        2. Синтаксис значения Query Parameter `filter` следующий `operator,property,value`
+        1. Фильтр может использовать один параметр или несколько. Для фильтрации по нескольким параметрам необходимо несколько раз указать Query Parameter `filterObject`, соединив их символом `&`.
+        2. Синтаксис значения Query Parameter `filterObject` следующий `operator,property,value`
         3. Оператором могут быть следующие значения:
            * `GT` - больше;
            * `GE` - больше или равно;
@@ -1018,6 +1009,485 @@ paths:
       description: Получение конкретной версии справочника или классификатора
       x-stoplight:
         id: rulsl1nqiybiz
+  '/v2/directories/{directoryCode}/items':
+    parameters:
+      - $ref: '#/components/parameters/directoryCode'
+    get:
+      summary: Получение элементов
+      tags:
+        - items
+        - v2
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ItemWithoutAttributesCollectionV2'
+                  - $ref: '#/components/schemas/ItemWithAttributesCollectionV2'
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+        '414':
+          $ref: '#/components/responses/414-uri-long'
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      operationId: getItemsV2
+      description: |
+        **Постраничное получение актуальных версий записей или классов**
+
+        При иерархическом объекте НСИ получение только 1-ого уровня иерархии записей или классов
+
+
+        Особенности фильтрации
+
+        1. Фильтр может использовать один параметр или несколько. Для фильтрации по нескольким параметрам необходимо несколько раз указать Query Parameter `filter`, соединив их символом `&`.
+        2. Синтаксис значения Query Parameter `filter` следующий `operator,property,value`
+        3. Оператором могут быть следующие значения:
+           * `GT` - больше;
+           * `GE` - больше или равно;
+           * `LT` - меньше;
+           * `LE` - меньше или равно;
+           * `EQ` - равно (полное совпадение);
+           * `NE` - не равно;
+           * `EQ_IGNORE_CASE` - равно (полное совпадение без учёта регистра);
+           * `STARTS_WITH` - начинается с;
+           * `ENDS_IN` - оканчивается на;
+           * `IN` - список значений (полное совпадение со всеми);
+           * `LIKE` - равно (частичное совпадение);
+           * `NOT_LIKE` - не равно (частичное совпадение);
+           * `LIKE_IGNORE_CASE` - равно (частичное совпадение без учёта регистра);
+           * `NOT_LIKE_IGNORE_CASE` - не равно (частичное совпадение без учёта регистра);
+           * `FTS` - полнотекстовый поиск;
+           * `IS_NULL` - отсутствие значения.
+        4. Свойством могут быть следующие значения:
+           * `name.<language>` - указание, что фильтрация по наименованию элемента
+           * `code` - указание, что фильтрация по коду элемента
+           * `attributeValueCode.<attributeCode>.<language>` - указание, что фильтрация по значению атрибута
+        5. `<language>` необходимо указывать для значений, являющихся текстом. `<language>` может принимать следующие значения: `rus`, `eng`, `tur`, `byDefault`
+        6. Значением могут быть следующие значения:
+           * Зарезервированные в URL символы: "! * ' ( ) ; : @ & = + $ , / ? % # [ ]"
+           * Не зарезервированные в URL символы: "[A-Z] [a-z] [0-9] - _ . ~"
+           * Иные символы в формате URL encoding
+           * JSON объект в формате URL encoding, когда атрибут имеет тип ссылка: `{"code": "name", "directoryCode": "name"}`
+
+        Примеры
+
+        * filter=EQ,attributeValueCode.positions,{"code": "CHIEF_STATE_ENGINEER-INSPECTOR", "directoryCode": "positions"}
+        * filter=EQ,attributeValueCode.inspection.rus,87
+        * filter=EQ,name.rus,Руководитель службы
+        * filter=EQ,code,CHIEF_STATE_ENGINEER-INSPECTOR_87
+      parameters:
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/filterV1'
+        - $ref: '#/components/parameters/dataSet'
+        - $ref: '#/components/parameters/includeAttributes'
+  '/v2/directories/{directoryCode}/items/{itemCode}':
+    parameters:
+      - $ref: '#/components/parameters/directoryCode'
+      - $ref: '#/components/parameters/itemCode'
+    get:
+      summary: Получение элемента
+      tags:
+        - items
+        - v2
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ItemWithoutAttributesV2'
+                  - $ref: '#/components/schemas/ItemWithAttributesV2'
+                description: Один из объектов (в зависимости от значения includeAttributes)
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      operationId: getItemV2
+      description: Получение актуальной версии конкретной записи или класса
+      parameters:
+        - $ref: '#/components/parameters/dataSet'
+        - $ref: '#/components/parameters/includeAttributes'
+        - $ref: '#/components/parameters/validAt'
+      x-stoplight:
+        id: 1uj5x51inuvla
+  '/v2/directories/{directoryCode}/items/{itemCode}/versions':
+    parameters:
+      - $ref: '#/components/parameters/directoryCode'
+      - $ref: '#/components/parameters/itemCode'
+    get:
+      summary: Получение версий элемента
+      tags:
+        - items
+        - v2
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ItemWithoutAttributesCollectionV2'
+                  - $ref: '#/components/schemas/ItemWithAttributesCollectionV2'
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      operationId: getItemVersionsV2
+      description: Постраничное получение всех версий записи или класса
+      parameters:
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/dataSet'
+        - $ref: '#/components/parameters/includeAttributes'
+  '/v2/directories/{directoryCode}/items/{itemCode}/parents':
+    parameters:
+      - $ref: '#/components/parameters/directoryCode'
+      - $ref: '#/components/parameters/itemCode'
+    get:
+      summary: Получение элементов-предков
+      tags:
+        - items
+        - v2
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ItemWithoutAttributesCollectionV2'
+                  - $ref: '#/components/schemas/ItemWithAttributesCollectionV2'
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      operationId: getItemParentsV2
+      description: Постраничное получение актуальных версий записей или классов предков
+      parameters:
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/dataSet'
+        - $ref: '#/components/parameters/includeAttributes'
+  '/v2/directories/{directoryCode}/items/{itemCode}/children':
+    parameters:
+      - $ref: '#/components/parameters/directoryCode'
+      - $ref: '#/components/parameters/itemCode'
+    get:
+      summary: Получение элементов-детей
+      tags:
+        - items
+        - v2
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ItemWithoutAttributesCollectionV2'
+                  - $ref: '#/components/schemas/ItemWithAttributesCollectionV2'
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      operationId: getItemChildrenV2
+      description: Постраничное получение актуальных версий записей или классов детей с шагом в один уровень иерархии
+      parameters:
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/dataSet'
+        - $ref: '#/components/parameters/includeAttributes'
+  '/v2/directories/{directoryCode}/items/{itemCode}/versions/{versionUuid}':
+    parameters:
+      - $ref: '#/components/parameters/directoryCode'
+      - $ref: '#/components/parameters/itemCode'
+      - $ref: '#/components/parameters/versionUuid'
+    get:
+      summary: Получение версии элемента
+      tags:
+        - items
+        - v2
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ItemWithoutAttributesV2'
+                  - $ref: '#/components/schemas/ItemWithAttributesV2'
+                description: Один из объектов (в зависимости от значения includeAttributes)
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      operationId: getItemVersionV2
+      description: Получение конкретной версии записи или класса
+      parameters:
+        - $ref: '#/components/parameters/dataSet'
+        - $ref: '#/components/parameters/includeAttributes'
+      x-stoplight:
+        id: 1uj5x51inuvla
+  '/v2/directories/{directoryCode}/items/{itemCode}/versions/{versionUuid}/parents':
+    parameters:
+      - $ref: '#/components/parameters/directoryCode'
+      - $ref: '#/components/parameters/itemCode'
+      - $ref: '#/components/parameters/versionUuid'
+    get:
+      summary: Получение элементов-предков версии элемента
+      tags:
+        - items
+        - v2
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ItemWithoutAttributesCollectionV2'
+                  - $ref: '#/components/schemas/ItemWithAttributesCollectionV2'
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      operationId: getItemVersionParentsV2
+      description: 'Постраничное получение версий записей или классов предков, актуальных на конретную версию записи или класса'
+      parameters:
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/dataSet'
+        - $ref: '#/components/parameters/includeAttributes'
+  '/v2/directories/{directoryCode}/items/{itemCode}/versions/{versionUuid}/children':
+    parameters:
+      - $ref: '#/components/parameters/directoryCode'
+      - $ref: '#/components/parameters/itemCode'
+      - $ref: '#/components/parameters/versionUuid'
+    get:
+      summary: Получение элементов-детей версии элемента
+      tags:
+        - items
+        - v2
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ItemWithoutAttributesCollectionV2'
+                  - $ref: '#/components/schemas/ItemWithAttributesCollectionV2'
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      operationId: getItemVersionChildrenV2
+      description: 'Постраничное получение версий записей или классов детей с шагом в один уровень иерархии, актуальных на конретную версию записи или класса'
+      parameters:
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/dataSet'
+        - $ref: '#/components/parameters/includeAttributes'
+  '/v2/directories/{directoryCode}/item-versions/{versionUuid}':
+    parameters:
+      - name: directoryCode
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 500
+          example: contractor
+        description: Уникальный код объекта НСИ в рамках Системы
+      - name: versionUuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+          example: 73d69dee-33be-4748-9ba3-ed4175da98c6
+        description: Глобальный уникальный идентификатор версии объекта или элемента НСИ
+        required: true
+    get:
+      summary: Получение версии элемента
+      tags:
+        - items
+        - v2
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ItemWithoutAttributesV2'
+                  - $ref: '#/components/schemas/ItemWithAttributesV2'
+                description: Один из объектов (в зависимости от значения includeAttributes)
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      operationId: getVersionV2
+      description: Получение конкретной версии записи или класса
+      parameters:
+        - $ref: '#/components/parameters/dataSet'
+        - $ref: '#/components/parameters/includeAttributes'
+      x-stoplight:
+        id: 1uj5x51inuvla
+  '/v2/directories/{directoryCode}/item-versions/{versionUuid}/parents':
+    parameters:
+      - name: directoryCode
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 500
+          example: contractor
+        description: Уникальный код объекта НСИ в рамках Системы
+      - name: versionUuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+          example: 73d69dee-33be-4748-9ba3-ed4175da98c6
+        description: Глобальный уникальный идентификатор версии объекта или элемента НСИ
+        required: true
+    get:
+      summary: Получение элементов-предков версии элемента
+      tags:
+        - items
+        - v2
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ItemWithoutAttributesCollectionV2'
+                  - $ref: '#/components/schemas/ItemWithAttributesCollectionV2'
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      operationId: getVersionParentsV2
+      description: 'Постраничное получение версий записей или классов предков, актуальных на конретную версию записи или класса'
+      parameters:
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/dataSet'
+        - $ref: '#/components/parameters/includeAttributes'
+  '/v2/directories/{directoryCode}/item-versions/{versionUuid}/children':
+    parameters:
+      - name: directoryCode
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 500
+          example: contractor
+        description: Уникальный код объекта НСИ в рамках Системы
+      - name: versionUuid
+        in: path
+        schema:
+          type: string
+          format: uuid
+          example: 73d69dee-33be-4748-9ba3-ed4175da98c6
+        description: Глобальный уникальный идентификатор версии объекта или элемента НСИ
+        required: true
+    get:
+      summary: Получение элементов-детей версии элемента
+      tags:
+        - items
+        - v2
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ItemWithoutAttributesCollectionV2'
+                  - $ref: '#/components/schemas/ItemWithAttributesCollectionV2'
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      operationId: getVersionChildrenV2
+      description: 'Постраничное получение версий записей или классов детей с шагом в один уровень иерархии, актуальных на конретную версию записи или класса'
+      parameters:
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/dataSet'
+        - $ref: '#/components/parameters/includeAttributes'
 components:
   securitySchemes:
     Authorization:
@@ -1028,8 +1498,6 @@ components:
   schemas:
     DirectoryV1:
       type: object
-      x-stoplight:
-        id: 7a769241f2e00
       title: Объект НСИ
       description: 'Объект НСИ со справочными, основными или классифицированными данными'
       properties:
@@ -1055,8 +1523,6 @@ components:
           description: 'Тип. Значения: INTERNAL (внутренний), EXTERNAL (внешний), LOCAL (локальный)'
           readOnly: true
         dataTypeCode:
-          x-stoplight:
-            id: 7xf774y4gfncy
           description: 'Тип данных. Значения: MASTER (основные), REFERENCE (справочные), CLASSIFIER (классифицированные)'
           enum:
             - MASTER
@@ -1229,10 +1695,10 @@ components:
         - name
         - validFrom
       readOnly: true
-    ItemWithAttributesCollection:
+    ItemWithAttributesCollectionV1:
       title: Коллекция элементов с атрибутами
       type: object
-      description: Коллекция записей с атрибутами
+      description: Коллекция записей с атрибутами или коллекция классов без атрибутов
       properties:
         attributes:
           type: array
@@ -1261,9 +1727,10 @@ components:
               description: 'Коллекция записей, соотвествующих одному из объектов записи (в зависимости от значения dataSet)'
               items:
                 oneOf:
-                  - $ref: '#/components/schemas/FullDirectoryItem'
-                  - $ref: '#/components/schemas/DefaultDirectoryItem'
-                  - $ref: '#/components/schemas/ShortDirectoryItem'
+                  - $ref: '#/components/schemas/FullDirectoryItemV1'
+                  - $ref: '#/components/schemas/DefaultDirectoryItemV1'
+                  - $ref: '#/components/schemas/ShortDirectoryItemV1'
+                  - $ref: '#/components/schemas/AllDirectoryClassV1'
               readOnly: true
             pageable:
               type: object
@@ -1366,7 +1833,145 @@ components:
         - attributes
         - wrapper
       readOnly: true
-    ItemWithoutAttributesCollection:
+    ItemWithAttributesCollectionV2:
+      title: Коллекция элементов с атрибутами
+      type: object
+      description: Коллекция записей с атрибутами или коллекция классов без атрибутов
+      properties:
+        attributes:
+          type: array
+          description: Атрибуты записей (на странице)
+          items:
+            $ref: '#/components/schemas/Attribute'
+          readOnly: true
+        wrapper:
+          type: object
+          description: Пагинация и записи
+          required:
+            - content
+            - pageable
+            - sort
+            - totalPages
+            - totalElements
+            - last
+            - first
+            - numberOfElements
+            - size
+            - number
+            - empty
+          properties:
+            content:
+              type: array
+              description: 'Коллекция записей, соотвествующих одному из объектов записи (в зависимости от значения dataSet)'
+              items:
+                oneOf:
+                  - $ref: '#/components/schemas/FullDirectoryItemV2'
+                  - $ref: '#/components/schemas/DefaultDirectoryItemV2'
+                  - $ref: '#/components/schemas/ShortDirectoryItemV2'
+                  - $ref: '#/components/schemas/AllDirectoryClassV2'
+              readOnly: true
+            pageable:
+              type: object
+              description: Параметры пагинации данных
+              properties:
+                sort:
+                  type: object
+                  description: Параметры сортировки
+                  properties:
+                    sorted:
+                      type: boolean
+                      description: 'Признак наличия сортировки, заданной пользователем'
+                      example: false
+                    unsorted:
+                      type: boolean
+                      description: 'Признак отсутствия наличия сортировки, заданной пользователем'
+                      example: true
+                    empty:
+                      type: boolean
+                      description: Признак наличия сортировки
+                      example: true
+                pageSize:
+                  type: integer
+                  format: int32
+                  description: Количество элементов на странице
+                  example: 20
+                pageNumber:
+                  type: integer
+                  format: int32
+                  description: Номер отображаемой страницы
+                  example: 20
+                offset:
+                  type: integer
+                  format: int32
+                  description: Смещение по отношению к первой странице с учётом её размера
+                  example: 20
+                paged:
+                  type: boolean
+                  description: Признак постраничного отображения данных
+                  example: true
+                unpaged:
+                  type: boolean
+                  description: Признак отсутствия постраничного отображения данных
+                  example: false
+            sort:
+              type: object
+              description: Параметры сортировки
+              properties:
+                sorted:
+                  type: boolean
+                  description: 'Признак наличия сортировки, заданной пользователем'
+                  example: false
+                unsorted:
+                  type: boolean
+                  description: 'Признак отсутствия наличия сортировки, заданной пользователем'
+                  example: true
+                empty:
+                  type: boolean
+                  description: Признак наличия сортировки
+                  example: true
+            totalPages:
+              type: integer
+              format: int32
+              description: Общее количество всех страниц
+              example: 1
+            totalElements:
+              type: integer
+              format: int32
+              description: Общее количество всех элементов
+              example: 17
+            last:
+              type: boolean
+              description: Признак первой страницы
+              example: true
+            first:
+              type: boolean
+              description: Признак последней страницы
+              example: true
+            numberOfElements:
+              type: integer
+              format: int32
+              description: Количество элементов на странице - фактическое
+              example: 17
+            size:
+              type: integer
+              format: int32
+              description: Количество элементов на странице
+              example: 20
+            number:
+              type: integer
+              format: int32
+              description: Номер отображаемой страницы
+              example: 0
+            empty:
+              type: boolean
+              description: Признак наличия content
+              example: true
+          readOnly: true
+      required:
+        - attributes
+        - wrapper
+      readOnly: true
+    ItemWithoutAttributesCollectionV1:
       type: object
       title: Коллекция элементов без атрибутов
       description: Коллекция записей или классов без атрибутов
@@ -1393,9 +1998,10 @@ components:
               description: 'Коллекция записей, соотвествующих одному из объектов записи (в зависимости от значения dataSet), или классов'
               items:
                 oneOf:
-                  - $ref: '#/components/schemas/FullDirectoryItem'
-                  - $ref: '#/components/schemas/DefaultDirectoryItem'
-                  - $ref: '#/components/schemas/ShortDirectoryItem'
+                  - $ref: '#/components/schemas/FullDirectoryItemV1'
+                  - $ref: '#/components/schemas/DefaultDirectoryItemV1'
+                  - $ref: '#/components/schemas/ShortDirectoryItemV1'
+                  - $ref: '#/components/schemas/AllDirectoryClassV1'
               readOnly: true
             pageable:
               type: object
@@ -1497,22 +2103,169 @@ components:
       required:
         - wrapper
       readOnly: true
-    ItemWithoutAttributes:
+    ItemWithoutAttributesCollectionV2:
+      type: object
+      title: Коллекция элементов без атрибутов
+      description: Коллекция записей или классов без атрибутов
+      examples: []
+      properties:
+        wrapper:
+          type: object
+          description: Пагинация и записи
+          required:
+            - content
+            - pageable
+            - sort
+            - totalPages
+            - totalElements
+            - last
+            - first
+            - numberOfElements
+            - size
+            - number
+            - empty
+          properties:
+            content:
+              type: array
+              description: 'Коллекция записей, соотвествующих одному из объектов записи (в зависимости от значения dataSet), или классов'
+              items:
+                oneOf:
+                  - $ref: '#/components/schemas/FullDirectoryItemV2'
+                  - $ref: '#/components/schemas/DefaultDirectoryItemV2'
+                  - $ref: '#/components/schemas/ShortDirectoryItemV2'
+                  - $ref: '#/components/schemas/AllDirectoryClassV2'
+              readOnly: true
+            pageable:
+              type: object
+              description: Параметры пагинации данных
+              properties:
+                sort:
+                  type: object
+                  description: Параметры сортировки
+                  properties:
+                    sorted:
+                      type: boolean
+                      description: 'Признак наличия сортировки, заданной пользователем'
+                      example: false
+                    unsorted:
+                      type: boolean
+                      description: 'Признак отсутствия наличия сортировки, заданной пользователем'
+                      example: true
+                    empty:
+                      type: boolean
+                      description: Признак наличия сортировки
+                      example: true
+                pageSize:
+                  type: integer
+                  format: int32
+                  description: Количество элементов на странице
+                  example: 20
+                pageNumber:
+                  type: integer
+                  format: int32
+                  description: Номер отображаемой страницы
+                  example: 20
+                offset:
+                  type: integer
+                  format: int32
+                  description: Смещение по отношению к первой странице с учётом её размера
+                  example: 20
+                paged:
+                  type: boolean
+                  description: Признак постраничного отображения данных
+                  example: true
+                unpaged:
+                  type: boolean
+                  description: Признак отсутствия постраничного отображения данных
+                  example: false
+            sort:
+              type: object
+              description: Параметры сортировки
+              properties:
+                sorted:
+                  type: boolean
+                  description: 'Признак наличия сортировки, заданной пользователем'
+                  example: false
+                unsorted:
+                  type: boolean
+                  description: 'Признак отсутствия наличия сортировки, заданной пользователем'
+                  example: true
+                empty:
+                  type: boolean
+                  description: Признак наличия сортировки
+                  example: true
+            totalPages:
+              type: integer
+              format: int32
+              description: Общее количество всех страниц
+              example: 1
+            totalElements:
+              type: integer
+              format: int32
+              description: Общее количество всех элементов
+              example: 17
+            last:
+              type: boolean
+              description: Признак первой страницы
+              example: true
+            first:
+              type: boolean
+              description: Признак последней страницы
+              example: true
+            numberOfElements:
+              type: integer
+              format: int32
+              description: Количество элементов на странице - фактическое
+              example: 17
+            size:
+              type: integer
+              format: int32
+              description: Количество элементов на странице
+              example: 20
+            number:
+              type: integer
+              format: int32
+              description: Номер отображаемой страницы
+              example: 0
+            empty:
+              type: boolean
+              description: Признак наличия content
+              example: true
+          readOnly: true
+      required:
+        - wrapper
+      readOnly: true
+    ItemWithoutAttributesV1:
       type: object
       description: Запись или класс без атрибутов
       title: Элемент без атрибутов
       properties:
         item:
           oneOf:
-            - $ref: '#/components/schemas/FullDirectoryItem'
-            - $ref: '#/components/schemas/DefaultDirectoryItem'
-            - $ref: '#/components/schemas/ShortDirectoryItem'
+            - $ref: '#/components/schemas/FullDirectoryItemV1'
+            - $ref: '#/components/schemas/DefaultDirectoryItemV1'
+            - $ref: '#/components/schemas/ShortDirectoryItemV1'
+            - $ref: '#/components/schemas/AllDirectoryClassV1'
           description: Один из объектов записи (в зависимости от значения dataSet) или класс
       required:
         - item
-    ItemWithAttributes:
+    ItemWithoutAttributesV2:
       type: object
-      description: Запись с атрибутами
+      description: Запись или класс без атрибутов
+      title: Элемент без атрибутов
+      properties:
+        item:
+          oneOf:
+            - $ref: '#/components/schemas/FullDirectoryItemV2'
+            - $ref: '#/components/schemas/DefaultDirectoryItemV2'
+            - $ref: '#/components/schemas/ShortDirectoryItemV2'
+            - $ref: '#/components/schemas/AllDirectoryClassV2'
+          description: Один из объектов записи (в зависимости от значения dataSet) или класс
+      required:
+        - item
+    ItemWithAttributesV1:
+      type: object
+      description: Запись с атрибутами или класс без атрибутов
       title: Элемент с атрибутами
       properties:
         attributes:
@@ -1523,31 +2276,58 @@ components:
           readOnly: true
         item:
           oneOf:
-            - $ref: '#/components/schemas/FullDirectoryItem'
-            - $ref: '#/components/schemas/DefaultDirectoryItem'
-            - $ref: '#/components/schemas/ShortDirectoryItem'
+            - $ref: '#/components/schemas/FullDirectoryItemV1'
+            - $ref: '#/components/schemas/DefaultDirectoryItemV1'
+            - $ref: '#/components/schemas/ShortDirectoryItemV1'
+            - $ref: '#/components/schemas/AllDirectoryClassV1'
           description: Один из объектов записи (в зависимости от значения dataSet)
       required:
         - attributes
         - item
       readOnly: true
-    FullDirectoryItem:
+    ItemWithAttributesV2:
+      type: object
+      description: Запись с атрибутами или класс без атрибутов
+      title: Элемент с атрибутами
+      properties:
+        attributes:
+          type: array
+          description: Атрибуты записи
+          items:
+            $ref: '#/components/schemas/Attribute'
+          readOnly: true
+        item:
+          oneOf:
+            - $ref: '#/components/schemas/FullDirectoryItemV2'
+            - $ref: '#/components/schemas/DefaultDirectoryItemV2'
+            - $ref: '#/components/schemas/ShortDirectoryItemV2'
+            - $ref: '#/components/schemas/AllDirectoryClassV2'
+          description: Один из объектов записи (в зависимости от значения dataSet)
+      required:
+        - attributes
+        - item
+      readOnly: true
+    FullDirectoryItemV1:
       title: Полная запись справочника
       type: object
-      description: 'Запись плоского справочника или справочника с мастер данными, где есть все атрибуты'
+      description: 'Запись справочника, где есть все атрибуты'
       examples: []
       properties:
         code:
           type: string
-          description: Уникальный в рамках справочника код записи
+          description: Уникальный в рамках справочника код
           example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
         classifierCode:
           type: string
-          description: Уникальный код класса или уникальный код самого классификатора (если справочник плоский)
+          description: Уникальный код категории таксономии. Приходит при типе данных справочника - основные (мастер)
           example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
         name:
           type: object
-          description: Наименования записи
+          description: Наименования
+          required:
+            - byDefault
           properties:
             byDefault:
               type: string
@@ -1555,24 +2335,28 @@ components:
               maxLength: 500
               minLength: 1
               description: на русском языке
+              readOnly: true
             rus:
               type: string
               example: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
               maxLength: 500
               minLength: 1
               description: на русском языке
+              readOnly: true
             eng:
               type: string
               minLength: 1
               maxLength: 500
               description: на английском языке
               example: Pump circulation UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              readOnly: true
             tur:
               type: string
               minLength: 1
               maxLength: 500
               description: на турецком языке
               example: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              readOnly: true
             anotherLanguage:
               type: string
               minLength: 1
@@ -1580,14 +2364,19 @@ components:
               description: на любом другом языке
               example: ___
               readOnly: true
-        lock:
-          type: boolean
-          default: false
-          description: 'Признак блокировки для изменения записи, в момент существования заявки на её изменение'
+        status:
+          type: string
+          description: 'Статус - `MASTER_DEFAULT` (эталон), `BLOCKED_DEFAULT` (блокированная), `MASTER_COUNTERPARTIES` (эталон), `IRRELEVANT_COUNTERPARTIES` (неактуальная)'
+          example: MASTER_DEFAULT
+          enum:
+            - MASTER_DEFAULT
+            - BLOCKED_DEFAULT
+            - MASTER_COUNTERPARTIES
+            - IRRELEVANT_COUNTERPARTIES
           readOnly: true
         reasonCode:
           type: string
-          description: 'Расширение назначения статуса (например причина блокировки): OUTDATED (Устаревшая), DUPLICATE (Дубликат), INCONSISTENT (Несоответствующая), LIQUIDATION (Ликвидация), RESTRUCTURING (Реструктуризация), REFORM (Реформирование),OTHERS (Другие)'
+          description: 'Расширение назначения статуса (например причина блокировки) - `OUTDATED` (Устаревшая), `DUPLICATE` (Дубликат), `INCONSISTENT` (Несоответствующая), `LIQUIDATION` (Ликвидация), `RESTRUCTURING` (Реструктуризация), `REFORM` (Реформирование), `OTHERS` (Другие)'
           enum:
             - OUTDATED
             - DUPLICATE
@@ -1599,52 +2388,56 @@ components:
           readOnly: true
         masterItemCode:
           type: string
-          description: Уникальный в рамках справочника код записи-эталона. Приходит при reasonCode = DUPLICATE
+          description: Уникальный в рамках справочника код эталона. Приходит при reasonCode = DUPLICATE
           example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
           readOnly: true
-        validFrom:
-          type: string
-          format: date-time
-          example: '2022-09-01 07:18:10.983153+00'
-          description: Дата и время начала действия записи
-        validTo:
-          type: string
-          format: date-time
-          example: '2022-09-01 07:18:10.983153+00'
-          description: Дата и время окончания действия записи
         cells:
           type: array
-          description: Значения записи
+          description: Ячейки записи
           items:
             oneOf:
               - $ref: '#/components/schemas/CellValue'
               - $ref: '#/components/schemas/CellRange'
             description: Один из объектов ячейки (в зависимости от признака "диапазон" у атрибута)
-          writeOnly: true
+          readOnly: true
       required:
         - code
-        - classifierCode
         - name
-        - lock
-        - validFrom
-    DefaultDirectoryItem:
-      title: Запись справочника по умолчанию
+        - status
+        - cells
+    FullDirectoryItemV2:
+      title: Полная запись справочника
       type: object
-      description: 'Запись плоского справочника или справочника с мастер данными, где есть атрибуты только корневого класса классификатора'
+      description: 'Запись справочника, где есть все атрибуты'
       examples: []
       properties:
         code:
           type: string
-          description: Уникальный в рамках справочника код записи
+          description: Уникальный в рамках справочника код
           example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
+        versionUuid:
+          type: string
+          description: Глобальный уникальный идентификатор версии в рамках Системы
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          format: uuid
+          readOnly: true
+        parentVersionUuid:
+          type: string
+          description: Глобальный уникальный идентификатор версии родителя в рамках Системы
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          format: uuid
           readOnly: true
         classifierCode:
           type: string
-          description: Уникальный код класса или уникальный код самого классификатора (если справочник плоский)
+          description: Уникальный код категории таксономии. Приходит при типе данных справочника - основные (мастер)
           example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
         name:
           type: object
-          description: Наименования записи
+          description: Наименования
+          required:
+            - byDefault
           properties:
             byDefault:
               type: string
@@ -1652,24 +2445,28 @@ components:
               maxLength: 500
               minLength: 1
               description: на русском языке
+              readOnly: true
             rus:
               type: string
               example: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
               maxLength: 500
               minLength: 1
               description: на русском языке
+              readOnly: true
             eng:
               type: string
               minLength: 1
               maxLength: 500
               description: на английском языке
               example: Pump circulation UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              readOnly: true
             tur:
               type: string
               minLength: 1
               maxLength: 500
               description: на турецком языке
               example: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              readOnly: true
             anotherLanguage:
               type: string
               minLength: 1
@@ -1677,14 +2474,19 @@ components:
               description: на любом другом языке
               example: ___
               readOnly: true
-        lock:
-          type: boolean
-          default: false
-          description: 'Признак блокировки для изменения записи, в момент существования заявки на её изменение'
+        status:
+          type: string
+          description: 'Статус - `MASTER_DEFAULT` (эталон), `BLOCKED_DEFAULT` (блокированная), `MASTER_COUNTERPARTIES` (эталон), `IRRELEVANT_COUNTERPARTIES` (неактуальная)'
+          example: MASTER_DEFAULT
+          enum:
+            - MASTER_DEFAULT
+            - BLOCKED_DEFAULT
+            - MASTER_COUNTERPARTIES
+            - IRRELEVANT_COUNTERPARTIES
           readOnly: true
         reasonCode:
           type: string
-          description: 'Расширение назначения статуса (например причина блокировки): OUTDATED (Устаревшая), DUPLICATE (Дубликат), INCONSISTENT (Несоответствующая), LIQUIDATION (Ликвидация), RESTRUCTURING (Реструктуризация), REFORM (Реформирование),OTHERS (Другие)'
+          description: 'Расширение назначения статуса (например причина блокировки) - `OUTDATED` (Устаревшая), `DUPLICATE` (Дубликат), `INCONSISTENT` (Несоответствующая), `LIQUIDATION` (Ликвидация), `RESTRUCTURING` (Реструктуризация), `REFORM` (Реформирование), `OTHERS` (Другие)'
           enum:
             - OUTDATED
             - DUPLICATE
@@ -1696,52 +2498,58 @@ components:
           readOnly: true
         masterItemCode:
           type: string
-          description: Уникальный в рамках справочника код записи-эталона. Приходит при reasonCode = DUPLICATE
+          description: Уникальный в рамках справочника код эталона. Приходит при reasonCode = DUPLICATE
           example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
-          writeOnly: true
+          readOnly: true
         validFrom:
           type: string
           format: date-time
           example: '2022-09-01 07:18:10.983153+00'
-          description: Дата и время начала действия записи
+          description: Дата и время начала действия
+          readOnly: true
         validTo:
           type: string
           format: date-time
           example: '2022-09-01 07:18:10.983153+00'
-          description: Дата и время окончания действия записи
+          description: Дата и время окончания действия
+          readOnly: true
         cells:
           type: array
-          description: Значения записи
+          description: Ячейки записи
           items:
             oneOf:
               - $ref: '#/components/schemas/CellValue'
               - $ref: '#/components/schemas/CellRange'
+            description: Один из объектов ячейки (в зависимости от признака "диапазон" у атрибута)
           readOnly: true
       required:
         - code
-        - classifierCode
+        - versionUuid
         - name
-        - lock
+        - status
         - validFrom
-    ShortDirectoryItem:
+        - cells
+    DefaultDirectoryItemV1:
+      title: Полная запись справочника
       type: object
-      title: Краткая запись справочника
-      description: 'Запись плоского справочника или справочника с мастер данными, где нет атрибутов'
+      description: 'Запись справочника, где есть только корневые атрибуты'
       examples: []
       properties:
         code:
           type: string
-          description: Уникальный в рамках справочника код записи
+          description: Уникальный в рамках справочника код
           example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
           readOnly: true
         classifierCode:
           type: string
-          description: Уникальный код класса или уникальный код самого классификатора (если справочник плоский)
+          description: Уникальный код категории таксономии. Приходит при типе данных справочника - основные (мастер)
           example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
           readOnly: true
         name:
           type: object
-          description: Наименования записи
+          description: Наименования
+          required:
+            - byDefault
           properties:
             byDefault:
               type: string
@@ -1778,15 +2586,19 @@ components:
               description: на любом другом языке
               example: ___
               readOnly: true
-          readOnly: true
-        lock:
-          type: boolean
-          default: false
-          description: 'Признак блокировки для изменения записи, в момент существования заявки на её изменение'
+        status:
+          type: string
+          description: 'Статус - `MASTER_DEFAULT` (эталон), `BLOCKED_DEFAULT` (блокированная), `MASTER_COUNTERPARTIES` (эталон), `IRRELEVANT_COUNTERPARTIES` (неактуальная)'
+          example: MASTER_DEFAULT
+          enum:
+            - MASTER_DEFAULT
+            - BLOCKED_DEFAULT
+            - MASTER_COUNTERPARTIES
+            - IRRELEVANT_COUNTERPARTIES
           readOnly: true
         reasonCode:
           type: string
-          description: 'Расширение назначения статуса (например причина блокировки): OUTDATED (Устаревшая), DUPLICATE (Дубликат), INCONSISTENT (Несоответствующая), LIQUIDATION (Ликвидация), RESTRUCTURING (Реструктуризация), REFORM (Реформирование),OTHERS (Другие)'
+          description: 'Расширение назначения статуса (например причина блокировки) - `OUTDATED` (Устаревшая), `DUPLICATE` (Дубликат), `INCONSISTENT` (Несоответствующая), `LIQUIDATION` (Ликвидация), `RESTRUCTURING` (Реструктуризация), `REFORM` (Реформирование), `OTHERS` (Другие)'
           enum:
             - OUTDATED
             - DUPLICATE
@@ -1798,67 +2610,579 @@ components:
           readOnly: true
         masterItemCode:
           type: string
-          description: Уникальный в рамках справочника код записи-эталона. Приходит при reasonCode = DUPLICATE
+          description: Уникальный в рамках справочника код эталона. Приходит при reasonCode = DUPLICATE
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
+        cells:
+          type: array
+          description: Ячейки записи
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/CellValue'
+              - $ref: '#/components/schemas/CellRange'
+            description: Один из объектов ячейки (в зависимости от признака "диапазон" у атрибута)
+          readOnly: true
+      required:
+        - code
+        - name
+        - status
+        - cells
+    DefaultDirectoryItemV2:
+      title: Полная запись справочника
+      type: object
+      description: 'Запись справочника, где есть только корневые атрибуты'
+      examples: []
+      properties:
+        code:
+          type: string
+          description: Уникальный в рамках справочника код
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
+        versionUuid:
+          type: string
+          description: Глобальный уникальный идентификатор версии в рамках Системы
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          format: uuid
+          readOnly: true
+        parentVersionUuid:
+          type: string
+          description: Глобальный уникальный идентификатор версии родителя в рамках Системы
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          format: uuid
+          readOnly: true
+        classifierCode:
+          type: string
+          description: Уникальный код категории таксономии. Приходит при типе данных справочника - основные (мастер)
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
+        name:
+          type: object
+          description: Наименования
+          required:
+            - byDefault
+          properties:
+            byDefault:
+              type: string
+              example: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              maxLength: 500
+              minLength: 1
+              description: на русском языке
+              readOnly: true
+            rus:
+              type: string
+              example: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              maxLength: 500
+              minLength: 1
+              description: на русском языке
+              readOnly: true
+            eng:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на английском языке
+              example: Pump circulation UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              readOnly: true
+            tur:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на турецком языке
+              example: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              readOnly: true
+            anotherLanguage:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на любом другом языке
+              example: ___
+              readOnly: true
+        status:
+          type: string
+          description: 'Статус - `MASTER_DEFAULT` (эталон), `BLOCKED_DEFAULT` (блокированная), `MASTER_COUNTERPARTIES` (эталон), `IRRELEVANT_COUNTERPARTIES` (неактуальная)'
+          example: MASTER_DEFAULT
+          enum:
+            - MASTER_DEFAULT
+            - BLOCKED_DEFAULT
+            - MASTER_COUNTERPARTIES
+            - IRRELEVANT_COUNTERPARTIES
+          readOnly: true
+        reasonCode:
+          type: string
+          description: 'Расширение назначения статуса (например причина блокировки) - `OUTDATED` (Устаревшая), `DUPLICATE` (Дубликат), `INCONSISTENT` (Несоответствующая), `LIQUIDATION` (Ликвидация), `RESTRUCTURING` (Реструктуризация), `REFORM` (Реформирование), `OTHERS` (Другие)'
+          enum:
+            - OUTDATED
+            - DUPLICATE
+            - INCONSISTENT
+            - LIQUIDATION
+            - RESTRUCTURING
+            - REFORM
+            - OTHERS
+          readOnly: true
+        masterItemCode:
+          type: string
+          description: Уникальный в рамках справочника код эталона. Приходит при reasonCode = DUPLICATE
           example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
           readOnly: true
         validFrom:
           type: string
           format: date-time
           example: '2022-09-01 07:18:10.983153+00'
-          description: Дата и время начала действия записи
+          description: Дата и время начала действия
           readOnly: true
         validTo:
           type: string
           format: date-time
           example: '2022-09-01 07:18:10.983153+00'
-          description: Дата и время окончания действия записи
+          description: Дата и время окончания действия
+          readOnly: true
+        cells:
+          type: array
+          description: Ячейки записи
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/CellValue'
+              - $ref: '#/components/schemas/CellRange'
+            description: Один из объектов ячейки (в зависимости от признака "диапазон" у атрибута)
           readOnly: true
       required:
         - code
-        - classifierCode
+        - versionUuid
         - name
-        - lock
+        - status
         - validFrom
-      readOnly: true
-    AllDirectoryClass:
-      title: Класс справочника
-      x-stoplight:
-        id: u73sznbcszx8m
+        - cells
+    ShortDirectoryItemV1:
+      title: Краткая запись справочника
       type: object
-      description: 'Класс справочника с классифицированными данными (классификатор), где нет атрибутов'
+      description: 'Запись справочника, где нет атрибутов'
+      examples: []
       properties:
         code:
           type: string
-          x-stoplight:
-            id: v8bnrblqe0el8
-        versionUuid:
+          description: Уникальный в рамках справочника код
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
+        classifierCode:
           type: string
-          x-stoplight:
-            id: w5ugaf1mipill
-        parentVersionUuid:
-          type: string
-          x-stoplight:
-            id: geoeqb8x3tq6h
-        businessCode:
-          type: string
-          x-stoplight:
-            id: uewjkyatibg9s
+          description: Уникальный код категории таксономии. Приходит при типе данных справочника - основные (мастер)
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
         name:
           type: object
-          x-stoplight:
-            id: tnmwn7whe8i66
+          description: Наименования
+          required:
+            - byDefault
+          properties:
+            byDefault:
+              type: string
+              example: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              maxLength: 500
+              minLength: 1
+              description: на русском языке
+              readOnly: true
+            rus:
+              type: string
+              example: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              maxLength: 500
+              minLength: 1
+              description: на русском языке
+              readOnly: true
+            eng:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на английском языке
+              example: Pump circulation UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              readOnly: true
+            tur:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на турецком языке
+              example: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              readOnly: true
+            anotherLanguage:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на любом другом языке
+              example: ___
+              readOnly: true
         status:
           type: string
-          x-stoplight:
-            id: vnrmnz90m0uzf
+          description: 'Статус - `MASTER_DEFAULT` (эталон), `BLOCKED_DEFAULT` (блокированная), `MASTER_COUNTERPARTIES` (эталон), `IRRELEVANT_COUNTERPARTIES` (неактуальная)'
+          example: MASTER_DEFAULT
+          enum:
+            - MASTER_DEFAULT
+            - BLOCKED_DEFAULT
+            - MASTER_COUNTERPARTIES
+            - IRRELEVANT_COUNTERPARTIES
+          readOnly: true
+        reasonCode:
+          type: string
+          description: 'Расширение назначения статуса (например причина блокировки) - `OUTDATED` (Устаревшая), `DUPLICATE` (Дубликат), `INCONSISTENT` (Несоответствующая), `LIQUIDATION` (Ликвидация), `RESTRUCTURING` (Реструктуризация), `REFORM` (Реформирование), `OTHERS` (Другие)'
+          enum:
+            - OUTDATED
+            - DUPLICATE
+            - INCONSISTENT
+            - LIQUIDATION
+            - RESTRUCTURING
+            - REFORM
+            - OTHERS
+          readOnly: true
+        masterItemCode:
+          type: string
+          description: Уникальный в рамках справочника код эталона. Приходит при reasonCode = DUPLICATE
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
+      required:
+        - code
+        - name
+        - status
+    ShortDirectoryItemV2:
+      title: Краткая запись справочника
+      type: object
+      description: 'Запись справочника, где нет атрибутов'
+      examples: []
+      properties:
+        code:
+          type: string
+          description: Уникальный в рамках справочника код
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
+        versionUuid:
+          type: string
+          description: Глобальный уникальный идентификатор версии в рамках Системы
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          format: uuid
+          readOnly: true
+        parentVersionUuid:
+          type: string
+          description: Глобальный уникальный идентификатор версии родителя в рамках Системы
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          format: uuid
+          readOnly: true
+        classifierCode:
+          type: string
+          description: Уникальный код категории таксономии. Приходит при типе данных справочника - основные (мастер)
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
+        name:
+          type: object
+          description: Наименования
+          required:
+            - byDefault
+          properties:
+            byDefault:
+              type: string
+              example: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              maxLength: 500
+              minLength: 1
+              description: на русском языке
+              readOnly: true
+            rus:
+              type: string
+              example: Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              maxLength: 500
+              minLength: 1
+              description: на русском языке
+              readOnly: true
+            eng:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на английском языке
+              example: Pump circulation UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              readOnly: true
+            tur:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на турецком языке
+              example: Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              readOnly: true
+            anotherLanguage:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на любом другом языке
+              example: ___
+              readOnly: true
+        status:
+          type: string
+          description: 'Статус - `MASTER_DEFAULT` (эталон), `BLOCKED_DEFAULT` (блокированная), `MASTER_COUNTERPARTIES` (эталон), `IRRELEVANT_COUNTERPARTIES` (неактуальная)'
+          example: MASTER_DEFAULT
+          enum:
+            - MASTER_DEFAULT
+            - BLOCKED_DEFAULT
+            - MASTER_COUNTERPARTIES
+            - IRRELEVANT_COUNTERPARTIES
+          readOnly: true
+        reasonCode:
+          type: string
+          description: 'Расширение назначения статуса (например причина блокировки) - `OUTDATED` (Устаревшая), `DUPLICATE` (Дубликат), `INCONSISTENT` (Несоответствующая), `LIQUIDATION` (Ликвидация), `RESTRUCTURING` (Реструктуризация), `REFORM` (Реформирование), `OTHERS` (Другие)'
+          enum:
+            - OUTDATED
+            - DUPLICATE
+            - INCONSISTENT
+            - LIQUIDATION
+            - RESTRUCTURING
+            - REFORM
+            - OTHERS
+          readOnly: true
+        masterItemCode:
+          type: string
+          description: Уникальный в рамках справочника код эталона. Приходит при reasonCode = DUPLICATE
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
         validFrom:
           type: string
-          x-stoplight:
-            id: vzw1ig535pruj
+          format: date-time
+          example: '2022-09-01 07:18:10.983153+00'
+          description: Дата и время начала действия
+          readOnly: true
         validTo:
           type: string
-          x-stoplight:
-            id: i5rvmelespxq8
+          format: date-time
+          example: '2022-09-01 07:18:10.983153+00'
+          description: Дата и время окончания действия
+          readOnly: true
+      required:
+        - code
+        - versionUuid
+        - name
+        - status
+        - validFrom
+    AllDirectoryClassV1:
+      title: Любой класс справочника
+      type: object
+      description: 'Класс справочника с классифицированными данными (классификатора), где нет атрибутов'
+      examples:
+        - code: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          versionUuid: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          parentVersionUuid: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          businessCode: '01.3'
+          name:
+            byDefault: 'Материалы растительные: растения живые, луковицы, клубнелуковицы и корневища, отводки и черенки, грибницы'
+            rus: 'Материалы растительные: растения живые, луковицы, клубнелуковицы и корневища, отводки и черенки, грибницы'
+            eng: 'Plant materials: living plants, bulbs, tubers and rhizomes, taps and cuttings, fungi'
+            tur: 'Bitki malzemeleri: canlı bitkiler, ampuller, yumrular ve rizomlar, musluklar ve çelikler, mantarlar'
+            anotherLanguage: ___
+          status: MASTER_DEFAULT
+          validFrom: '2022-09-01 07:18:10.983153+00'
+          validTo: '2022-09-01 07:18:10.983153+00'
+      properties:
+        code:
+          type: string
+          description: Уникальный в рамках справочника код
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
+        businessCode:
+          type: string
+          description: Уникальный в рамках справочника бизнесовый код
+          example: '01.3'
+          readOnly: true
+        name:
+          type: object
+          description: Наименования
+          required:
+            - byDefault
+          properties:
+            byDefault:
+              type: string
+              example: 'Материалы растительные: растения живые, луковицы, клубнелуковицы и корневища, отводки и черенки, грибницы'
+              maxLength: 500
+              minLength: 1
+              description: на русском языке
+              readOnly: true
+            rus:
+              type: string
+              example: 'Материалы растительные: растения живые, луковицы, клубнелуковицы и корневища, отводки и черенки, грибницы'
+              maxLength: 500
+              minLength: 1
+              description: на русском языке
+              readOnly: true
+            eng:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на английском языке
+              example: 'Plant materials: living plants, bulbs, tubers and rhizomes, taps and cuttings, fungi'
+              readOnly: true
+            tur:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на турецком языке
+              example: 'Bitki malzemeleri: canlı bitkiler, ampuller, yumrular ve rizomlar, musluklar ve çelikler, mantarlar'
+              readOnly: true
+            anotherLanguage:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на любом другом языке
+              example: ___
+              readOnly: true
+          readOnly: true
+        status:
+          type: string
+          description: 'Статус - `MASTER_DEFAULT` (эталон), `BLOCKED_DEFAULT` (блокированная), `MASTER_COUNTERPARTIES` (эталон), `IRRELEVANT_COUNTERPARTIES` (неактуальная)'
+          example: MASTER_DEFAULT
+          enum:
+            - MASTER_DEFAULT
+            - BLOCKED_DEFAULT
+            - MASTER_COUNTERPARTIES
+            - IRRELEVANT_COUNTERPARTIES
+          readOnly: true
+        reasonCode:
+          type: string
+          description: 'Расширение назначения статуса (например причина блокировки) - `OUTDATED` (Устаревшая), `DUPLICATE` (Дубликат), `INCONSISTENT` (Несоответствующая), `LIQUIDATION` (Ликвидация), `RESTRUCTURING` (Реструктуризация), `REFORM` (Реформирование), `OTHERS` (Другие)'
+          enum:
+            - OUTDATED
+            - DUPLICATE
+            - INCONSISTENT
+            - LIQUIDATION
+            - RESTRUCTURING
+            - REFORM
+            - OTHERS
+          readOnly: true
+        masterItemCode:
+          type: string
+          description: Уникальный в рамках справочника код эталона. Приходит при reasonCode = DUPLICATE
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
+      required:
+        - code
+        - name
+        - status
+    AllDirectoryClassV2:
+      title: Любой класс справочника
+      type: object
+      description: 'Класс справочника с классифицированными данными (классификатора), где нет атрибутов'
+      examples:
+        - code: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          versionUuid: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          parentVersionUuid: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          businessCode: '01.3'
+          name:
+            byDefault: 'Материалы растительные: растения живые, луковицы, клубнелуковицы и корневища, отводки и черенки, грибницы'
+            rus: 'Материалы растительные: растения живые, луковицы, клубнелуковицы и корневища, отводки и черенки, грибницы'
+            eng: 'Plant materials: living plants, bulbs, tubers and rhizomes, taps and cuttings, fungi'
+            tur: 'Bitki malzemeleri: canlı bitkiler, ampuller, yumrular ve rizomlar, musluklar ve çelikler, mantarlar'
+            anotherLanguage: ___
+          status: MASTER_DEFAULT
+          validFrom: '2022-09-01 07:18:10.983153+00'
+          validTo: '2022-09-01 07:18:10.983153+00'
+      properties:
+        code:
+          type: string
+          description: Уникальный в рамках справочника код
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
+        versionUuid:
+          type: string
+          description: Глобальный уникальный идентификатор версии в рамках Системы
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          format: uuid
+          readOnly: true
+        parentVersionUuid:
+          type: string
+          description: Глобальный уникальный идентификатор версии родителя в рамках Системы
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          format: uuid
+          readOnly: true
+        businessCode:
+          type: string
+          description: Уникальный в рамках справочника бизнесовый код
+          example: '01.3'
+          readOnly: true
+        name:
+          type: object
+          description: Наименования
+          required:
+            - byDefault
+          properties:
+            byDefault:
+              type: string
+              example: 'Материалы растительные: растения живые, луковицы, клубнелуковицы и корневища, отводки и черенки, грибницы'
+              maxLength: 500
+              minLength: 1
+              description: на русском языке
+              readOnly: true
+            rus:
+              type: string
+              example: 'Материалы растительные: растения живые, луковицы, клубнелуковицы и корневища, отводки и черенки, грибницы'
+              maxLength: 500
+              minLength: 1
+              description: на русском языке
+              readOnly: true
+            eng:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на английском языке
+              example: 'Plant materials: living plants, bulbs, tubers and rhizomes, taps and cuttings, fungi'
+              readOnly: true
+            tur:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на турецком языке
+              example: 'Bitki malzemeleri: canlı bitkiler, ampuller, yumrular ve rizomlar, musluklar ve çelikler, mantarlar'
+              readOnly: true
+            anotherLanguage:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на любом другом языке
+              example: ___
+              readOnly: true
+          readOnly: true
+        status:
+          type: string
+          description: 'Статус - `MASTER_DEFAULT` (эталон), `BLOCKED_DEFAULT` (блокированная), `MASTER_COUNTERPARTIES` (эталон), `IRRELEVANT_COUNTERPARTIES` (неактуальная)'
+          example: MASTER_DEFAULT
+          enum:
+            - MASTER_DEFAULT
+            - BLOCKED_DEFAULT
+            - MASTER_COUNTERPARTIES
+            - IRRELEVANT_COUNTERPARTIES
+          readOnly: true
+        reasonCode:
+          type: string
+          description: 'Расширение назначения статуса (например причина блокировки) - `OUTDATED` (Устаревшая), `DUPLICATE` (Дубликат), `INCONSISTENT` (Несоответствующая), `LIQUIDATION` (Ликвидация), `RESTRUCTURING` (Реструктуризация), `REFORM` (Реформирование), `OTHERS` (Другие)'
+          enum:
+            - OUTDATED
+            - DUPLICATE
+            - INCONSISTENT
+            - LIQUIDATION
+            - RESTRUCTURING
+            - REFORM
+            - OTHERS
+          readOnly: true
+        masterItemCode:
+          type: string
+          description: Уникальный в рамках справочника код эталона. Приходит при reasonCode = DUPLICATE
+          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
+        validFrom:
+          type: string
+          format: date-time
+          example: '2022-09-01 07:18:10.983153+00'
+          description: Дата и время начала действия
+          readOnly: true
+        validTo:
+          type: string
+          format: date-time
+          example: '2022-09-01 07:18:10.983153+00'
+          description: Дата и время окончания действия
+          readOnly: true
+      required:
+        - code
+        - versionUuid
+        - name
+        - status
+        - validFrom
     Attribute:
       type: object
       title: Атрибут
@@ -2554,6 +3878,14 @@ components:
         example: 73d69dee-33be-4748-9ba3-ed4175da98c6
       description: Глобальный уникальный идентификатор версии объекта или элемента НСИ
       required: true
+    validAt:
+      name: validAt
+      in: query
+      schema:
+        type: string
+        format: date-time
+        example: '2023-06-13T21:24:03.685+0000'
+      description: 'Дата и время '
   responses:
     403-forbidden:
       description: Учетной записи недостаточно прав
