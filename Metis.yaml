@@ -1,15 +1,18 @@
 openapi: 3.1.0
 info:
   title: Metis
-  version: '0.1'
+  version: '2.0'
   description: |-
-    # Правила, использованные при написании OpenAPI:
+    # Требования к написанию OpenAPI:
     1. Все атрибуты должны иметь продуктивный пример - как минимум для понимания того, что может прийти, а как максимум для генерации тестового JSON для проверки ошибок при дизайне спецификации
     2. Необходимо отдельно описывать продуктивный пример модели (в Examples) в следующих случаях (для того, чтобы показать все возможные состояния):
         - если у модели есть атрибут с разными типами данных - например String и Integer
         - eсли у модели есть вилка из других моделей (allOf, anyOf, oneOf)
     3. Необходимо отдельно описывать модель (в Models) для того, чтобы использовать её в нескольких конечных точках или других моделях
-    4. Наименование моделей должно быть похоже на словосочетание из прилагательного и существительного (например: запись справочника (item directory) - это справочная запись (directoryItem)
+    4. Наименование моделей должно быть похоже на словосочетание из прилагательного и существительного (например, запись справочника (item directory) - это справочная запись (directoryItem)
+
+    # Соглашение :
+    1. NULL не приходят
   contact:
     name: Жуков Николай Александрович
     url: 'https://t.me/Hykers'
@@ -19,539 +22,97 @@ info:
     url: 'https://www.example.com'
   summary: OpenAPI спецификация АИС УМД "Метида"
 servers:
-  - url: 'https://metida.at-consulting.ru/api/integration'
+  - url: 'http://10.125.132.47:30851'
+    description: ATK_DEV
+  - url: 'http://10.125.132.47:31815/api/integration'
+    description: ATK_TEST
+  - url: 'http://10.125.132.47:31835'
+    description: ATK_LOAD
+  - url: X
     description: ATK_DEMO
-  - url: 'http://metis-ui-docker.csp/api/integration'
-    description: RA_DEV
-  - url: 'http://test.metis.csp/api/integration'
-    description: RA_TEST
-  - url: 'http://demo1.metis.csp/api/integration'
-    description: RA_DEMO1
-  - url: 'http://demo2.empiricamdm.csp/api/integration'
-    description: RA_DEMO2
-  - url: 'http://dev.usmt.phoenixit.ru/nsi/api/integration'
-    description: MSX_DEV
+  - url: 'http://10.125.132.17:8085'
+    description: MSX_PHOENIXIT_DEV
+  - url: 'http://10.125.132.26:8085'
+    description: MSX_PHOENIXIT_TEST
+  - url: 'http://10.125.132.29:8085'
+    description: MSX_PHOENIXIT_STAGE
+  - url: 'https://172.19.3.64:8085'
+    description: MSX_MIGR1
+  - url: 'http://172.19.3.67:8085'
+    description: MSX_MIGR2
+  - url: 'http://192.168.190.199:8085'
+    description: MSX_UAT
+  - url: 'http://172.19.3.34:8085'
+    description: MSX_PROD
 tags:
   - name: directories
     description: Работа со справочниками
   - name: items
     description: Работа с записями справочника
-  - name: classifiers
-    description: Работа с классификаторами
-  - name: class
-    description: Работа с классами
-  - name: attributes
-    description: Работа с атрибутами
-  - name: proposals
-    description: Работа с заявками
+  - name: v1
+    description: Первая версия API
+  - name: v2
+    description: Вторая версия API
 paths:
-  /v1/classifiers:
-    get:
-      summary: Получение классификаторов
-      tags:
-        - classifiers
-      responses:
-        '200':
-          description: Успех
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Classifier'
-                  pageable:
-                    type: object
-                    description: Параметры пагинации данных
-                    properties:
-                      sort:
-                        type: object
-                        description: Параметры сортировки
-                        properties:
-                          sorted:
-                            type: boolean
-                            description: 'Признак наличия сортировки, заданной пользователем'
-                            example: false
-                          unsorted:
-                            type: boolean
-                            description: 'Признак отсутствия наличия сортировки, заданной пользователем'
-                            example: true
-                          empty:
-                            type: boolean
-                            description: Признак наличия сортировки
-                            example: true
-                      pageSize:
-                        type: integer
-                        format: int32
-                        description: Количество элементов на странице
-                        example: 20
-                      pageNumber:
-                        type: integer
-                        format: int32
-                        description: Номер отображаемой страницы
-                        example: 20
-                      offset:
-                        type: integer
-                        format: int32
-                        description: Смещение по отношению к первой странице с учётом её размера
-                        example: 20
-                      paged:
-                        type: boolean
-                        description: Признак постраничного отображения данных
-                        example: true
-                      unpaged:
-                        type: boolean
-                        description: Признак отсутствия постраничного отображения данных
-                        example: false
-                  totalPages:
-                    type: integer
-                    format: int32
-                    description: Общее количество всех страниц
-                    example: 1
-                  totalElements:
-                    type: integer
-                    format: int32
-                    description: Общее количество всех элементов
-                    example: 17
-                  last:
-                    type: boolean
-                    description: Признак первой страницы
-                    example: true
-                  first:
-                    type: boolean
-                    description: Признак последней страницы
-                    example: true
-                  sort:
-                    type: object
-                    description: Параметры сортировки
-                    properties:
-                      sorted:
-                        type: boolean
-                        description: 'Признак наличия сортировки, заданной пользователем'
-                        example: false
-                      unsorted:
-                        type: boolean
-                        description: 'Признак отсутствия наличия сортировки, заданной пользователем'
-                        example: true
-                      empty:
-                        type: boolean
-                        description: Признак наличия сортировки
-                        example: true
-                  numberOfElements:
-                    type: integer
-                    format: int32
-                    description: Количество элементов на странице - фактическое
-                    example: 17
-                  size:
-                    type: integer
-                    format: int32
-                    description: Количество элементов на странице
-                    example: 20
-                  number:
-                    type: integer
-                    format: int32
-                    description: Номер отображаемой страницы
-                    example: 0
-                  empty:
-                    type: boolean
-                    description: Признак наличия content
-                    example: true
-                required:
-                  - content
-                  - pageable
-                  - totalPages
-                  - totalElements
-                  - last
-                  - first
-                  - sort
-                  - numberOfElements
-                  - size
-                  - number
-                  - empty
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-        '414':
-          $ref: '#/components/responses/414-uri-long'
-        '500':
-          description: Внутренняя ошибка сервера
-      operationId: getClassifiers
-      description: Постраничное получение классификаторов
-      parameters:
-        - $ref: '#/components/parameters/size'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/sort'
-        - $ref: '#/components/parameters/filter'
-    parameters: []
-  '/v1/classifiers/{classifiersCode}':
-    parameters:
-      - $ref: '#/components/parameters/classifiersCode'
-    get:
-      summary: Получение классификатора
-      responses:
-        '200':
-          description: Успех
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  content:
-                    $ref: '#/components/schemas/Classifier'
-                required:
-                  - content
-              examples: {}
-        '401':
-          $ref: '#/components/responses/401-unauthorized'
-        '403':
-          $ref: '#/components/responses/403-forbidden'
-        '404':
-          description: Объект не найден
-        '500':
-          description: Внутренняя ошибка сервера
-      operationId: getClassifier
-      description: Получение конкретного классификатора
-      tags:
-        - classifiers
-      parameters: []
-  '/v1/classifiers/{classifiersCode}/classes':
-    parameters:
-      - $ref: '#/components/parameters/classifiersCode'
-    get:
-      summary: Получение классов классификатора
-      responses:
-        '200':
-          description: Успех
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Class'
-                  pageable:
-                    type: object
-                    description: Параметры пагинации данных
-                    properties:
-                      sort:
-                        type: object
-                        description: Параметры сортировки
-                        properties:
-                          sorted:
-                            type: boolean
-                            description: Признак наличия сортировки заданной пользователем
-                          unsorted:
-                            type: boolean
-                            description: Признак отсутствия сортировки заданной пользователем
-                          empty:
-                            type: boolean
-                            description: Признак наличия сортировки
-                      pageSize:
-                        type: integer
-                        description: Количество элементов на странице
-                        format: int32
-                        example: 17
-                      pageNumber:
-                        type: integer
-                        description: Номер отображаемой страницы
-                        format: int32
-                        example: 1
-                      offset:
-                        type: integer
-                        description: Смещение по отношению к первой странице с учётом её размера
-                        format: int32
-                        example: 20
-                      paged:
-                        type: boolean
-                        description: Признак постраничного отображения данных
-                      unpaged:
-                        type: boolean
-                        description: Признак отсутствия постраничного отображения данных
-                  totalPages:
-                    type: integer
-                    description: Общее количество страниц
-                    format: int32
-                    example: 1
-                  totalElements:
-                    type: integer
-                    description: Общее количество элеметов
-                    format: int32
-                    example: 15
-                  first:
-                    type: boolean
-                    description: Признак первой страницы
-                  last:
-                    type: boolean
-                    description: Признак последней страницы
-                  sort:
-                    type: object
-                    description: Параметры сортировки
-                    properties:
-                      sorted:
-                        type: boolean
-                        description: Признак наличия сортировки заданной пользователем
-                      unsorted:
-                        type: boolean
-                        description: Признак отсутствия сортировки заданной пользователей
-                      empty:
-                        type: boolean
-                        description: Признак наличия сортировки
-                  numberofElements:
-                    type: integer
-                    description: Количество элементов на странице- фактическое
-                    format: int32
-                    example: 17
-                  size:
-                    type: integer
-                    description: |
-                      Количество элементов на странице
-                    format: int32
-                    example: 20
-                  number:
-                    type: integer
-                    description: Номер страницы
-                    example: 1
-                    format: int32
-                  empty:
-                    type: boolean
-                    description: Признак наличия content
-                required:
-                  - content
-                  - pageable
-                  - totalPages
-                  - totalElements
-                  - first
-                  - last
-                  - sort
-                  - numberofElements
-                  - size
-                  - number
-                  - empty
-              examples: {}
-        '401':
-          $ref: '#/components/responses/401-unauthorized'
-        '403':
-          $ref: '#/components/responses/403-forbidden'
-        '500':
-          description: Внутренняя ошибка сервера
-      operationId: getClasses
-      description: Постраничное получение классов первого уровня конкретного классификатора
-      tags:
-        - classifiers
-      parameters: []
-  '/v1/classifiers/{classifiersCode}/classes/{classCode}':
-    parameters:
-      - $ref: '#/components/parameters/classifiersCode'
-      - $ref: '#/components/parameters/classCode'
-    get:
-      summary: Получение класса классификатора
-      responses:
-        '200':
-          description: Успех
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  content:
-                    $ref: '#/components/schemas/Class'
-                    x-stoplight:
-                      id: iyhzx5zy7nm3r
-              examples: {}
-        '401':
-          $ref: '#/components/responses/401-unauthorized'
-        '403':
-          $ref: '#/components/responses/403-forbidden'
-        '404':
-          description: Объект не найден
-        '500':
-          description: Внутренняя ошибка сервера
-      operationId: getClass
-      description: Получение конкретного класса конкретного классификатора
-      parameters: []
-      tags:
-        - class
-  '/v1/classifiers/{classifiersCode}/classes/{classCode}/children':
-    parameters:
-      - $ref: '#/components/parameters/classifiersCode'
-      - $ref: '#/components/parameters/classCode'
-    get:
-      summary: Получение потомков класса
-      responses:
-        '200':
-          description: Успех
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Class'
-                  pageable:
-                    type: object
-                    description: Параметры пагинации данных
-                    properties:
-                      sort:
-                        type: object
-                        description: Параметры сортировки
-                        properties:
-                          sorted:
-                            type: boolean
-                            description: Признак наличия сортировки заданной пользователем
-                          unsorted:
-                            type: boolean
-                            description: Признак отсутствия сортировки заданной пользователем
-                          empty:
-                            type: boolean
-                            description: Признак наличия сортировки
-                      pageSize:
-                        type: integer
-                        description: Количество элементов на странице
-                        format: int32
-                        example: 17
-                      pageNumber:
-                        type: integer
-                        description: Номер отображаемой страницы
-                        format: int32
-                        example: 1
-                      offset:
-                        type: integer
-                        description: Смещение по отношению к первой странице с учётом её размера
-                        format: int32
-                        example: 20
-                      paged:
-                        type: boolean
-                        description: Признак постраничного отображения данных
-                      unpaged:
-                        type: boolean
-                        description: Признак отсутствия постраничного отображения данных
-                  totalPages:
-                    type: integer
-                    description: Общее количество страниц
-                    format: int32
-                    example: 1
-                  totalElements:
-                    type: integer
-                    description: Общее количество элеметов
-                    format: int32
-                    example: 15
-                  first:
-                    type: boolean
-                    description: Признак первой страницы
-                  last:
-                    type: boolean
-                    description: Признак последней страницы
-                  sort:
-                    type: object
-                    description: Параметры сортировки
-                    properties:
-                      sorted:
-                        type: boolean
-                        description: Признак наличия сортировки заданной пользователем
-                      unsorted:
-                        type: boolean
-                        description: Признак отсутствия сортировки заданной пользователей
-                      empty:
-                        type: boolean
-                        description: Признак наличия сортировки
-                  numberofElements:
-                    type: integer
-                    description: Количество элементов на странице- фактическое
-                    format: int32
-                    example: 17
-                  size:
-                    type: integer
-                    description: |
-                      Количество элементов на странице
-                    format: int32
-                    example: 20
-                  number:
-                    type: integer
-                    description: Номер страницы
-                    example: 1
-                    format: int32
-                  empty:
-                    type: boolean
-                    description: Признак наличия content
-                required:
-                  - content
-                  - pageable
-                  - totalPages
-                  - totalElements
-                  - first
-                  - last
-                  - sort
-                  - numberofElements
-                  - size
-                  - number
-                  - empty
-              examples: {}
-        '401':
-          $ref: '#/components/responses/401-unauthorized'
-        '403':
-          $ref: '#/components/responses/403-forbidden'
-        '500':
-          description: Внутренняя ошибка сервера
-      operationId: getClassChildren
-      description: 'Постраничное получение классов конкретного классификатора, являющихся прямыми потомками (шаг в один уровень)'
-      tags:
-        - class
-      parameters: []
-  '/v1/classifiers/{classifiersCode}/classes/{classCode}/parents':
-    parameters:
-      - $ref: '#/components/parameters/classifiersCode'
-      - $ref: '#/components/parameters/classCode'
-    get:
-      summary: Получение предков класса
-      responses:
-        '200':
-          description: Успех
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  content:
-                    oneOf:
-                      - $ref: '#/components/schemas/UpClassesHierarchy'
-                      - $ref: '#/components/schemas/DownClassesHierarchy'
-                    description: Один из объектов (в зависимости от значения direction)
-        '401':
-          $ref: '#/components/responses/401-unauthorized'
-        '403':
-          $ref: '#/components/responses/403-forbidden'
-        '500':
-          description: Внутренняя ошибка сервера
-      operationId: getClassParents
-      description: 'Древовидное получение классов конкретного классификатора, являющихся предками (от прямого предка до корня или от корня до прямого предка)'
-      parameters:
-        - $ref: '#/components/parameters/direction'
-      tags:
-        - class
   /v1/directories:
     get:
-      summary: Получение справочников
+      summary: Получение объектов НСИ
       tags:
         - directories
-      operationId: getDirectories
-      description: Постраничное получение справочников
+        - v1
+      operationId: getDirectoriesV1
+      description: |-
+        **Постраничное получение актуальных версий справочников и классификаторов**
+
+
+        Особенности фильтрации
+
+        1. Фильтр может использовать один параметр или несколько. Для фильтрации по нескольким параметрам необходимо несколько раз указать Query Parameter `filter`, соединив их символом `&`.
+        2. Синтаксис значения Query Parameter `filter` следующий `operator,property,value`
+        3. Оператором могут быть следующие значения:
+           * `GT` - больше;
+           * `GE` - больше или равно;
+           * `LT` - меньше;
+           * `LE` - меньше или равно;
+           * `EQ` - равно (полное совпадение);
+           * `NE` - не равно;
+           * `EQ_IGNORE_CASE` - равно (полное совпадение без учёта регистра);
+           * `STARTS_WITH` - начинается с;
+           * `ENDS_IN` - оканчивается на;
+           * `IN` - список значений (полное совпадение со всеми);
+           * `LIKE` - равно (частичное совпадение);
+           * `NOT_LIKE` - не равно (частичное совпадение);
+           * `LIKE_IGNORE_CASE` - равно (частичное совпадение без учёта регистра);
+           * `NOT_LIKE_IGNORE_CASE` - не равно (частичное совпадение без учёта регистра);
+           * `FTS` - полнотекстовый поиск;
+           * `IS_NULL` - отсутствие значения.
+        4. Свойством могут быть следующие значения:
+           * `name.<language>` - указание, что фильтрация по наименованию объекта НСИ
+           * `code` - указание, что фильтрация по коду объекта НСИ
+           * `statusModel`- указание, что фильтрация по коду статусной модели объекта НСИ
+           * `typeCode`- указание, что фильтрация по коду типа объекта НСИ
+           * `dataTypeCode`- указание, что фильтрация по коду типа данных объекта НСИ
+        5. `<language>` необходимо указывать для значений, являющихся текстом. `<language>` может принимать следующие значения: `rus`, `eng`, `tur`, `byDefault`
+        6. Значением могут быть следующие значения:
+           * Зарезервированные в URL символы: "! * ' ( ) ; : @ & = + $ , / ? % # [ ]"
+           * Не зарезервированные в URL символы: "[A-Z] [a-z] [0-9] - _ . ~"
+           * Иные символы в формате URL encoding
+           * для параметра `statusModel`- DEFAULT (стандартная), COUNTERPARTIES (контрагенты)
+           * для параметра `typeCode`- INTERNAL (внутренний), EXTERNAL (внешний), LOCAL (локальный)
+           * для параметра `dataTypeCode`- MASTER (основные), REFERENCE (справочные), CLASSIFIER (классифицированные)
+           
+        Примеры
+
+        * filter=EQ,name.rus,Материально-технические ресурсы
+        * filter=EQ,code,mtr
       parameters:
         - $ref: '#/components/parameters/size'
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/sort'
-        - $ref: '#/components/parameters/filter'
+        - $ref: '#/components/parameters/filterV1'
       responses:
         '200':
-          description: OK
+          description: Успех
           content:
             application/json:
               schema:
@@ -560,7 +121,7 @@ paths:
                   content:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Directory'
+                      $ref: '#/components/schemas/DirectoryV1'
                   pageable:
                     type: object
                     description: Параметры пагинации данных
@@ -663,28 +224,152 @@ paths:
           $ref: '#/components/responses/401-unauthorized'
         '403':
           $ref: '#/components/responses/403-forbidden'
-        '404':
-          description: Not Found
         '414':
           $ref: '#/components/responses/414-uri-long'
         '500':
-          description: Внутренняя ошибка сервера
+          $ref: '#/components/responses/500-server-error'
     parameters: []
-  '/v1/directories/{directoryCode}':
-    parameters:
-      - schema:
-          type: string
-        name: directoryCode
-        in: path
-        required: true
-        description: Уникальный в рамках Системы код справочника
-    get:
-      summary: Получение справочника
-      tags:
-        - directories
+  /v1/directories/filter:
+    parameters: []
+    post:
+      summary: Получение отфильтрованных объектов НСИ
+      operationId: postDirectoriesV1
       responses:
         '200':
-          description: OK
+          description: Успех
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DirectoryV1'
+                  pageable:
+                    type: object
+                    description: Параметры пагинации данных
+                    properties:
+                      sort:
+                        type: object
+                        description: Параметры сортировки
+                        properties:
+                          sorted:
+                            type: boolean
+                            description: Признак наличия сортировки заданной пользователем
+                          unsorted:
+                            type: boolean
+                            description: Признак отсутствия сортировки заданной пользователем
+                          empty:
+                            type: boolean
+                            description: Признак наличия сортировки
+                      pageSize:
+                        type: integer
+                        description: Количество элементов на странице
+                        format: int32
+                        example: 17
+                      pageNumber:
+                        type: integer
+                        description: Номер отображаемой страницы
+                        format: int32
+                        example: 1
+                      offset:
+                        type: integer
+                        description: Смещение по отношению к первой странице с учётом её размера
+                        format: int32
+                        example: 20
+                      paged:
+                        type: boolean
+                        description: Признак постраничного отображения данных
+                      unpaged:
+                        type: boolean
+                        description: Признак отсутствия постраничного отображения данных
+                  totalPages:
+                    type: integer
+                    description: Общее количество страниц
+                    format: int32
+                    example: 1
+                  totalElements:
+                    type: integer
+                    description: Общее количество элеметов
+                    format: int32
+                    example: 15
+                  first:
+                    type: boolean
+                    description: Признак первой страницы
+                  last:
+                    type: boolean
+                    description: Признак последней страницы
+                  sort:
+                    type: object
+                    description: Параметры сортировки
+                    properties:
+                      sorted:
+                        type: boolean
+                        description: Признак наличия сортировки заданной пользователем
+                      unsorted:
+                        type: boolean
+                        description: Признак отсутствия сортировки заданной пользователей
+                      empty:
+                        type: boolean
+                        description: Признак наличия сортировки
+                  numberofElements:
+                    type: integer
+                    description: Количество элементов на странице- фактическое
+                    format: int32
+                    example: 17
+                  size:
+                    type: integer
+                    description: |
+                      Количество элементов на странице
+                    format: int32
+                    example: 20
+                  number:
+                    type: integer
+                    description: Номер страницы
+                    example: 1
+                    format: int32
+                  empty:
+                    type: boolean
+                    description: Признак наличия content
+                required:
+                  - content
+                  - pageable
+                  - totalPages
+                  - totalElements
+                  - first
+                  - last
+                  - sort
+                  - numberofElements
+                  - size
+                  - number
+                  - empty
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      description: Постраничное получение отфильтрованных актуальных версий справочников и классификаторов
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterV1'
+      tags:
+        - directories
+        - v1
+  '/v1/directories/{directoryCode}':
+    parameters:
+      - $ref: '#/components/parameters/directoryCode'
+    get:
+      summary: Получение объекта НСИ
+      tags:
+        - directories
+        - v1
+      responses:
+        '200':
+          description: Успех
           headers: {}
           content:
             application/json:
@@ -692,39 +377,25 @@ paths:
                 type: object
                 properties:
                   content:
-                    $ref: '#/components/schemas/Directory'
+                    $ref: '#/components/schemas/DirectoryV1'
         '401':
           $ref: '#/components/responses/401-unauthorized'
         '403':
           $ref: '#/components/responses/403-forbidden'
         '404':
-          description: Объект не найден
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                  argument:
-                    type: string
+          $ref: '#/components/responses/404-not-found'
         '500':
-          description: Внутренняя ошибка сервера
+          $ref: '#/components/responses/500-server-error'
       operationId: getDirectory
-      description: Получение конкретного справочника
+      description: Получение актуальной версии конкретного справочника или классификатора
   '/v1/directories/{directoryCode}/items':
     parameters:
-      - schema:
-          type: string
-          example: material_and_technical_resources
-        name: directoryCode
-        in: path
-        required: true
-        description: Уникальный в рамках Системы код справочника
+      - $ref: '#/components/parameters/directoryCode'
     get:
-      summary: Получение записей справочника
+      summary: Получение элементов объекта НСИ
       tags:
         - items
+        - v1
       responses:
         '200':
           description: Успех
@@ -746,76 +417,64 @@ paths:
         '500':
           description: Внутренняя ошибка сервера
       operationId: getItems
-      description: Постраничное получение записей конкретного справочника
+      description: |
+        **Постраничное получение актуальных версий записей или классов**
+
+
+        Особенности фильтрации
+
+        1. Фильтр может использовать один параметр или несколько. Для фильтрации по нескольким параметрам необходимо несколько раз указать Query Parameter `filter`, соединив их символом `&`.
+        2. Синтаксис значения Query Parameter `filter` следующий `operator,property,value`
+        3. Оператором могут быть следующие значения:
+           * `GT` - больше;
+           * `GE` - больше или равно;
+           * `LT` - меньше;
+           * `LE` - меньше или равно;
+           * `EQ` - равно (полное совпадение);
+           * `NE` - не равно;
+           * `EQ_IGNORE_CASE` - равно (полное совпадение без учёта регистра);
+           * `STARTS_WITH` - начинается с;
+           * `ENDS_IN` - оканчивается на;
+           * `IN` - список значений (полное совпадение со всеми);
+           * `LIKE` - равно (частичное совпадение);
+           * `NOT_LIKE` - не равно (частичное совпадение);
+           * `LIKE_IGNORE_CASE` - равно (частичное совпадение без учёта регистра);
+           * `NOT_LIKE_IGNORE_CASE` - не равно (частичное совпадение без учёта регистра);
+           * `FTS` - полнотекстовый поиск;
+           * `IS_NULL` - отсутствие значения.
+        4. Свойством могут быть следующие значения:
+           * `name.<language>` - указание, что фильтрация по наименованию элемента
+           * `code` - указание, что фильтрация по коду элемента
+           * `attributeValueCode.<attributeCode>.<language>` - указание, что фильтрация по значению атрибута
+        5. `<language>` необходимо указывать для значений, являющихся текстом. `<language>` может принимать следующие значения: `rus`, `eng`, `tur`, `byDefault`
+        6. Значением могут быть следующие значения:
+           * Зарезервированные в URL символы: "! * ' ( ) ; : @ & = + $ , / ? % # [ ]"
+           * Не зарезервированные в URL символы: "[A-Z] [a-z] [0-9] - _ . ~"
+           * Иные символы в формате URL encoding
+           * JSON объект в формате URL encoding, когда атрибут имеет тип ссылка: `{"code": "name", "directoryCode": "name"}`
+
+        Примеры
+
+        * filter=EQ,attributeValueCode.positions,{"code": "CHIEF_STATE_ENGINEER-INSPECTOR", "directoryCode": "positions"}
+        * filter=EQ,attributeValueCode.inspection.rus,87
+        * filter=EQ,name.rus,Руководитель службы
+        * filter=EQ,code,CHIEF_STATE_ENGINEER-INSPECTOR_87
       parameters:
         - $ref: '#/components/parameters/size'
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/sort'
-        - $ref: '#/components/parameters/filter'
+        - $ref: '#/components/parameters/filterV1'
         - $ref: '#/components/parameters/dataSet'
         - $ref: '#/components/parameters/includeAttributes'
-    post:
-      summary: Создание записи в справочнике
-      operationId: createItem
-      responses:
-        '200':
-          description: Подтверждение успешного сохранения
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TechnicalAttributesItem'
-              examples: {}
-        '400':
-          description: Некорректные входные данные.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-        '401':
-          $ref: '#/components/responses/401-unauthorized'
-        '403':
-          $ref: '#/components/responses/403-forbidden'
-        '404':
-          description: Not Found
-        '422':
-          description: Допущена логическая ошибка
-        '500':
-          description: Внутренняя ошибка сервера
-      tags:
-        - items
-      description: Метод предназначен для сохранения в БД новой записи
-      requestBody:
-        content:
-          application/json:
-            schema:
-              oneOf:
-                - $ref: '#/components/schemas/ItemWithAttributes'
-                - $ref: '#/components/schemas/ItemWithoutAttributes'
-            examples: {}
   '/v1/directories/{directoryCode}/items/{itemCode}':
     parameters:
-      - schema:
-          type: string
-          example: material_and_technical_resources
-        name: directoryCode
-        in: path
-        required: true
-        description: Уникальный в рамках Системы код справочника
-      - schema:
-          type: string
-          example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
-        name: itemCode
-        in: path
-        required: true
-        description: Уникальный в рамках справочника код записи
+      - $ref: '#/components/parameters/directoryCode'
+      - $ref: '#/components/parameters/itemCode'
     get:
-      summary: Получение записи справочника
+      summary: Получение элемента объекта НСИ
       tags:
         - items
+        - v1
       responses:
         '200':
           description: Успех
@@ -845,25 +504,75 @@ paths:
         '500':
           description: Внутренняя ошибка сервера
       operationId: getItem
-      description: Получение конкретной записи конкретного справочника
+      description: Получение конкретной записи или класса
       parameters:
         - $ref: '#/components/parameters/dataSet'
         - $ref: '#/components/parameters/includeAttributes'
-  /v1/proposals:
+      x-stoplight:
+        id: 1uj5x51inuvla
+  /v2/directories:
     get:
-      summary: Получение списка всех заявок
+      summary: Получение объектов НСИ
       tags:
-        - proposals
-      operationId: getProposals
-      description: Постраничное получение заявок Системы
+        - directories
+        - v2
+      operationId: getDirectoriesV2
+      description: |-
+        **Постраничное получение актуальных версий справочников и классификаторов**
+
+
+        Особенности фильтрации
+
+        1. Фильтр может использовать один параметр или несколько. Для фильтрации по нескольким параметрам необходимо несколько раз указать Query Parameter `filter`, соединив их символом `&`.
+        2. Синтаксис значения Query Parameter `filter` следующий `operator,property,value`
+        3. Оператором могут быть следующие значения:
+           * `GT` - больше;
+           * `GE` - больше или равно;
+           * `LT` - меньше;
+           * `LE` - меньше или равно;
+           * `EQ` - равно (полное совпадение);
+           * `NE` - не равно;
+           * `EQ_IGNORE_CASE` - равно (полное совпадение без учёта регистра);
+           * `STARTS_WITH` - начинается с;
+           * `ENDS_IN` - оканчивается на;
+           * `IN` - список значений (полное совпадение со всеми);
+           * `LIKE` - равно (частичное совпадение);
+           * `NOT_LIKE` - не равно (частичное совпадение);
+           * `LIKE_IGNORE_CASE` - равно (частичное совпадение без учёта регистра);
+           * `NOT_LIKE_IGNORE_CASE` - не равно (частичное совпадение без учёта регистра);
+           * `FTS` - полнотекстовый поиск;
+           * `IS_NULL` - отсутствие значения.
+        4. Свойством могут быть следующие значения:
+           * `name.<language>` - указание, что фильтрация по наименованию объекта НСИ
+           * `code` - указание, что фильтрация по коду объекта НСИ
+           * `statusModel`- указание, что фильтрация по коду статусной модели объекта НСИ
+           * `typeCode`- указание, что фильтрация по коду типа объекта НСИ
+           * `dataTypeCode`- указание, что фильтрация по коду типа данных объекта НСИ
+           * `hierarchical`- указание, что фильтрация по признаку иерархии объекта НСИ
+           * `versionUuid`- указание, что фильтрация по версии объекта НСИ
+           * `validFrom`- указание, что фильтрация по дате и времени начала действия версии объекта НСИ
+           * `validTo`- указание, что фильтрация по дате и времени окончания действия версии объекта НСИ
+        5. `<language>` необходимо указывать для значений, являющихся текстом. `<language>` может принимать следующие значения: `rus`, `eng`, `tur`, `byDefault`
+        6. Значением могут быть следующие значения:
+           * Зарезервированные в URL символы: "! * ' ( ) ; : @ & = + $ , / ? % # [ ]"
+           * Не зарезервированные в URL символы: "[A-Z] [a-z] [0-9] - _ . ~"
+           * Иные символы в формате URL encoding
+           * для параметра `statusModel`- DEFAULT (стандартная), COUNTERPARTIES (контрагенты)
+           * для параметра `typeCode`- INTERNAL (внутренний), EXTERNAL (внешний), LOCAL (локальный)
+           * для параметра `dataTypeCode`- MASTER (основные), REFERENCE (справочные), CLASSIFIER (классифицированные)
+           
+        Примеры
+
+        * filter=EQ,name.rus,Материально-технические ресурсы
+        * filter=EQ,code,mtr
       parameters:
         - $ref: '#/components/parameters/size'
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/sort'
-        - $ref: '#/components/parameters/filter'
+        - $ref: '#/components/parameters/filterV2'
       responses:
         '200':
-          description: OK
+          description: Успех
           content:
             application/json:
               schema:
@@ -872,7 +581,7 @@ paths:
                   content:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Proposal'
+                      $ref: '#/components/schemas/DirectoryV2'
                   pageable:
                     type: object
                     description: Параметры пагинации данных
@@ -971,105 +680,25 @@ paths:
                   - size
                   - number
                   - empty
-              examples: {}
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/401-unauthorized'
         '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+          $ref: '#/components/responses/403-forbidden'
         '414':
           $ref: '#/components/responses/414-uri-long'
         '500':
-          description: Внутренняя ошибка сервера
-    post:
-      summary: Создание заявки
-      tags:
-        - proposals
-      operationId: postProposals
-      description: Создание заявки
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Proposal'
-                required:
-                  - content
-              examples: {}
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-        '422':
-          description: Допущена логическая ошибка
-        '500':
-          description: Внутренняя ошибка сервера
+          $ref: '#/components/responses/500-server-error'
+      x-stoplight:
+        id: wfb234z1e9xya
     parameters: []
-  '/v1/proposals/{proposalsId}':
-    get:
-      summary: Получение заявки
-      operationId: getProposal
-      description: Получение заявки
-      parameters: []
+  /v2/directories/filter:
+    parameters: []
+    post:
+      summary: Получение отфильтрованных объектов НСИ
+      operationId: postDirectoriesV2
       responses:
         '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  content:
-                    $ref: '#/components/schemas/Proposal'
-                required:
-                  - content
-              examples: {}
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-        '500':
-          description: Внутренняя ошибка сервера
-      tags:
-        - proposals
-    parameters:
-      - schema:
-          type: string
-        name: proposalsId
-        in: path
-        required: true
-        description: Заявка
-  /v1/attributes:
-    get:
-      summary: Получение атрибутов
-      operationId: getAttributes
-      tags:
-        - attributes
-      description: Постраничное получение атрибутов Системы
-      parameters:
-        - $ref: '#/components/parameters/size'
-        - $ref: '#/components/parameters/page'
-        - $ref: '#/components/parameters/sort'
-        - $ref: '#/components/parameters/filter'
-      responses:
-        '200':
-          description: OK
+          description: Успех
           content:
             application/json:
               schema:
@@ -1078,7 +707,7 @@ paths:
                   content:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Attribute'
+                      $ref: '#/components/schemas/DirectoryV2'
                   pageable:
                     type: object
                     description: Параметры пагинации данных
@@ -1177,53 +806,218 @@ paths:
                   - size
                   - number
                   - empty
-              examples: {}
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/401-unauthorized'
         '403':
-          description: Forbidden
-        '404':
-          description: Not Found
-        '414':
-          $ref: '#/components/responses/414-uri-long'
+          $ref: '#/components/responses/403-forbidden'
         '500':
-          description: Внутренняя ошибка сервера
-  '/v1/attributes/{attributesCode}':
+          $ref: '#/components/responses/500-server-error'
+      description: Постраничное получение отфильтрованных актуальных версий справочников и классификаторов
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterV2'
+      tags:
+        - directories
+        - v2
+  '/v2/directories/{directoryCode}':
     parameters:
-      - schema:
-          type: string
-        name: attributesCode
-        in: path
-        required: true
-        description: Атрибут
+      - $ref: '#/components/parameters/directoryCode'
     get:
-      summary: Получение атрибута
-      operationId: getAttribute
-      description: Получение атрибута
-      parameters: []
+      summary: Получение объекта НСИ
+      tags:
+        - directories
+        - v2
       responses:
         '200':
-          description: OK
+          description: Успех
+          headers: {}
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   content:
-                    $ref: '#/components/schemas/Attribute'
+                    $ref: '#/components/schemas/DirectoryV2'
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      operationId: getDirectoryV2
+      description: Получение актуальной версии конкретного справочника или классификатора
+      x-stoplight:
+        id: orf0sbylj782d
+  '/v2/directories/{directoryCode}/versions':
+    get:
+      summary: Получение версий объекта НСИ
+      tags:
+        - directories
+        - v2
+      operationId: getDirectoryVersionsV2
+      description: Постраничное получение всех версий справочника или классификатора
+      parameters:
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DirectoryV2'
+                  pageable:
+                    type: object
+                    description: Параметры пагинации данных
+                    properties:
+                      sort:
+                        type: object
+                        description: Параметры сортировки
+                        properties:
+                          sorted:
+                            type: boolean
+                            description: Признак наличия сортировки заданной пользователем
+                          unsorted:
+                            type: boolean
+                            description: Признак отсутствия сортировки заданной пользователем
+                          empty:
+                            type: boolean
+                            description: Признак наличия сортировки
+                      pageSize:
+                        type: integer
+                        description: Количество элементов на странице
+                        format: int32
+                        example: 17
+                      pageNumber:
+                        type: integer
+                        description: Номер отображаемой страницы
+                        format: int32
+                        example: 1
+                      offset:
+                        type: integer
+                        description: Смещение по отношению к первой странице с учётом её размера
+                        format: int32
+                        example: 20
+                      paged:
+                        type: boolean
+                        description: Признак постраничного отображения данных
+                      unpaged:
+                        type: boolean
+                        description: Признак отсутствия постраничного отображения данных
+                  totalPages:
+                    type: integer
+                    description: Общее количество страниц
+                    format: int32
+                    example: 1
+                  totalElements:
+                    type: integer
+                    description: Общее количество элеметов
+                    format: int32
+                    example: 15
+                  first:
+                    type: boolean
+                    description: Признак первой страницы
+                  last:
+                    type: boolean
+                    description: Признак последней страницы
+                  sort:
+                    type: object
+                    description: Параметры сортировки
+                    properties:
+                      sorted:
+                        type: boolean
+                        description: Признак наличия сортировки заданной пользователем
+                      unsorted:
+                        type: boolean
+                        description: Признак отсутствия сортировки заданной пользователей
+                      empty:
+                        type: boolean
+                        description: Признак наличия сортировки
+                  numberofElements:
+                    type: integer
+                    description: Количество элементов на странице- фактическое
+                    format: int32
+                    example: 17
+                  size:
+                    type: integer
+                    description: |
+                      Количество элементов на странице
+                    format: int32
+                    example: 20
+                  number:
+                    type: integer
+                    description: Номер страницы
+                    example: 1
+                    format: int32
+                  empty:
+                    type: boolean
+                    description: Признак наличия content
                 required:
                   - content
-              examples: {}
+                  - pageable
+                  - totalPages
+                  - totalElements
+                  - first
+                  - last
+                  - sort
+                  - numberofElements
+                  - size
+                  - number
+                  - empty
         '401':
-          description: Unauthorized
+          $ref: '#/components/responses/401-unauthorized'
         '403':
-          description: Forbidden
-        '404':
-          description: Not Found
+          $ref: '#/components/responses/403-forbidden'
+        '414':
+          $ref: '#/components/responses/414-uri-long'
         '500':
-          description: Внутренняя ошибка сервера
+          $ref: '#/components/responses/500-server-error'
+      x-stoplight:
+        id: taf2y3zk3hmyx
+    parameters:
+      - $ref: '#/components/parameters/directoryCode'
+  '/v2/directories/{directoryCode}/versions/{versionUuid}':
+    parameters:
+      - $ref: '#/components/parameters/directoryCode'
+      - $ref: '#/components/parameters/versionUuid'
+    get:
+      summary: Получение версии объекта НСИ
       tags:
-        - attributes
+        - directories
+        - v2
+      responses:
+        '200':
+          description: Успех
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    $ref: '#/components/schemas/DirectoryV2'
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      operationId: getDirectoryVersionV2
+      description: Получение конкретной версии справочника или классификатора
+      x-stoplight:
+        id: rulsl1nqiybiz
 components:
   securitySchemes:
     Authorization:
@@ -1232,326 +1026,49 @@ components:
       bearerFormat: JWT
       description: Токен доступа
   schemas:
-    Classifier:
-      title: Классификатор
+    DirectoryV1:
       type: object
-      description: Классификатор
-      examples: []
-      properties:
-        code:
-          type: string
-          description: Уникальный код классификатора в рамках системы
-          example: okpd2
-        name:
-          type: object
-          description: Наименование классификатора
-          properties:
-            byDefault:
-              type: string
-              description: на русском языке
-              minLength: 1
-              maxLength: 500
-              readOnly: true
-            rus:
-              type: string
-              description: на русском языке
-              minLength: 1
-              maxLength: 500
-              example: ОКПД2
-              readOnly: true
-            eng:
-              type: string
-              description: на английском языке
-              minLength: 1
-              maxLength: 500
-              example: Pan-Russian product classification by economic activity
-              readOnly: true
-            tur:
-              type: string
-              description: на турецком языке
-              minLength: 1
-              maxLength: 500
-              example: Ekonomik faaliyete göre Pan-Rus ürün sınıflandırması
-              readOnly: true
-            anotherLanguage:
-              type: string
-              minLength: 1
-              maxLength: 500
-              description: на любом другом языке
-              example: ___
-              readOnly: true
-          readOnly: true
-        type:
-          type: string
-          format: int32
-          x-stoplight:
-            id: b55asiek0msiy
-          enum:
-            - INTERNAL
-            - EXTERNAL
-            - LOCAL
-          default: LOCAL
-          description: |-
-            Тип классификатора:
-            1. LOCAL - ведется в НСИ
-            2. INTERNAL - ведется не в НСИ (внутриплатформы)
-            3. EXTERNAL - ведется не в НСИ (в интеренете)
-        validFrom:
-          type: string
-          x-stoplight:
-            id: ai5hston1qvlz
-          description: Дата и время начала действия
-          format: date-time
-          example: '2023-04-10 15:45:18.300693+00'
-          readOnly: true
-        validTo:
-          type: string
-          x-stoplight:
-            id: bp1vlx9orsc1r
-          description: Дата и время окончания действия
-          format: date-time
-          readOnly: true
-      required:
-        - code
-        - name
-        - type
-        - validFrom
-    Class:
-      title: Класс
-      type: object
-      description: Класс классификатора
-      properties:
-        code:
-          type: string
-          description: Уникальный код класса в рамках классификатора
-          example: ee211860-4018-4b9b-8a12-42f6066ef01d
-        businessCode:
-          type: string
-          description: Уникальный в рамках классификатора бизнесовый код класса
-          example: 50.10.12.000
-        name:
-          type: object
-          description: Наименование класса
-          properties:
-            byDefault:
-              type: string
-              description: на русском языке
-              minLength: 1
-              maxLength: 500
-              readOnly: true
-            rus:
-              type: string
-              description: на русском языке
-              minLength: 1
-              maxLength: 500
-              example: Услуги по заграничным и каботажным перевозкам пассажиров круизными судами
-              readOnly: true
-            eng:
-              type: string
-              description: на английском языке
-              minLength: 1
-              maxLength: 500
-              example: Overseas and coastal cruise passenger services
-              readOnly: true
-            tur:
-              type: string
-              description: на турецком языке
-              minLength: 1
-              maxLength: 500
-              example: Denizaşırı ve kıyı yolcu hizmetleri
-              readOnly: true
-            anotherLanguage:
-              type: string
-              minLength: 1
-              maxLength: 500
-              description: на любом другом языке
-              example: ___
-              readOnly: true
-          readOnly: true
-        validFrom:
-          type: string
-          description: Дата и время начала действия
-          format: date-time
-          example: '2023-04-10 15:45:18.300693+00'
-          readOnly: true
-        validTo:
-          type: string
-          description: Дата и время окончания действия
-          format: date-time
-          readOnly: true
-      required:
-        - code
-        - name
-        - validFrom
-    UpClassesHierarchy:
-      oneOf:
-        - $ref: '#/components/schemas/Class'
-          description: Класс классификатора без предка
-        - type: object
-          description: Класс классификатора с предком
-          properties:
-            code:
-              type: string
-              description: Уникальный код класса в рамках классификатора
-              example: ee211860-4018-4b9b-8a12-42f6066ef01d
-            businessCode:
-              type: string
-              description: Уникальный в рамках классификатора бизнесовый код класса
-              example: 50.10.12.000
-            parentCode:
-              $ref: '#/components/schemas/UpClassesHierarchy'
-              description: Класс-предок
-            name:
-              type: object
-              description: Наименование класса
-              properties:
-                byDefault:
-                  type: string
-                  description: на русском языке
-                  minLength: 1
-                  maxLength: 500
-                  readOnly: true
-                rus:
-                  type: string
-                  description: на русском языке
-                  minLength: 1
-                  maxLength: 500
-                  example: Услуги по заграничным и каботажным перевозкам пассажиров круизными судами
-                  readOnly: true
-                eng:
-                  type: string
-                  description: на английском языке
-                  minLength: 1
-                  maxLength: 500
-                  example: Overseas and coastal cruise passenger services
-                  readOnly: true
-                tur:
-                  type: string
-                  description: на турецком языке
-                  minLength: 1
-                  maxLength: 500
-                  example: Denizaşırı ve kıyı yolcu hizmetleri
-                  readOnly: true
-                anotherLanguage:
-                  type: string
-                  minLength: 1
-                  maxLength: 500
-                  description: на любом другом языке
-                  example: ___
-                  readOnly: true
-              readOnly: true
-            validFrom:
-              type: string
-              description: Дата и время начала действия
-              format: date-time
-              example: '2023-04-10 15:45:18.300693+00'
-              readOnly: true
-            validTo:
-              type: string
-              description: Дата и время окончания действия
-              format: date-time
-              readOnly: true
-          required:
-            - code
-            - parentCode
-            - name
-            - validFrom
       x-stoplight:
-        id: babebc78663d6
-      title: Иерархия классов "вверх"
-      description: Иерархия классов от прямого предка до корня
-    DownClassesHierarchy:
-      oneOf:
-        - $ref: '#/components/schemas/Class'
-          description: Класс классификатора без предка
-        - type: object
-          description: Класс классификатора с предком
-          properties:
-            code:
-              type: string
-              description: Уникальный код класса в рамках классификатора
-              example: ee211860-4018-4b9b-8a12-42f6066ef01d
-            businessCode:
-              type: string
-              description: Уникальный в рамках классификатора бизнесовый код класса
-              example: 50.10.12.000
-            childCode:
-              $ref: '#/components/schemas/DownClassesHierarchy'
-              description: Класс-предок
-              x-stoplight:
-                id: nirm1sz3g6sk1
-            name:
-              type: object
-              description: Наименование класса
-              properties:
-                byDefault:
-                  type: string
-                  description: на русском языке
-                  minLength: 1
-                  maxLength: 500
-                  readOnly: true
-                rus:
-                  type: string
-                  description: на русском языке
-                  minLength: 1
-                  maxLength: 500
-                  example: Услуги по заграничным и каботажным перевозкам пассажиров круизными судами
-                  readOnly: true
-                eng:
-                  type: string
-                  description: на английском языке
-                  minLength: 1
-                  maxLength: 500
-                  example: Overseas and coastal cruise passenger services
-                  readOnly: true
-                tur:
-                  type: string
-                  description: на турецком языке
-                  minLength: 1
-                  maxLength: 500
-                  example: Denizaşırı ve kıyı yolcu hizmetleri
-                  readOnly: true
-                anotherLanguage:
-                  type: string
-                  minLength: 1
-                  maxLength: 500
-                  description: на любом другом языке
-                  example: ___
-                  readOnly: true
-              readOnly: true
-            validFrom:
-              type: string
-              description: Дата и время начала действия
-              format: date-time
-              example: '2023-04-10 15:45:18.300693+00'
-              readOnly: true
-            validTo:
-              type: string
-              description: Дата и время окончания действия
-              format: date-time
-              readOnly: true
-          required:
-            - code
-            - childCode
-            - name
-            - validFrom
-      x-stoplight:
-        id: nuyu2o83l668t
-      title: Иерархия классов "вниз"
-      description: Иерархия классов от корня до прямого предка
-    Directory:
-      type: object
-      title: Справочник
-      description: Справочник
+        id: 7a769241f2e00
+      title: Объект НСИ
+      description: 'Объект НСИ со справочными, основными или классифицированными данными'
       properties:
         code:
           type: string
           example: material_and_technical_resources
-          description: Уникальный код справочника в рамках системы
+          description: Уникальный код в рамках Системы
+          readOnly: true
+        statusModel:
+          type: string
+          enum:
+            - COUNTERPARTIES
+            - DEFAULT
+          description: Код статусной модели
+          readOnly: true
+        typeCode:
+          x-stoplight:
+            id: rhcfjigdxatjm
+          enum:
+            - INTERNAL
+            - EXTERNAL
+            - LOCAL
+          description: 'Тип. Значения: INTERNAL (внутренний), EXTERNAL (внешний), LOCAL (локальный)'
+          readOnly: true
+        dataTypeCode:
+          x-stoplight:
+            id: 7xf774y4gfncy
+          description: 'Тип данных. Значения: MASTER (основные), REFERENCE (справочные), CLASSIFIER (классифицированные)'
+          enum:
+            - MASTER
+            - REFERENCE
+            - CLASSIFIER
           readOnly: true
         name:
           type: object
-          description: Наименование справочника
+          description: Наименование
+          additionalProperties: false
+          required:
+            - byDefault
           properties:
             byDefault:
               type: string
@@ -1589,6 +1106,30 @@ components:
               example: ___
               readOnly: true
           readOnly: true
+      required:
+        - code
+        - typeCode
+        - dataTypeCode
+        - name
+      readOnly: true
+    DirectoryV2:
+      type: object
+      title: Объект НСИ
+      description: 'Объект НСИ со справочными, основными или классифицированными данными'
+      properties:
+        code:
+          type: string
+          example: material_and_technical_resources
+          description: Уникальный код в рамках Системы
+          readOnly: true
+        versionUuid:
+          type: string
+          x-stoplight:
+            id: ly8b6n44462c3
+          format: uuid
+          example: 2e301dfb-a065-4374-b586-a1840bf1d147
+          description: Глобальный уникальный идентификатор версии в рамках Системы
+          readOnly: true
         statusModel:
           type: string
           enum:
@@ -1596,12 +1137,100 @@ components:
             - DEFAULT
           description: Код статусной модели
           readOnly: true
+        typeCode:
+          x-stoplight:
+            id: k7embwwfizb1r
+          enum:
+            - INTERNAL
+            - EXTERNAL
+            - LOCAL
+          description: 'Тип. Значения: INTERNAL (внутренний), EXTERNAL (внешний), LOCAL (локальный)'
+          readOnly: true
+        dataTypeCode:
+          x-stoplight:
+            id: odc7ggalcb1h0
+          description: 'Тип данных. Значения: MASTER (основные), REFERENCE (справочные), CLASSIFIER (классифицированные)'
+          enum:
+            - MASTER
+            - REFERENCE
+            - CLASSIFIER
+          readOnly: true
+        hierarchical:
+          type: boolean
+          x-stoplight:
+            id: s9i48nh44disn
+          description: Признак иерархии
+          readOnly: true
+        name:
+          type: object
+          description: Наименование
+          additionalProperties: false
+          required:
+            - byDefault
+          properties:
+            byDefault:
+              type: string
+              minLength: 1
+              maxLength: 500
+              example: Материально-технические ресурсы
+              description: на русском языке
+              readOnly: true
+            rus:
+              type: string
+              minLength: 1
+              maxLength: 500
+              example: Материально-технические ресурсы
+              description: на русском языке
+              readOnly: true
+            eng:
+              type: string
+              minLength: 1
+              maxLength: 500
+              example: Material and technical resources
+              description: на английском языке
+              readOnly: true
+            tur:
+              type: string
+              minLength: 1
+              maxLength: 500
+              example: Malzeme ve teknik kaynaklar
+              description: на турецком языке
+              readOnly: true
+            anotherLanguage:
+              type: string
+              minLength: 1
+              maxLength: 500
+              description: на любом другом языке
+              example: ___
+              readOnly: true
+          readOnly: true
+        validFrom:
+          type: string
+          x-stoplight:
+            id: 3qwkruwld5nqy
+          format: date-time
+          description: Дата и время начала действия
+          example: '2023-06-15 15:35:17.128882+00'
+          readOnly: true
+        validTo:
+          type: string
+          x-stoplight:
+            id: k30bnxp8o03tu
+          format: date-time
+          description: Дата и время окончания действия
+          example: '2023-07-07 13:29:59.522586+00'
+          readOnly: true
       required:
         - code
+        - versionUuid
+        - typeCode
+        - dataTypeCode
+        - hierarchical
         - name
+        - validFrom
       readOnly: true
     ItemWithAttributesCollection:
-      title: Коллекция записей с атрибутами
+      title: Коллекция элементов с атрибутами
       type: object
       description: Коллекция записей с атрибутами
       properties:
@@ -1629,7 +1258,7 @@ components:
           properties:
             content:
               type: array
-              description: 'Множество записей, соотвествующих одному из объектов записи (в зависимости от значения dataSet)'
+              description: 'Коллекция записей, соотвествующих одному из объектов записи (в зависимости от значения dataSet)'
               items:
                 oneOf:
                   - $ref: '#/components/schemas/FullDirectoryItem'
@@ -1739,8 +1368,8 @@ components:
       readOnly: true
     ItemWithoutAttributesCollection:
       type: object
-      title: Коллекция записей без атрибутов
-      description: Коллекция записей без атрибутов
+      title: Коллекция элементов без атрибутов
+      description: Коллекция записей или классов без атрибутов
       examples: []
       properties:
         wrapper:
@@ -1761,7 +1390,7 @@ components:
           properties:
             content:
               type: array
-              description: 'Множество записей, соотвествующих одному из объектов записи (в зависимости от значения dataSet)'
+              description: 'Коллекция записей, соотвествующих одному из объектов записи (в зависимости от значения dataSet), или классов'
               items:
                 oneOf:
                   - $ref: '#/components/schemas/FullDirectoryItem'
@@ -1870,21 +1499,21 @@ components:
       readOnly: true
     ItemWithoutAttributes:
       type: object
-      description: Запись без атрибутов
-      title: Запись без атрибутов
+      description: Запись или класс без атрибутов
+      title: Элемент без атрибутов
       properties:
         item:
           oneOf:
             - $ref: '#/components/schemas/FullDirectoryItem'
             - $ref: '#/components/schemas/DefaultDirectoryItem'
             - $ref: '#/components/schemas/ShortDirectoryItem'
-          description: Один из объектов записи (в зависимости от значения dataSet)
+          description: Один из объектов записи (в зависимости от значения dataSet) или класс
       required:
         - item
     ItemWithAttributes:
       type: object
       description: Запись с атрибутами
-      title: Запись с атрибутами
+      title: Элемент с атрибутами
       properties:
         attributes:
           type: array
@@ -1902,55 +1531,6 @@ components:
         - attributes
         - item
       readOnly: true
-    TechnicalAttributesItem:
-      title: TechnicalAttributesItem
-      type: object
-      description: Технические атрибуты записи
-      properties:
-        id:
-          type: string
-          description: Уникальный идентификатор
-          example: '1'
-          readOnly: true
-        code:
-          type: string
-          description: Уникальный код в разрезе Системы
-          example: 8e48c190-8edb-4a58-a146-d7fea8c264f3
-          readOnly: true
-        name:
-          type: object
-          description: Наименование записи. Мультиязычное текстовое поле.
-          properties:
-            byDefault:
-              type: string
-              description: Наименование записи на русском языке
-              example: Продукция
-              readOnly: true
-            rus:
-              type: string
-              description: Наименование записи на русском языке
-              example: Продукция
-              readOnly: true
-            eng:
-              type: string
-              description: Наименование записи на английском языке
-              example: Products
-              readOnly: true
-            tur:
-              type: string
-              description: Наименование записи на турецком языке
-              example: Ürün
-              readOnly: true
-            anotherLanguage:
-              type: string
-              description: на любом другом языке
-              example: ___
-              readOnly: true
-      required:
-        - id
-        - code
-        - name
-      examples: []
     FullDirectoryItem:
       title: Полная запись справочника
       type: object
@@ -2240,6 +1820,45 @@ components:
         - lock
         - validFrom
       readOnly: true
+    AllDirectoryClass:
+      title: Класс справочника
+      x-stoplight:
+        id: u73sznbcszx8m
+      type: object
+      description: 'Класс справочника с классифицированными данными (классификатор), где нет атрибутов'
+      properties:
+        code:
+          type: string
+          x-stoplight:
+            id: v8bnrblqe0el8
+        versionUuid:
+          type: string
+          x-stoplight:
+            id: w5ugaf1mipill
+        parentVersionUuid:
+          type: string
+          x-stoplight:
+            id: geoeqb8x3tq6h
+        businessCode:
+          type: string
+          x-stoplight:
+            id: uewjkyatibg9s
+        name:
+          type: object
+          x-stoplight:
+            id: tnmwn7whe8i66
+        status:
+          type: string
+          x-stoplight:
+            id: vnrmnz90m0uzf
+        validFrom:
+          type: string
+          x-stoplight:
+            id: vzw1ig535pruj
+        validTo:
+          type: string
+          x-stoplight:
+            id: i5rvmelespxq8
     Attribute:
       type: object
       title: Атрибут
@@ -2357,10 +1976,6 @@ components:
               - $ref: '#/components/schemas/ValueOther'
             description: Один из объектов значения (в зависимости от типа)
           readOnly: true
-        ProposalItemCell:
-          $ref: '#/components/schemas/ProposalItemCell'
-        ProposalValue:
-          $ref: '#/components/schemas/ProposalValue'
       required:
         - attributeCode
       readOnly: true
@@ -2645,241 +2260,162 @@ components:
         - value
         - alterValue
       readOnly: true
-    Proposal:
+    FilterV1:
+      title: Фильтр
       type: object
-      title: Заявка
-      description: Заявка
-      examples: []
+      description: Фильтр
       properties:
-        directoryCode:
-          type: string
-          example: region
-          description: Уникальный идентификатор справочника в который будет добавлена запись или в котором она будет изменена
-          readOnly: true
-        directoryItemCode:
-          type: string
-          example: 5ee994c5-59df-4a7b-b6d3-ff04ff652e22
-          description: Уникальный идентификатор изменяемой или созданной записи
-          readOnly: true
-        initialDirectoryItemName:
-          type: object
-          description: 'Первичное наименование записи, которое определил инициатор при создании заявки или редактировании в статусе "Черновик"'
-          properties:
-            byDefault:
-              type: string
-              minLength: 1
-              maxLength: 500
-              example: Насос циркуляционный 40
-              description: на русском языке
-            rus:
-              type: string
-              minLength: 1
-              maxLength: 500
-              example: Насос циркуляционный 40
-              description: на русском языке
-            eng:
-              type: string
-              minLength: 1
-              maxLength: 500
-              example: Circulation pump 40
-              description: на английском языке
-            tur:
-              type: string
-              minLength: 1
-              maxLength: 500
-              example: Sirkülasyon pompası 40
-              description: на турецком языке
-            anotherLanguage:
-              type: string
-              minLength: 1
-              maxLength: 500
-              description: на любом другом языке
-              example: ___
-        type:
-          type: string
-          example: CREATE
-          description: 'CREATE (  Создание записи),  UPDATE (  Изменение записи)'
-          enum:
-            - CREATE
-            - UPDATE
-        refinement:
-          type: boolean
-          example: false
-          description: Признак уточняемой заявки
-          readOnly: true
-        directoryItemStatus:
-          type: string
-          example: Эталон
-          description: Статус записи
-          enum:
-            - Эталон
-            - Блокированная
-            - Неактуальная
-          readOnly: true
-        visibility:
-          type: boolean
-          example: true
-          description: Признак видимости заявки (скрытия)
-          readOnly: true
-        status:
-          type: string
-          example: Отклонено
-          description: Статус заявки
-          enum:
-            - Выполнено
-            - Отклонено без обработки
-            - Отклонено без ответа
-            - Отклонено
-            - Заявки находящиеся без изменений заданное количество времени
-            - Черновик
-            - Новая
-            - В работе
-            - Уточнение
-            - Ошибка
-            - Ошибка обработки
-          readOnly: true
-        validationReport:
-          type: string
-          description: Отчет о непройденной валидации
-          readOnly: true
-        initiatorId:
-          type: string
-          description: Уникальный идентификатор инициатора
-          readOnly: true
-        executorId:
-          type: string
-          description: Уникальный идентификатор исполнителя (эксперта)
-          readOnly: true
-        statusUpdatedAt:
-          type: string
-          format: date-time
-          example: '2022-12-25T17:32:28Z'
-          description: Дата и время обновления статуса заявки
-          readOnly: true
-        createdAt:
-          type: string
-          format: date-time
-          example: '2022-12-25T17:32:28Z'
-          description: Дата и время создания записи
-          readOnly: true
-        body:
-          $ref: '#/components/schemas/ProposalBody'
+        v:
+          type: integer
+          x-stoplight:
+            id: 88hpyiqizj8mp
+          default: 1
+          description: Версия фильтра
+          writeOnly: true
+        filters:
+          type: array
+          description: Параметр(ы) фильра
+          items:
+            type: object
+            properties:
+              property:
+                type: string
+                example: attributeValueCode.module_code
+                description: "Свойство параметра:\r\n- `name.<language>` - указание, что фильтрация по наименованию\r\n- `code` - указание, что фильтрация по коду\r\n- `attributeValueCode.<attributeCode>.<language>` - указание, что фильтрация по значению атрибута\r\n- `statusModel`, `typeCode`, `dataTypeCode` для directory\r\n\r\n`<language>` необходимо указывать для значений, являющихся текстом. `<language>` может принимать следующие значения: `rus`, `eng`, `tur`, `byDefault`"
+                writeOnly: true
+              operator:
+                default: EQ
+                enum:
+                  - GT
+                  - GE
+                  - LT
+                  - LE
+                  - EQ
+                  - NE
+                  - EQ_IGNORE_CASE
+                  - STARTS_WITH
+                  - ENDS_IN
+                  - IN
+                  - LIKE
+                  - NOT_LIKE
+                  - LIKE_IGNORE_CASE
+                  - NOT_LIKE_IGNORE_CASE
+                  - FTS
+                  - IS_NULL
+                description: "Оператор параметра:\r\n   - `GT` - больше;\r\n   - `GE` - больше или равно;\r\n   - `LT` - меньше;\r\n   - `LE` - меньше или равно;\r\n   - `EQ` - равно (полное совпадение);\r\n   - `NE` - не равно;\r\n   - `EQ_IGNORE_CASE` - равно (полное совпадение без учёта регистра);\r\n   - `STARTS_WITH` - начинается с;\r\n   - `ENDS_IN` - оканчивается на;\r\n   - `IN` - список значений (полное совпадение со всеми);\r\n   - `LIKE` - равно (частичное совпадение);\r\n   - `NOT_LIKE` - не равно (частичное совпадение);\r\n   - `LIKE_IGNORE_CASE` - равно (частичное совпадение без учёта регистра);\r\n   - `NOT_LIKE_IGNORE_CASE` - не равно (частичное совпадение без учёта регистра);\r\n   - `FTS` - полнотекстовый поиск;\r\n   - `IS_NULL` - отсутствие значения."
+                writeOnly: true
+              mainValue:
+                oneOf:
+                  - type: integer
+                    behavior: Write Only
+                    description: Значение атрибута с типом "Целочисленное число"
+                  - type: number
+                    behavior: Write Only
+                    description: Значение атрибута с типом "Вещественное число"
+                  - type: string
+                    behavior: Write Only
+                    description: Значение атрибута с типом "Строка" или "Дата"
+                  - type: boolean
+                    description: Значение атрибута с типом "Логический признак"
+                    behavior: Write Only
+                  - type: object
+                    description: Значение атрибута с типом "Ссылка на класс" или "Ссылка на запись"
+                    properties:
+                      code:
+                        type: string
+                        example: licensing
+                        description: Уникальный в рамках объекта НСИ код элемента
+                        writeOnly: true
+                      directoryCode:
+                        type: string
+                        example: platform_modules
+                        description: Уникальный код объекта НСИ в рамках Системы
+                        writeOnly: true
+                    required:
+                      - code
+                      - directoryCode
+                description: "Значение параметра: \r\n1. если значение-ссылка - то объект,\r\n2. если значение с любым другим типом - то значение:\r\n   - Зарезервированные в URL символы: \"! * ' ( ) ; : @ & = + $ , / ? % # [ ]\"\r\n   - Не зарезервированные в URL символы: \"[A-Z] [a-z] [0-9] - _ . ~\"\r\n   - Иные символы в формате URL encoding"
+            required:
+              - property
+              - operator
+              - mainValue
       required:
-        - directoryCode
-        - initialDirectoryItemName
-        - type
-        - refinement
-        - visibility
-        - status
-        - body
-      readOnly: true
-    ProposalBody:
+        - v
+        - filters
+    FilterV2:
+      title: Фильтр
       type: object
-      title: Версии записи в заявке
-      description: Версии записи в заявке
+      description: Фильтр
       properties:
-        classifierCode:
-          type: string
-          description: Уникальный код класса (в рамках справочника) в который будет добавлена запись или в котором она будет изменена
-          format: uuid
-          example: 1532d301-6bf3-4b04-a78c-9da6c5970322
-          readOnly: true
-        masterDirectoryId:
-          type: integer
-          example: 1
-          description: Уникальный идентификатор справочника эталонной записи к которой привязывается заявка при попытке создать дубль или эталонной записи к которой привязывается блокируемая запись
-          readOnly: true
-        masterDirectoryItemId:
-          type: integer
-          example: 1
-          description: Уникальный идентификатор эталонной записи к которой привязывается заявка при попытке создать дубль или эталонной записи к которой привязывается блокируемая запись
-          readOnly: true
-        masterDirectoryCode:
-          type: string
-          description: Код справочника эталонной записи к которой привязывается заявка при попытке создать дубль или эталонной записи к которой привязывается блокируемая запись
-          readOnly: true
-        masterDirectoryItemCode:
-          type: string
-          description: Код эталонной записи к которой привязывается заявка при попытке создать дубль или эталонной записи к которой привязывается блокируемая запись
-          readOnly: true
-        currentDirectoryItemName:
-          type: string
-          description: 'Наименование записи. Может быть первичное, рабочее и уточненное'
-          readOnly: true
-        Proposal:
-          $ref: '#/components/schemas/Proposal'
-      readOnly: true
-    ProposalItemCell:
-      type: object
-      title: Ячейка записи
-      description: Ячейка записи
-      properties:
-        proposalBodyId:
-          type: integer
-          description: Уникальный идентификатор версии записи в рамках заявки
-          example: 1
-          readOnly: true
-        attributeId:
-          type: integer
-          example: 1
-          description: Уникальный идентификатор атрибута
-          readOnly: true
+        filters:
+          type: array
+          description: Параметр(ы) фильра
+          items:
+            type: object
+            properties:
+              property:
+                type: string
+                example: attributeValueCode.module_code
+                description: "Свойство параметра:\r\n- `name.<language>` - указание, что фильтрация по наименованию\r\n- `code` - указание, что фильтрация по коду\r\n- `attributeValueCode.<attributeCode>.<language>` - указание, что фильтрация по значению атрибута\r\n- `statusModel`, `typeCode`, `dataTypeCode` для directory\r\n\r\n`<language>` необходимо указывать для значений, являющихся текстом. `<language>` может принимать следующие значения: `rus`, `eng`, `tur`, `byDefault`"
+                writeOnly: true
+              operator:
+                default: EQ
+                enum:
+                  - GT
+                  - GE
+                  - LT
+                  - LE
+                  - EQ
+                  - NE
+                  - EQ_IGNORE_CASE
+                  - STARTS_WITH
+                  - ENDS_IN
+                  - IN
+                  - LIKE
+                  - NOT_LIKE
+                  - LIKE_IGNORE_CASE
+                  - NOT_LIKE_IGNORE_CASE
+                  - FTS
+                  - IS_NULL
+                description: "Оператор параметра:\r\n   - `GT` - больше;\r\n   - `GE` - больше или равно;\r\n   - `LT` - меньше;\r\n   - `LE` - меньше или равно;\r\n   - `EQ` - равно (полное совпадение);\r\n   - `NE` - не равно;\r\n   - `EQ_IGNORE_CASE` - равно (полное совпадение без учёта регистра);\r\n   - `STARTS_WITH` - начинается с;\r\n   - `ENDS_IN` - оканчивается на;\r\n   - `IN` - список значений (полное совпадение со всеми);\r\n   - `LIKE` - равно (частичное совпадение);\r\n   - `NOT_LIKE` - не равно (частичное совпадение);\r\n   - `LIKE_IGNORE_CASE` - равно (частичное совпадение без учёта регистра);\r\n   - `NOT_LIKE_IGNORE_CASE` - не равно (частичное совпадение без учёта регистра);\r\n   - `FTS` - полнотекстовый поиск;\r\n   - `IS_NULL` - отсутствие значения."
+                writeOnly: true
+              mainValue:
+                oneOf:
+                  - type: integer
+                    behavior: Write Only
+                    description: Значение атрибута с типом "Целочисленное число"
+                  - type: number
+                    behavior: Write Only
+                    description: Значение атрибута с типом "Вещественное число"
+                  - type: string
+                    behavior: Write Only
+                    description: Значение атрибута с типом "Строка" или "Дата"
+                  - type: boolean
+                    description: Значение атрибута с типом "Логический признак"
+                    behavior: Write Only
+                  - type: object
+                    description: Значение атрибута с типом "Ссылка на класс" или "Ссылка на запись"
+                    properties:
+                      code:
+                        type: string
+                        example: licensing
+                        description: Уникальный в рамках объекта НСИ код элемента
+                        writeOnly: true
+                      directoryCode:
+                        type: string
+                        example: platform_modules
+                        description: Уникальный код объекта НСИ в рамках Системы
+                        writeOnly: true
+                    required:
+                      - code
+                      - directoryCode
+                description: "Значение параметра: \r\n1. если значение-ссылка - то объект,\r\n2. если значение с любым другим типом - то значение:\r\n   - Зарезервированные в URL символы: \"! * ' ( ) ; : @ & = + $ , / ? % # [ ]\"\r\n   - Не зарезервированные в URL символы: \"[A-Z] [a-z] [0-9] - _ . ~\"\r\n   - Иные символы в формате URL encoding"
+            required:
+              - property
+              - operator
+              - mainValue
       required:
-        - proposalBodyId
-        - attributeId
-      readOnly: true
-    ProposalValue:
-      type: object
-      title: Значение
-      description: Значение
-      properties:
-        valueDirectoryItemDirectoryId:
-          type: integer
-          example: 1
-          description: Уникальный идентификатор-ссылка на справочник в котором хранится запись на которую ссылаются
-          readOnly: true
-        valueDirectoryItemId:
-          type: integer
-          example: 1
-          description: Уникальный идентификатор-ссылка на запись справочника
-          readOnly: true
-        valueDirectoryItemVersionId:
-          type: string
-          description: Уникальный идентификатор-ссылка на запись справочника
-          readOnly: true
-        valueClassifierVersionId:
-          type: string
-          description: Уникальный идентификатор-ссылка на класс
-          readOnly: true
-        valueText:
-          type: string
-          description: Мультиязычное текстовое значение
-        typeCode:
-          type: string
-          description: Код типа значения
-          readOnly: true
-        valueInt:
-          type: integer
-          example: 1
-          description: Значение целого числа
-        valueReal:
-          type: integer
-          example: 1
-          description: Значение вещественного числа
-        valueDate:
-          type: string
-          format: date
-          example: '2022-12-25'
-          description: Значение даты
-        valueBool:
-          type: boolean
-          example: true
-          description: Логическое значение
-          default: true
-          readOnly: true
-      required:
-        - typeCode
-      readOnly: true
+        - filters
   examples:
     ModelValueOther:
       description: 'Пример значения атрибута с типом "Целочисленное число", "Вещественное число", "Логический признак" или "Дата"'
@@ -2951,13 +2487,22 @@ components:
         example: 'name,DESC'
         default: 'id,ASC'
       description: Требуемые параметры сортировки
-    filter:
+    filterV2:
+      name: filterObject
+      in: query
+      schema:
+        type: string
+      description: Фильтр второй версии API
+      style: form
+      explode: true
+    filterV1:
       name: filter
       in: query
       schema:
         type: string
-        example: 'EQ,param,value'
-      description: 'Фильтр. Параметр фильтра должен состоять из кода условия, кода атрибута и значения. В параметре можно задать следующие условия (зависят от типа атрибута): GT - больше, GE - больше или равно, LT - меньше, LE - меньше или равно, EQ - равно (полное совпадение), NE - не равно, EQ_IGNORE_CASE - равно (полное совпадение без учёта регистра), STARTS_WITH - начинается с, ENDS_IN - оканчивается на, IN - список значений (полное совпадение со всеми), LIKE - равно (частичное совпадение), NOT_LIKE - не равно (частичное совпадение), LIKE_IGNORE_CASE - равно (частичное совпадение без учёта регистра), NOT_LIKE_IGNORE_CASE - не равно (частичное совпадение без учёта регистра), FTS - полнотекстовый поиск, IS_NULL - отсутствие значения. При фильтрации по атрибуту, который имеет тип CLASSIFIER_ID (ссылка на класс), в значении необоходимо указывать код классификатора и код класса через спец. символ "|". При фильтрации по атрибуту, который имеет тип CLASSDIRECTORY_ITEM_IDIFIER_ID (ссылка на запись), в значении необоходимо указывать код справочника и код записи через спец. символ "|". '
+      description: Фильтр первой версии API
+      style: form
+      explode: true
     dataSet:
       name: dataSet
       in: query
@@ -2980,53 +2525,54 @@ components:
         default: false
         example: false
       description: Требуемый признак включения атрибутов
-    classifiersCode:
-      name: classifiersCode
+    directoryCode:
+      name: directoryCode
       in: path
       required: true
       schema:
         type: string
-        example: okpd2
-      description: Уникальный код классификатора в рамках системы
-    classCode:
-      name: classCode
+        minLength: 1
+        maxLength: 500
+        example: contractor
+      description: Уникальный код объекта НСИ в рамках Системы
+    itemCode:
+      name: itemCode
       in: path
       required: true
       schema:
         type: string
-        example: ee211860-4018-4b9b-8a12-42f6066ef01d
-      description: Уникальный код классификатора в рамках системы
-    direction:
-      name: direction
-      in: query
-      required: true
+        example: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+        minLength: 1
+        maxLength: 500
+      description: Уникальный код элемента в рамках объекта НСИ
+    versionUuid:
+      name: versionUuid
+      in: path
       schema:
         type: string
-        enum:
-          - Up
-          - Down
-        default: Up
-      description: 'Направление ветви иерархии:  Up - от прямого предка к корню, Down - от корня к прямому предку'
+        format: uuid
+        example: 73d69dee-33be-4748-9ba3-ed4175da98c6
+      description: Глобальный уникальный идентификатор версии объекта или элемента НСИ
+      required: true
   responses:
     403-forbidden:
       description: Учетной записи недостаточно прав
-      content:
-        application/json:
-          schema:
-            type: object
+      content: {}
     401-unauthorized:
       description: Учетная запись не авторизована
-      content:
-        application/json:
-          schema:
-            type: object
+      content: {}
     414-uri-long:
-      description: 'Слишком длинный URI. Если используется GET с Query параметром Filter, где много условий - необходимо использовать POST '
-      content:
-        application/json:
-          schema:
-            properties:
-              id:
-                type: string
+      description: 'Слишком длинный URI. Если используется GET с Query parameter `filter`, где много условий - необходимо использовать POST '
+      content: {}
+    404-not-found:
+      description: |-
+        Ничего не найдено:
+        1. Объекта или элемента НСИ с таким кодом нет вообще
+        2. Версии объекта или элемента НСИ с таким идентификатором нет вообще
+        3. Нет актуальной версии объекта или элемента НСИ (но объект или элемент НСИ существует)
+      content: {}
+    500-server-error:
+      description: Сервис временно не доступен по причине внутренней ошибки
+      content: {}
 security:
   - Authorization: []
