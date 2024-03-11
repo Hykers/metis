@@ -1834,9 +1834,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ItemWithoutAttributesCollectionV2'
-                  - $ref: '#/components/schemas/ItemWithAttributesCollectionV2'
+                oneOf: []
         '401':
           $ref: '#/components/responses/401-unauthorized'
         '403':
@@ -2183,7 +2181,6 @@ paths:
             application/json:
               schema:
                 description: Один из объектов (в зависимости от значения includeAttributes)
-                oneOf: []
         '401':
           $ref: '#/components/responses/401-unauthorized'
         '403':
@@ -3070,6 +3067,172 @@ paths:
           description: MSX_UAT
         - url: 'http://172.19.3.34:8085'
           description: MSX_PROD
+  /v2/taxonomies/filter:
+    post:
+      tags:
+        - directories
+        - v2
+      summary: Получение отфильтрованных таксономий
+      description: Постраничное получение отфильтрованных актуальных версий таксономий
+      operationId: postTaxonomiesV2
+      parameters:
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterV2'
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TaxonomyV2'
+                  pageable:
+                    type: object
+                    description: Параметры пагинации данных
+                    properties:
+                      sort:
+                        type: object
+                        description: Параметры сортировки
+                        properties:
+                          sorted:
+                            type: boolean
+                            description: Признак наличия сортировки заданной пользователем
+                          unsorted:
+                            type: boolean
+                            description: Признак отсутствия сортировки заданной пользователем
+                          empty:
+                            type: boolean
+                            description: Признак наличия сортировки
+                      pageSize:
+                        type: integer
+                        description: Количество элементов на странице
+                        format: int32
+                        examples:
+                          - 17
+                      pageNumber:
+                        type: integer
+                        description: Номер отображаемой страницы
+                        format: int32
+                        examples:
+                          - 1
+                      offset:
+                        type: integer
+                        description: Смещение по отношению к первой странице с учётом её размера
+                        format: int32
+                        examples:
+                          - 20
+                      paged:
+                        type: boolean
+                        description: Признак постраничного отображения данных
+                      unpaged:
+                        type: boolean
+                        description: Признак отсутствия постраничного отображения данных
+                  totalPages:
+                    type: integer
+                    description: Общее количество страниц
+                    format: int32
+                    examples:
+                      - 1
+                  totalElements:
+                    type: integer
+                    description: Общее количество элеметов
+                    format: int32
+                    examples:
+                      - 15
+                  first:
+                    type: boolean
+                    description: Признак первой страницы
+                  last:
+                    type: boolean
+                    description: Признак последней страницы
+                  sort:
+                    type: object
+                    description: Параметры сортировки
+                    properties:
+                      sorted:
+                        type: boolean
+                        description: Признак наличия сортировки заданной пользователем
+                      unsorted:
+                        type: boolean
+                        description: Признак отсутствия сортировки заданной пользователей
+                      empty:
+                        type: boolean
+                        description: Признак наличия сортировки
+                  numberofElements:
+                    type: integer
+                    description: Количество элементов на странице- фактическое
+                    format: int32
+                    examples:
+                      - 17
+                  size:
+                    type: integer
+                    description: |
+                      Количество элементов на странице
+                    format: int32
+                    examples:
+                      - 20
+                  number:
+                    type: integer
+                    description: Номер страницы
+                    format: int32
+                    examples:
+                      - 1
+                  empty:
+                    type: boolean
+                    description: Признак наличия content
+                required:
+                  - content
+                  - pageable
+                  - totalPages
+                  - totalElements
+                  - first
+                  - last
+                  - sort
+                  - numberofElements
+                  - size
+                  - number
+                  - empty
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      security:
+        - Authorization: []
+      servers:
+        - url: 'http://10.125.132.47:30851'
+          description: ATK_DEV
+        - url: 'http://10.125.132.47:31815/api/integration'
+          description: ATK_TEST
+        - url: 'http://10.125.132.47:31835'
+          description: ATK_LOAD
+        - url: X
+          description: ATK_DEMO
+        - url: 'http://10.125.132.17:8085'
+          description: MSX_PHOENIXIT_DEV
+        - url: 'http://10.125.132.26:8085'
+          description: MSX_PHOENIXIT_TEST
+        - url: 'http://10.125.132.29:8085'
+          description: MSX_PHOENIXIT_STAGE
+        - url: 'https://172.19.3.64:8085'
+          description: MSX_MIGR1
+        - url: 'http://172.19.3.67:8085'
+          description: MSX_MIGR2
+        - url: 'http://192.168.190.199:8085'
+          description: MSX_UAT
+        - url: 'http://172.19.3.34:8085'
+          description: MSX_PROD
   '/v2/taxonomies/{taxonomyCode}':
     get:
       tags:
@@ -3121,7 +3284,7 @@ paths:
           description: MSX_UAT
         - url: 'http://172.19.3.34:8085'
           description: MSX_PROD
-  /v2/taxonomies/versions:
+  '/v2/taxonomies/{taxonomyCode}/versions':
     get:
       tags:
         - v2
@@ -3143,6 +3306,7 @@ paths:
             maxLength: 500
             examples:
               - 49b106eb-6193-4661-9de2-825f842557f1
+        - $ref: '#/components/parameters/taxonomyCode'
       responses:
         '200':
           description: Успех
@@ -3255,7 +3419,7 @@ paths:
           description: MSX_UAT
         - url: 'http://172.19.3.34:8085'
           description: MSX_PROD
-  /v2/taxonomies/categories:
+  '/v2/taxonomies/{taxonomyCode}/categories':
     get:
       tags:
         - category
@@ -3278,6 +3442,7 @@ paths:
             maxLength: 500
             examples:
               - 49b106eb-6193-4661-9de2-825f842557f1
+        - $ref: '#/components/parameters/taxonomyCode'
         - $ref: '#/components/parameters/taxonomyCode'
       responses:
         '200':
@@ -3347,6 +3512,7 @@ paths:
             examples:
               - 49b106eb-6193-4661-9de2-825f842557f1
         - $ref: '#/components/parameters/taxonomyCode'
+        - $ref: '#/components/parameters/taxonomyCode'
       requestBody:
         content:
           application/json:
@@ -3375,6 +3541,179 @@ paths:
           $ref: '#/components/responses/403-forbidden'
         '404':
           description: Ничего не найдено
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      security:
+        - Authorization: []
+      servers:
+        - url: 'http://10.125.132.47:30851'
+          description: ATK_DEV
+        - url: 'http://10.125.132.47:31815/api/integration'
+          description: ATK_TEST
+        - url: 'http://10.125.132.47:31835'
+          description: ATK_LOAD
+        - url: X
+          description: ATK_DEMO
+        - url: 'http://10.125.132.17:8085'
+          description: MSX_PHOENIXIT_DEV
+        - url: 'http://10.125.132.26:8085'
+          description: MSX_PHOENIXIT_TEST
+        - url: 'http://10.125.132.29:8085'
+          description: MSX_PHOENIXIT_STAGE
+        - url: 'https://172.19.3.64:8085'
+          description: MSX_MIGR1
+        - url: 'http://172.19.3.67:8085'
+          description: MSX_MIGR2
+        - url: 'http://192.168.190.199:8085'
+          description: MSX_UAT
+        - url: 'http://172.19.3.34:8085'
+          description: MSX_PROD
+  /v2/taxonomies/categories/filter:
+    post:
+      tags:
+        - directories
+        - items
+        - v2
+      summary: Получение отфильтрованных элементов объекта НСИ
+      description: Постраничное получение отфильтрованных актуальных категорий таксономий
+      operationId: postTaxonomiesCategoriesV2
+      parameters:
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/includeAttributes'
+        - $ref: '#/components/parameters/directoryCode'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterV2'
+      responses:
+        '200':
+          description: Успех
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/CategoryWithoutAttribute'
+                        - $ref: '#/components/schemas/CategoryWithAttribute'
+                  pageable:
+                    type: object
+                    description: Параметры пагинации данных
+                    properties:
+                      sort:
+                        type: object
+                        description: Параметры сортировки
+                        properties:
+                          sorted:
+                            type: boolean
+                            description: Признак наличия сортировки заданной пользователем
+                          unsorted:
+                            type: boolean
+                            description: Признак отсутствия сортировки заданной пользователем
+                          empty:
+                            type: boolean
+                            description: Признак наличия сортировки
+                      pageSize:
+                        type: integer
+                        description: Количество элементов на странице
+                        format: int32
+                        examples:
+                          - 17
+                      pageNumber:
+                        type: integer
+                        description: Номер отображаемой страницы
+                        format: int32
+                        examples:
+                          - 1
+                      offset:
+                        type: integer
+                        description: Смещение по отношению к первой странице с учётом её размера
+                        format: int32
+                        examples:
+                          - 20
+                      paged:
+                        type: boolean
+                        description: Признак постраничного отображения данных
+                      unpaged:
+                        type: boolean
+                        description: Признак отсутствия постраничного отображения данных
+                  totalPages:
+                    type: integer
+                    description: Общее количество страниц
+                    format: int32
+                    examples:
+                      - 1
+                  totalElements:
+                    type: integer
+                    description: Общее количество элеметов
+                    format: int32
+                    examples:
+                      - 15
+                  first:
+                    type: boolean
+                    description: Признак первой страницы
+                  last:
+                    type: boolean
+                    description: Признак последней страницы
+                  sort:
+                    type: object
+                    description: Параметры сортировки
+                    properties:
+                      sorted:
+                        type: boolean
+                        description: Признак наличия сортировки заданной пользователем
+                      unsorted:
+                        type: boolean
+                        description: Признак отсутствия сортировки заданной пользователей
+                      empty:
+                        type: boolean
+                        description: Признак наличия сортировки
+                  numberofElements:
+                    type: integer
+                    description: Количество элементов на странице- фактическое
+                    format: int32
+                    examples:
+                      - 17
+                  size:
+                    type: integer
+                    description: |
+                      Количество элементов на странице
+                    format: int32
+                    examples:
+                      - 20
+                  number:
+                    type: integer
+                    description: Номер страницы
+                    format: int32
+                    examples:
+                      - 1
+                  empty:
+                    type: boolean
+                    description: Признак наличия content
+                required:
+                  - content
+                  - pageable
+                  - totalPages
+                  - totalElements
+                  - first
+                  - last
+                  - sort
+                  - numberofElements
+                  - size
+                  - number
+                  - empty
+                __errors__:
+                  '#/components/schemas/Attribute': No foreign doc with id components found
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
         '500':
           $ref: '#/components/responses/500-server-error'
       security:
@@ -4126,12 +4465,6 @@ components:
             value: true
           - type: DATE
             value: '2023-06-13'
-    ModelValueRefClass:
-      description: Пример значения ссылки на класс
-      value:
-        type: CLASSIFIER_ID
-        valueRef:
-          classCode: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
     ModelValueRefItem:
       description: Пример значения ссылки на запись
       value:
@@ -4670,7 +5003,6 @@ components:
         type:
           type: string
           enum:
-            - CLASSIFIER_ID
             - DIRECTORY_ITEM_ID
           description: Тип данных значения
           readOnly: true
@@ -4678,7 +5010,6 @@ components:
           description: Значение ссылка (на запись справочника или класс классификатора)
           oneOf:
             - $ref: '#/components/schemas/DirectoryItemRef'
-            - $ref: '#/components/schemas/ClassRef'
       required:
         - type
         - valueRef
@@ -4727,21 +5058,6 @@ components:
       required:
         - directoryCode
         - directoryItemCode
-      readOnly: true
-      examples: []
-    ClassRef:
-      type: object
-      title: Значение ссылка на класс классификатора
-      description: Значение ссылка на класс классификатора
-      properties:
-        classCode:
-          type: string
-          description: Уникальный в рамках Системы код класса
-          readOnly: true
-          examples:
-            - 6df58e56-7e0b-4cd9-a16c-8870348ba68d
-      required:
-        - classCode
       readOnly: true
       examples: []
     ValueOther:
@@ -5304,7 +5620,6 @@ components:
             - TEXT
             - DATE
             - BOOL
-            - CLASSIFIER_ID
             - DIRECTORY_ITEM_ID
           description: Тип значений атрибута
           readOnly: true
@@ -5429,14 +5744,27 @@ components:
         uomGroup:
           type: array
           items:
-            $ref: '#/components/schemas/UomGroup_2'
-        type:
-          type: string
-          description: "Тип ФЛК:\r\nPRECISION\r\nBOUNDARIES\r\nCASE\r\nREGEX"
-          readOnly: true
-        value:
-          type: string
-          description: Правило проверки флк
+            $ref: '#/components/schemas/UomGroup'
+        check:
+          type: array
+          description: Форматно-логический контроль атрибута
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum:
+                  - PRECISION
+                  - BOUNDARIES
+                  - CASE
+                  - REGEX
+                description: "Тип ФЛК:\r\nPRECISION\r\nBOUNDARIES\r\nCASE\r\nREGEX"
+              value:
+                type: string
+                description: Правило проверки флк
+            required:
+              - type
+              - value
       required:
         - code
         - typeCode
@@ -5504,7 +5832,6 @@ components:
         type:
           type: string
           enum:
-            - CLASSIFIER_ID
             - DIRECTORY_ITEM_ID
           description: Тип данных значения
           readOnly: true
@@ -5512,15 +5839,11 @@ components:
           description: Значение ссылка (на запись справочника или класс классификатора)
           oneOf:
             - $ref: '#/components/schemas/DirectoryItemRef'
-            - $ref: '#/components/schemas/ClassRef'
       required:
         - type
         - valueRef
       readOnly: true
       examples:
-        - type: CLASSIFIER_ID
-          valueRef:
-            classCode: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
         - type: DIRECTORY_ITEM_ID
           valueRef:
             directoryCode: material_and_technical_resources
@@ -5557,7 +5880,7 @@ components:
           value: 44
     Uom:
       type: object
-      title: Uom
+      title: Единица измерения
       description: Единицы измерения
       properties:
         code:
@@ -5787,7 +6110,7 @@ components:
               type: string
     UomGroup:
       type: object
-      title: UomGroup
+      title: Группа единиц измерения
       description: Группа единиц измерения
       properties:
         code:
@@ -5814,49 +6137,6 @@ components:
               type: string
               description: на турецком языке
               readOnly: true
-            anotherLanguage:
-              type: string
-              description: на любом другом языке
-              readOnly: true
-    UomGroup_2:
-      type: object
-      title: UomGroup
-      description: Группа единиц измерения
-      properties:
-        code:
-          type: string
-          description: Код группы ЕИ
-          readOnly: true
-          examples:
-            - pressure
-        name:
-          type: object
-          description: Наименование группы единиц измерения
-          properties:
-            byDefault:
-              type: string
-              description: 'на языке по умолчанию, установленном в Системе'
-              readOnly: true
-              examples:
-                - Давление
-            rus:
-              type: string
-              description: на русском языке
-              readOnly: true
-              examples:
-                - Давление
-            eng:
-              type: string
-              description: на английском языке
-              readOnly: true
-              examples:
-                - Pressure
-            tur:
-              type: string
-              description: на турецком языке
-              readOnly: true
-              examples:
-                - Basınç
             anotherLanguage:
               type: string
               description: на любом другом языке
@@ -5864,15 +6144,6 @@ components:
       required:
         - code
         - name
-      readOnly: true
-      examples:
-        - code: pressure
-          name:
-            byDefault: Давление
-            rus: Давление
-            eng: Pressure
-            tur: Basınç
-            anotherLanguage: string
     ItemWithoutAttributesV1:
       type: object
       title: Элемент без атрибутов
@@ -7016,7 +7287,6 @@ components:
             - TEXT
             - DATE
             - BOOL
-            - CLASSIFIER_ID
             - DIRECTORY_ITEM_ID
           description: Тип значений атрибута
           readOnly: true
@@ -7149,13 +7419,25 @@ components:
           readOnly: true
           examples:
             - Без дополнительных значений
-        type:
-          type: string
-          description: "Тип ФЛК:\r\nPRECISION\r\nBOUNDARIES\r\nCASE\r\nREGEX"
-          readOnly: true
-        value:
-          type: string
-          description: Правило проверки ФЛК
+        check:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum:
+                  - PRECISION
+                  - BOUNDARIES
+                  - CASE
+                  - REGEX
+                description: "Тип ФЛК:\r\nPRECISION\r\nBOUNDARIES\r\nCASE\r\nREGEX"
+              value:
+                type: string
+                description: Правило проверки ФЛК
+            required:
+              - type
+              - value
       required:
         - code
         - typeCode
@@ -7272,52 +7554,87 @@ components:
           items:
             type: object
             properties:
-              name:
+              group:
                 type: object
-                description: Наименование группы атрибутов
+                description: Группа
                 properties:
-                  byDefault:
+                  name:
+                    type: object
+                    description: Наименование группы атрибутов
+                    properties:
+                      byDefault:
+                        type: string
+                        description: 'на языке по умолчанию, установленном в Системе'
+                      rus:
+                        type: string
+                        description: на русском языке
+                      eng:
+                        type: string
+                        description: на английском языке
+                      tur:
+                        type: string
+                        description: на турецком языке
+                      anotherLanguage:
+                        type: string
+                        description: на любом другом языке
+                    required:
+                      - byDefault
+                  typeCode:
                     type: string
-                    description: 'на языке по умолчанию, установленном в Системе'
-                    minLength: 1
-                    maxLength: 500
-                    readOnly: true
-                    examples:
-                      - группа атрибутов
-                  rus:
+                    description: 'Код типа группы. Значения: DEFAULT (атрибуты отображаются в аккордеон) и IN_HEADER (атрибуты отображаются в шапке)'
+                  order:
                     type: string
-                    description: на русском языке
-                    minLength: 1
-                    maxLength: 500
-                    readOnly: true
-                    examples:
-                      - группа атрибутов
-                  eng:
-                    type: string
-                    description: на английском языке
-                    readOnly: true
-                  tur:
-                    type: string
-                    description: на турецком языке
-                    readOnly: true
-                  anotherLanguage:
-                    type: string
-                    description: на любом другом языке
-                    readOnly: true
+                    description: Порядок отображения групп атрибутов на экранной форме
                 required:
-                  - byDefault
-                readOnly: true
-              _order:
-                type: integer
-                description: Порядок отображения атрибутов на экранной форме
-                readOnly: true
-              attributes:
+                  - name
+                  - typeCode
+                  - order
+              attributeInfo:
                 type: array
+                description: "Информация об атрибутах в группе\r\n"
                 items:
-                  $ref: '#/components/schemas/AttributeWithUom'
+                  type: object
+                  properties:
+                    attribute:
+                      $ref: '#/components/schemas/AttributeWithUom'
+                      description: Информация об атрибуте
+                    order:
+                      type: string
+                      description: Порядок отображения атрибутов на экранной форме
+                    nameOrder:
+                      type: string
+                      description: Уникальный идентификатор порядка формирования наименования элемента
+                    mandatory:
+                      type: boolean
+                      description: Признак обязательности атрибута
+                    prefix:
+                      type: object
+                      description: обозначение атрибута
+                      properties:
+                        byDefault:
+                          type: string
+                          description: 'Обозначение на языке по умолчанию, установленном в Системе'
+                        rus:
+                          type: string
+                          description: Обозначение на русском языке
+                        eng:
+                          type: string
+                          description: Обозначение на английском языке
+                        tur:
+                          type: string
+                          description: Обозначение на турецком языке
+                        anotherLanguage:
+                          type: string
+                          description: Обозначение на любом другом языке
+                      required:
+                        - byDefault
+                  required:
+                    - attribute
+                    - order
+                    - mandatory
             required:
-              - name
-              - _order
+              - group
+              - attributeInfo
             readOnly: true
       required:
         - code
@@ -7327,8 +7644,8 @@ components:
       readOnly: true
     CategoryWithoutAttribute:
       type: object
-      title: CategoryWithoutAttribute
-      description: Категория без атрибутов
+      title: Категория без атрибутов
+      description: Категория таксономии без атрибутов
       properties:
         code:
           type: string
@@ -7342,8 +7659,6 @@ components:
           type: string
           description: Разделитель
           readOnly: true
-        parentVersionUuid:
-          type: string
         versionUuid:
           type: string
           description: Уникальный идентификатор версии категории
@@ -7389,8 +7704,8 @@ components:
       readOnly: true
     CategoryWithAttribute:
       type: object
-      title: CategoryWithAttribute
-      description: Категория с атрибутами
+      title: Категория с атрибутами
+      description: Категория таксономии с атрибутами
       properties:
         code:
           type: string
@@ -7403,10 +7718,6 @@ components:
         separator:
           type: string
           description: Разделитель
-          readOnly: true
-        parentVersionUuid:
-          type: string
-          description: Уникальный идентификатор версии родителя категори
           readOnly: true
         versionUuid:
           type: string
@@ -7510,35 +7821,9 @@ components:
                 items:
                   type: object
                   properties:
-                    code:
-                      type: string
-                      description: Уникальный код в разрезе Системы
-                    name:
-                      type: object
-                      description: Наименование атрибута
-                      properties:
-                        byDefault:
-                          type: string
-                          description: 'Наименование на языке по умолчанию, установленном в Системе'
-                          maxLength: 500
-                        rus:
-                          type: string
-                          description: Наименование на русском языке
-                          maxLength: 500
-                        eng:
-                          type: string
-                          description: Наименование на английском языке
-                          maxLength: 500
-                        tur:
-                          type: string
-                          description: Наименование на турецком языке
-                          maxLength: 500
-                        anotherLanguage:
-                          type: string
-                          description: Наименование на любом другом языке
-                          maxLength: 500
-                      required:
-                        - byDefault
+                    attribute:
+                      $ref: '#/components/schemas/AttributeWithUom'
+                      description: Информация об атрибуте
                     order:
                       type: string
                       description: Порядок отображения атрибутов на экранной форме
@@ -7570,8 +7855,7 @@ components:
                       required:
                         - byDefault
                   required:
-                    - code
-                    - name
+                    - attribute
                     - order
                     - mandatory
             required:
@@ -7583,6 +7867,7 @@ components:
         - versionUuid
         - validFrom
         - name
+        - groupAttribute
       readOnly: true
 security:
   - Authorization: []
