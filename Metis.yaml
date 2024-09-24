@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
-  version: '2.0'
-  title: Metis
-  summary: OpenAPI спецификация АИС УМД "Метида"
+  version: '3.0'
+  title: nsi
+  summary: OpenAPI спецификация ИС НСИ
   description: |-
     # Требования к написанию OpenAPI:
     1. Все атрибуты должны иметь продуктивный пример - как минимум для понимания того, что может прийти, а как максимум для генерации тестового JSON для проверки ошибок при дизайне спецификации
@@ -17,33 +17,10 @@ info:
   contact:
     name: Жуков Николай Александрович
     url: 'https://t.me/Hykers'
-    email: nzhukov@phoenixit.ru
+    email: nzhukov@fil-it.ru
   license:
     url: 'https://www.example.com'
     name: Commercial
-servers:
-  - url: 'http://10.125.132.47:30851'
-    description: ATK_DEV
-  - url: 'http://10.125.132.47:31815/api/integration'
-    description: ATK_TEST
-  - url: 'http://10.125.132.47:31835'
-    description: ATK_LOAD
-  - url: X
-    description: ATK_DEMO
-  - url: 'http://10.125.132.17:8085'
-    description: MSX_PHOENIXIT_DEV
-  - url: 'http://10.125.132.26:8085'
-    description: MSX_PHOENIXIT_TEST
-  - url: 'http://10.125.132.29:8085'
-    description: MSX_PHOENIXIT_STAGE
-  - url: 'https://172.19.3.64:8085'
-    description: MSX_MIGR1
-  - url: 'http://172.19.3.67:8085'
-    description: MSX_MIGR2
-  - url: 'http://192.168.190.199:8085'
-    description: MSX_UAT
-  - url: 'http://172.19.3.34:8085'
-    description: MSX_PROD
 paths:
   /v1/directories:
     get:
@@ -231,29 +208,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   /v1/directories/filter:
     post:
       tags:
@@ -395,29 +349,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v1/directories/{directoryCode}':
     get:
       tags:
@@ -427,7 +358,6 @@ paths:
       description: Получение актуальной версии конкретного справочника или классификатора
       operationId: getDirectory
       parameters:
-        - $ref: '#/components/parameters/directoryCode'
         - $ref: '#/components/parameters/directoryCode'
       responses:
         '200':
@@ -449,29 +379,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v1/directories/{directoryCode}/items':
     get:
       tags:
@@ -552,29 +459,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   /v1/directories/items/filter:
     post:
       tags:
@@ -584,8 +468,6 @@ paths:
       summary: Получение отфильтрованных элементов объекта НСИ
       description: Постраничное получение отфильтрованных актуальных версий записей справочников и классов классификаторов
       operationId: postDirectoriesItemsV1
-      parameters:
-        - $ref: '#/components/parameters/directoryCode'
       requestBody:
         content:
           application/json:
@@ -723,29 +605,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v1/directories/{directoryCode}/items/{itemCode}':
     get:
       tags:
@@ -759,7 +618,6 @@ paths:
         - $ref: '#/components/parameters/includeAttributes'
         - $ref: '#/components/parameters/directoryCode'
         - $ref: '#/components/parameters/itemCode'
-        - $ref: '#/components/parameters/directoryCode'
       responses:
         '200':
           description: Успех
@@ -782,29 +640,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   /v2/directories:
     get:
       tags:
@@ -993,29 +828,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   /v2/directories/filter:
     post:
       tags:
@@ -1155,29 +967,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/directories/{directoryCode}':
     get:
       tags:
@@ -1208,29 +997,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/directories/{directoryCode}/versions':
     get:
       tags:
@@ -1372,29 +1138,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/directories/{directoryCode}/versions/{versionUuid}':
     get:
       tags:
@@ -1426,29 +1169,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/directories/{directoryCode}/items':
     get:
       tags:
@@ -1529,64 +1249,133 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
     post:
-      summary: Получение элементов
-      description: Получение элементов
-      operationId: postItems
+      tags:
+        - v2
+        - items
+      summary: Создание элемента
+      description: Создание элемента
+      operationId: postItem
       parameters:
         - $ref: '#/components/parameters/directoryCode'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: Уникальный в рамках справочника код
+                parentVersionUuid:
+                  type: string
+                  description: Глобальный уникальный идентификатор версии родителя в рамках Системы
+                  format: uuid
+                businessCode:
+                  type: string
+                  description: Уникальный в рамках справочника бизнесовый код
+                classifierCode:
+                  type: string
+                  description: Уникальный код категории таксономии. Если тип данных объекта - основные (мастер)
+                name:
+                  type: object
+                  description: Наименование
+                  properties:
+                    rus:
+                      type: string
+                      description: Наименование на русском языке
+                    eng:
+                      type: string
+                      description: Наименование на английском языке
+                    tur:
+                      type: string
+                      description: Наименование на турецком языке
+                    anotherLanguage:
+                      type: string
+                      description: Наименование на любом другом языке
+                cells:
+                  type: array
+                  description: Ячейки записи
+                  items:
+                    oneOf:
+                      - $ref: '#/components/schemas/CellValue'
+                      - $ref: '#/components/schemas/CellRange'
+              required:
+                - name
       responses:
-        '200':
-          description: OK
+        '201':
+          description: Элемент успешно создан
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Уникальный в рамках справочника код
+                  versionUuid:
+                    type: string
+                    description: Глобальный уникальный идентификатор версии в рамках Системы
+                    format: uuid
+                  parentVersionUuid:
+                    type: string
+                    description: Глобальный уникальный идентификатор версии родителя в рамках Системы
+                    format: uuid
+                  classifierCode:
+                    type: string
+                    description: Уникальный код категории таксономии. Приходит при типе данных справочника - основные (мастер)
+                  name:
+                    type: object
+                    description: Наименования
+                    properties:
+                      byDefault:
+                        type: string
+                        description: на языке системы
+                      rus:
+                        type: string
+                        description: на русском языке
+                      eng:
+                        type: string
+                        description: на английском языке
+                      tur:
+                        type: string
+                        description: на турецком языке
+                      anotherLanguage:
+                        type: string
+                        description: на любом другом языке
+                    required:
+                      - byDefault
+                  status:
+                    type: string
+                    description: Статус элемента
+                  validFrom:
+                    type: string
+                    description: Дата и время начала действия
+                    format: date-time
+                  cells:
+                    type: array
+                    description: Ячейки записи
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/CellValue'
+                        - $ref: '#/components/schemas/CellRange'
+                required:
+                  - code
+                  - versionUuid
+                  - name
+                  - status
+                  - validFrom
+        '400':
+          description: Ошибка в запросе
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '500':
+          $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
-  /v2/directories/items/filter:
+  '/v2/directories/{directoryCode}/items/filter':
     post:
       tags:
         - directories
@@ -1732,29 +1521,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/directories/{directoryCode}/items/{itemCode}':
     get:
       tags:
@@ -1789,29 +1555,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/directories/{directoryCode}/items/{itemCode}/versions':
     get:
       tags:
@@ -1833,8 +1576,7 @@ paths:
           description: Успех
           content:
             application/json:
-              schema:
-                oneOf: []
+              schema: {}
         '401':
           $ref: '#/components/responses/401-unauthorized'
         '403':
@@ -1845,29 +1587,142 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
+    post:
+      tags:
+        - items
+        - v2
+      summary: Изменение элемента
+      description: Изменение элемента
+      operationId: postItemVersion
+      parameters:
+        - $ref: '#/components/parameters/directoryCode'
+        - $ref: '#/components/parameters/itemCode'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                parentVersionUuid:
+                  type: string
+                  description: Глобальный уникальный идентификатор версии родителя в рамках Системы
+                  format: uuid
+                businessCode:
+                  type: string
+                  description: Уникальный в рамках справочника бизнесовый код
+                classifierCode:
+                  type: string
+                  description: Уникальный код категории таксономии. Приходит при типе данных справочника - основные (мастер)
+                name:
+                  type: object
+                  description: Наименование
+                  properties:
+                    rus:
+                      type: string
+                      description: на русском языке
+                    eng:
+                      type: string
+                      description: на английском языке
+                    tur:
+                      type: string
+                      description: на турецком языке
+                    anotherLanguage:
+                      type: string
+                      description: на любом другом языке
+                status:
+                  type: string
+                  description: Статус элемента
+                reasonCode:
+                  type: string
+                  description: 'Расширение назначения статуса (например причина блокировки) - `OUTDATED` (Устаревшая), `DUPLICATE` (Дубликат), `INCONSISTENT` (Несоответствующая), `LIQUIDATION` (Ликвидация), `RESTRUCTURING` (Реструктуризация), `REFORM` (Реформирование), `OTHERS` (Другие)'
+                masterItemCode:
+                  type: string
+                  description: Уникальный в рамках справочника код эталона. Приходит при reasonCode = DUPLICATE
+                cells:
+                  type: array
+                  description: Ячейки записи
+                  items:
+                    oneOf:
+                      - $ref: '#/components/schemas/CellValue'
+                      - $ref: '#/components/schemas/CellRange'
+              required:
+                - name
+                - status
+      responses:
+        '200':
+          description: Элемент успешно изменен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  versionUuid:
+                    type: string
+                    description: Глобальный уникальный идентификатор версии в рамках Системы
+                    format: uuid
+                  parentVersionUuid:
+                    type: string
+                    description: Глобальный уникальный идентификатор версии родителя в рамках Системы
+                    format: uuid
+                  businessCode:
+                    type: string
+                    description: Уникальный в рамках справочника бизнесовый код
+                  classifierCode:
+                    type: string
+                    description: Уникальный код категории таксономии. Приходит при типе данных справочника - основные (мастер)
+                  name:
+                    type: object
+                    description: Наименование
+                    properties:
+                      byDefault:
+                        type: string
+                        description: на языке системы
+                      rus:
+                        type: string
+                        description: на русском языке
+                      eng:
+                        type: string
+                        description: на английском языке
+                      tur:
+                        type: string
+                        description: на турецком языке
+                      anotherLanguage:
+                        type: string
+                        description: на любом другом языке
+                    required:
+                      - byDefault
+                  status:
+                    type: string
+                    description: Статус элемента
+                  reasonCode:
+                    type: string
+                    description: 'Расширение назначения статуса (например причина блокировки) - `OUTDATED` (Устаревшая), `DUPLICATE` (Дубликат), `INCONSISTENT` (Несоответствующая), `LIQUIDATION` (Ликвидация), `RESTRUCTURING` (Реструктуризация), `REFORM` (Реформирование), `OTHERS` (Другие)'
+                  masterItemCode:
+                    type: string
+                    description: Уникальный в рамках справочника код эталона. Приходит при reasonCode = DUPLICATE
+                  cells:
+                    type: array
+                    description: Ячейки записи
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/CellValue'
+                        - $ref: '#/components/schemas/CellRange'
+                required:
+                  - versionUuid
+                  - name
+                  - status
+        '400':
+          description: Ошибка в запросе
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      security:
+        - Authorization: []
   '/v2/directories/{directoryCode}/items/{itemCode}/parents':
     get:
       tags:
@@ -1900,29 +1755,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/directories/{directoryCode}/items/{itemCode}/children':
     get:
       tags:
@@ -1955,29 +1787,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/directories/{directoryCode}/items/{itemCode}/versions/{versionUuid}':
     get:
       tags:
@@ -2009,29 +1818,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/directories/{directoryCode}/items/{itemCode}/versions/{versionUuid}/parents':
     get:
       tags:
@@ -2065,29 +1851,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/directories/{directoryCode}/items/{itemCode}/versions/{versionUuid}/children':
     get:
       tags:
@@ -2121,29 +1884,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/directories/{directoryCode}/item-versions/{versionUuid}':
     get:
       tags:
@@ -2155,25 +1895,8 @@ paths:
       parameters:
         - $ref: '#/components/parameters/dataSet'
         - $ref: '#/components/parameters/includeAttributes'
-        - name: directoryCode
-          in: path
-          description: Уникальный код объекта НСИ в рамках Системы
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 500
-            examples:
-              - contractor
-        - name: versionUuid
-          in: path
-          description: Глобальный уникальный идентификатор версии объекта или элемента НСИ
-          required: true
-          schema:
-            type: string
-            format: uuid
-            examples:
-              - 73d69dee-33be-4748-9ba3-ed4175da98c6
+        - $ref: '#/components/parameters/directoryCode'
+        - $ref: '#/components/parameters/versionUuid'
       responses:
         '200':
           description: Успех
@@ -2191,29 +1914,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/directories/{directoryCode}/item-versions/{versionUuid}/parents':
     get:
       tags:
@@ -2228,25 +1928,8 @@ paths:
         - $ref: '#/components/parameters/sort'
         - $ref: '#/components/parameters/dataSet'
         - $ref: '#/components/parameters/includeAttributes'
-        - name: directoryCode
-          in: path
-          description: Уникальный код объекта НСИ в рамках Системы
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 500
-            examples:
-              - contractor
-        - name: versionUuid
-          in: path
-          description: Глобальный уникальный идентификатор версии объекта или элемента НСИ
-          required: true
-          schema:
-            type: string
-            format: uuid
-            examples:
-              - 73d69dee-33be-4748-9ba3-ed4175da98c6
+        - $ref: '#/components/parameters/directoryCode'
+        - $ref: '#/components/parameters/versionUuid'
       responses:
         '200':
           description: Успех
@@ -2263,29 +1946,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/directories/{directoryCode}/item-versions/{versionUuid}/children':
     get:
       tags:
@@ -2300,25 +1960,8 @@ paths:
         - $ref: '#/components/parameters/sort'
         - $ref: '#/components/parameters/dataSet'
         - $ref: '#/components/parameters/includeAttributes'
-        - name: directoryCode
-          in: path
-          description: Уникальный код объекта НСИ в рамках Системы
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 500
-            examples:
-              - contractor
-        - name: versionUuid
-          in: path
-          description: Глобальный уникальный идентификатор версии объекта или элемента НСИ
-          required: true
-          schema:
-            type: string
-            format: uuid
-            examples:
-              - 73d69dee-33be-4748-9ba3-ed4175da98c6
+        - $ref: '#/components/parameters/directoryCode'
+        - $ref: '#/components/parameters/versionUuid'
       responses:
         '200':
           description: Успех
@@ -2335,53 +1978,18 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   /v2/uoms:
     get:
       tags:
         - uoms
-        - v1
+        - v2
       summary: Получение всех ЕИ
       description: Получение всех актуальных ЕИ
       operationId: getUomsV2
       parameters:
-        - name: size
-          in: query
-          description: Требуемое количество элементов на странице
-          schema:
-            type: string
-        - name: page
-          in: query
-          description: Требуемый номер отображаемой страницы
-          schema:
-            type: string
-        - name: sort
-          in: query
-          description: Требуемые параметры сортировки
-          schema:
-            type: string
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
       responses:
         '200':
           description: Успех
@@ -2402,29 +2010,6 @@ paths:
           description: Internal Server Error
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/uoms/{uomCode}':
     get:
       tags:
@@ -2434,7 +2019,6 @@ paths:
       description: Получение актуальной версии конкретной ЕИ
       operationId: getUomV2
       parameters:
-        - $ref: '#/components/parameters/uomCode'
         - $ref: '#/components/parameters/uomCode'
       responses:
         '200':
@@ -2453,30 +2037,7 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
-  /v2/uoms/versions:
+  '/v2/uoms/{uomCode}/versions':
     get:
       tags:
         - v2
@@ -2511,29 +2072,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/uoms/{uomCode}/versions/{versionUuid}':
     get:
       tags:
@@ -2545,7 +2083,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/uomCode'
         - $ref: '#/components/parameters/versionUuid'
-        - $ref: '#/components/parameters/uomCode'
       responses:
         '200':
           description: Успех
@@ -2563,29 +2100,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   /v2/uomGroups:
     get:
       tags:
@@ -2620,29 +2134,6 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/uomGroups/{uomGroupCode}':
     get:
       tags:
@@ -2652,15 +2143,7 @@ paths:
       description: Получение конкретной группы ЕИ
       operationId: getUomGroupV2
       parameters:
-        - name: uomGroupCode
-          in: path
-          description: Уникальный код группы единиц измерения в рамках Системы
-          required: true
-          schema:
-            type: string
-            pattern: c98cb302-0a57-4218-9f62-f13f8f7d1da3
-            minLength: 1
-            maxLength: 500
+        - $ref: '#/components/parameters/uomGroupCode'
       responses:
         '200':
           description: Успех
@@ -2678,33 +2161,10 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   /v2/attributes:
     get:
       tags:
-        - attribute
+        - attributes
         - v2
       summary: Получение всех атрибутов
       description: Получение всех актуальных атрибутов
@@ -2736,49 +2196,17 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/attributes/{attributeCode}':
     get:
       tags:
-        - attribute
         - v2
+        - attributes
       summary: Получение атрибута
       description: Получение актуальной версии конкретного акутального атрибута
       operationId: getAttributeV2
       parameters:
         - $ref: '#/components/parameters/includeUom'
-        - name: attributeCode
-          in: path
-          description: Уникальный код атрибута в рамках Системы
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 500
-            examples:
-              - 1412ddc5-eaea-4103-9c8c-784e0a3572c8
+        - $ref: '#/components/parameters/attributeCode'
       responses:
         '200':
           description: Успех
@@ -2798,34 +2226,11 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/attributes/{attributeCode}/versions':
     get:
       tags:
-        - attribute
         - v2
+        - attributes
       summary: Получение всех версий атрибута
       description: Получение всех версий конкретного актуального атрибута
       operationId: getAttributeVersionsV2
@@ -2834,16 +2239,7 @@ paths:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/sort'
         - $ref: '#/components/parameters/includeUom'
-        - name: attributeCode
-          in: path
-          description: Уникальный код атрибута в рамках Системы
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 500
-            examples:
-              - 1412ddc5-eaea-4103-9c8c-784e0a3572c8
+        - $ref: '#/components/parameters/attributeCode'
       responses:
         '200':
           description: Успех
@@ -2866,58 +2262,18 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/attributes/{attributeCode}/versions/{versionUuid}':
     get:
       tags:
-        - attribute
+        - attributes
         - v2
       summary: Получение версии атрибута
       description: Получение конкретной версии актуального атрибута
       operationId: getAttributeVersionV2
       parameters:
         - $ref: '#/components/parameters/includeUom'
-        - name: attributeCode
-          in: path
-          description: Уникальный код атрибута в рамках Системы
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 500
-            examples:
-              - 1412ddc5-eaea-4103-9c8c-784e0a3572c8
-        - name: versionUuid
-          in: path
-          description: Глобальный уникальный идентификатор версии
-          required: true
-          schema:
-            type: string
-            format: uuid
-            examples:
-              - 73d69dee-33be-4748-9ba3-ed4175da98c6
+        - $ref: '#/components/parameters/attributeCode'
+        - $ref: '#/components/parameters/versionUuid'
       responses:
         '200':
           description: Успех
@@ -2934,33 +2290,10 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   /v2/parameters:
     get:
       tags:
-        - parameter
+        - parameters
         - v2
       summary: Получение всех параметров атрибута
       description: Получение всех актуальных параметров атрибута
@@ -2987,34 +2320,11 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   /v2/taxonomies:
     get:
       tags:
+        - taxonomies
         - v2
-        - taxonomy
       summary: Получение всех таксономий
       description: Получение всех актуальных таксономий
       operationId: getTaxonomiesV2
@@ -3044,33 +2354,10 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   /v2/taxonomies/filter:
     post:
       tags:
-        - directories
+        - taxonomies
         - v2
       summary: Получение отфильтрованных таксономий
       description: Постраничное получение отфильтрованных актуальных версий таксономий
@@ -3210,39 +2497,15 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/taxonomies/{taxonomyCode}':
     get:
       tags:
-        - taxonomy
+        - taxonomies
         - v2
       summary: Получение таксономии
-      description: Получение актуальной версии конкретной актуальной таксономии
+      description: "Получение актуальной версии конкретной актуальной таксономии\r\n"
       operationId: getTaxonomyV2
       parameters:
-        - $ref: '#/components/parameters/taxonomyCode'
         - $ref: '#/components/parameters/taxonomyCode'
       responses:
         '200':
@@ -3261,34 +2524,11 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/taxonomies/{taxonomyCode}/versions':
     get:
       tags:
+        - taxonomies
         - v2
-        - taxonomy
       summary: Получение всех версий таксономии
       description: Получение всех версий конкретной актуальной таксономии
       operationId: getTaxonomyVersionsV2
@@ -3296,16 +2536,6 @@ paths:
         - $ref: '#/components/parameters/size'
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/sort'
-        - name: taxonomyCode
-          in: path
-          description: Уникальный код таксономии в рамках НСИ
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 500
-            examples:
-              - 49b106eb-6193-4661-9de2-825f842557f1
         - $ref: '#/components/parameters/taxonomyCode'
       responses:
         '200':
@@ -3329,33 +2559,10 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/taxonomies/{taxonomyCode}/versions/{versionUuid}':
     get:
       tags:
-        - category
+        - categories
         - v2
       summary: Получение версии таксономии
       description: Получение конкретной версии конкретной актуальной таксономии
@@ -3364,17 +2571,6 @@ paths:
         - $ref: '#/components/parameters/size'
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/sort'
-        - name: taxonomyCode
-          in: path
-          description: Уникальный код таксономии в рамках НСИ
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 500
-            examples:
-              - 49b106eb-6193-4661-9de2-825f842557f1
-        - $ref: '#/components/parameters/versionUuid'
         - $ref: '#/components/parameters/taxonomyCode'
         - $ref: '#/components/parameters/versionUuid'
       responses:
@@ -3396,33 +2592,10 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/taxonomies/{taxonomyCode}/categories':
     get:
       tags:
-        - category
+        - categories
         - v2
       summary: Получение категорий
       description: Получение всех актуальных категорий
@@ -3432,17 +2605,6 @@ paths:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/sort'
         - $ref: '#/components/parameters/level'
-        - name: taxonomyCode
-          in: path
-          description: Уникальный код таксономии в рамках НСИ
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 500
-            examples:
-              - 49b106eb-6193-4661-9de2-825f842557f1
-        - $ref: '#/components/parameters/taxonomyCode'
         - $ref: '#/components/parameters/taxonomyCode'
       responses:
         '200':
@@ -3470,48 +2632,14 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
     post:
       tags:
-        - category
+        - categories
         - v2
       summary: Получение категорий
       description: Получение всех категорий
       operationId: postCategoriesV2
       parameters:
-        - name: taxonomyCode
-          in: path
-          description: Уникальный код таксономии в рамках НСИ
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 500
-            examples:
-              - 49b106eb-6193-4661-9de2-825f842557f1
-        - $ref: '#/components/parameters/taxonomyCode'
         - $ref: '#/components/parameters/taxonomyCode'
       requestBody:
         content:
@@ -3545,34 +2673,10 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
-  /v2/taxonomies/categories/filter:
+  '/v2/taxonomies/{taxonomyCode}/categories/filter':
     post:
       tags:
-        - directories
-        - items
+        - categories
         - v2
       summary: Получение отфильтрованных элементов объекта НСИ
       description: Постраничное получение отфильтрованных актуальных категорий таксономий
@@ -3582,7 +2686,7 @@ paths:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/sort'
         - $ref: '#/components/parameters/includeAttributes'
-        - $ref: '#/components/parameters/directoryCode'
+        - $ref: '#/components/parameters/taxonomyCode'
       requestBody:
         content:
           application/json:
@@ -3718,33 +2822,10 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/taxonomies/{taxonomyCode}/categories/{categoryCode}':
     get:
       tags:
-        - category
+        - categories
         - v2
       summary: Получение категории
       description: Получение актуальной версии конкретной актуальной категории
@@ -3774,33 +2855,10 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/taxonomies/{taxonomyCode}/categories/{categoryCode}/versions':
     get:
       tags:
-        - category
+        - categories
         - v2
       summary: Получение всех версий категории
       description: Получение всех версий конкретной актуальной категории
@@ -3838,33 +2896,10 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/taxonomies/{taxonomyCode}/categories/{categoryCode}/versions/{versionUuid}':
     get:
       tags:
-        - category
+        - categories
         - v2
       summary: Получение версии категории
       description: Получение конкретной версии конкретной актуальной категории
@@ -3891,33 +2926,10 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/taxonomies/{taxonomyCode}/categories/{categoryCode}/parents':
     get:
       tags:
-        - category
+        - categories
         - v2
       summary: Получение категорий-предков
       description: Получение категорий предков версии актуальной категории
@@ -3957,33 +2969,10 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/taxonomies/{taxonomyCode}/categories/{categoryCode}/versions/{versionUuid}/parents':
     get:
       tags:
-        - category
+        - categories
         - v2
       summary: Получение категорий-предков версии категории
       description: Получение категорий предков конкретной версии актуальной категории
@@ -3995,8 +2984,6 @@ paths:
         - $ref: '#/components/parameters/includeAttributes'
         - $ref: '#/components/parameters/taxonomyCode'
         - $ref: '#/components/parameters/categoryCode'
-        - $ref: '#/components/parameters/taxonomyCode'
-        - $ref: '#/components/parameters/categoryCode'
         - $ref: '#/components/parameters/versionUuid'
       responses:
         '200':
@@ -4026,33 +3013,10 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/taxonomies/{taxonomyCode}/categories/{categoryCode}/versions/{versionUuid}/children':
     get:
       tags:
-        - category
+        - categories
         - v2
       summary: Получение категорий-детей версии категории
       description: Получение категорий детей конкретной версии актуальной категории
@@ -4062,27 +3026,6 @@ paths:
         - $ref: '#/components/parameters/sort'
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/includeAttributes'
-        - name: taxonomyCode
-          in: path
-          description: Уникальный код таксономии в рамках НСИ
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 500
-            examples:
-              - 49b106eb-6193-4661-9de2-825f842557f1
-        - name: categoryCode
-          in: path
-          description: Уникальный код категории в рамках Системы
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 500
-            examples:
-              - d25b7e70-5b89-4f37-91d2-2b8368a559f1
-        - $ref: '#/components/parameters/versionUuid'
         - $ref: '#/components/parameters/taxonomyCode'
         - $ref: '#/components/parameters/categoryCode'
         - $ref: '#/components/parameters/versionUuid'
@@ -4114,33 +3057,10 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
   '/v2/taxonomies/{taxonomyCode}/categories/{categoryCode}/children':
     get:
       tags:
-        - category
+        - categories
         - v2
       summary: Получение категорий-детей категории
       description: Получение категорий детей актуальной категории
@@ -4150,27 +3070,6 @@ paths:
         - $ref: '#/components/parameters/sort'
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/includeAttributes'
-        - name: taxonomyCode
-          in: path
-          description: Уникальный код таксономии в рамках НСИ
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 500
-            examples:
-              - 49b106eb-6193-4661-9de2-825f842557f1
-        - name: categoryCode
-          in: path
-          description: Уникальный код категории в рамках Системы
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 500
-            examples:
-              - d25b7e70-5b89-4f37-91d2-2b8368a559f1
-        - $ref: '#/components/parameters/versionUuid'
         - $ref: '#/components/parameters/taxonomyCode'
         - $ref: '#/components/parameters/categoryCode'
       responses:
@@ -4201,46 +3100,58 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
-      servers:
-        - url: 'http://10.125.132.47:30851'
-          description: ATK_DEV
-        - url: 'http://10.125.132.47:31815/api/integration'
-          description: ATK_TEST
-        - url: 'http://10.125.132.47:31835'
-          description: ATK_LOAD
-        - url: X
-          description: ATK_DEMO
-        - url: 'http://10.125.132.17:8085'
-          description: MSX_PHOENIXIT_DEV
-        - url: 'http://10.125.132.26:8085'
-          description: MSX_PHOENIXIT_TEST
-        - url: 'http://10.125.132.29:8085'
-          description: MSX_PHOENIXIT_STAGE
-        - url: 'https://172.19.3.64:8085'
-          description: MSX_MIGR1
-        - url: 'http://172.19.3.67:8085'
-          description: MSX_MIGR2
-        - url: 'http://192.168.190.199:8085'
-          description: MSX_UAT
-        - url: 'http://172.19.3.34:8085'
-          description: MSX_PROD
+  /v2/proposals:
+    post:
+      tags:
+        - proposals
+        - v2
+      summary: Создание заявки
+      responses:
+        '201':
+          description: Заявка успешно создана
+          content: {}
+        '401':
+          $ref: '#/components/responses/401-unauthorized'
+        '403':
+          $ref: '#/components/responses/403-forbidden'
+        '422':
+          description: Некорректные данные
+        '500':
+          $ref: '#/components/responses/500-server-error'
+      operationId: postProposalV2
+      description: Создание заявки
+      security:
+        - Authorization: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/Proposal'
+    parameters: []
 tags:
+  - name: attributes
+    description: Работа с атрибутами
+  - name: categories
+    description: Работа с категориями
   - name: directories
     description: Работа со объектами (справочники и классификаторы)
   - name: items
     description: Работа с элементами объекта (записи и классы)
+  - name: parameters
+    description: Работа с параметрами
+  - name: taxonomies
+    description: Работа с таксономиями
+  - name: uomGroups
+    description: Работа с группами едениц измерения
+  - name: uoms
+    description: Работа с еденицами измерения
+  - name: proposals
+    description: Работа с заявками
   - name: v1
     description: Первая версия API
   - name: v2
     description: Вторая версия API
-  - name: taxonomies
-    description: Работа с таксономиями
-  - name: categories
-    description: Работа с категориями
-  - name: uoms
-    description: Работа с еденицами измерения
-  - name: uomGroups
-    description: Работа с группами едениц измерения
 components:
   parameters:
     size:
@@ -4331,7 +3242,7 @@ components:
       description: Уровень категории
       required: false
       schema:
-        type: string
+        type: integer
     includeUom:
       name: includeUom
       in: query
@@ -5001,15 +3912,11 @@ components:
       description: Значение атрибута с типом "Ссылка на элемент"
       properties:
         type:
-          type: string
-          enum:
-            - DIRECTORY_ITEM_ID
+          const: DIRECTORY_ITEM_ID
           description: Тип данных значения
           readOnly: true
         valueRef:
-          description: Значение ссылка (на запись справочника или класс классификатора)
-          oneOf:
-            - $ref: '#/components/schemas/DirectoryItemRef'
+          $ref: '#/components/schemas/DirectoryItemRef'
       required:
         - type
         - valueRef
@@ -5031,6 +3938,10 @@ components:
           readOnly: true
           examples:
             - 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+        versionUuid:
+          type: string
+          description: Глобальный уникальный идентификатор версии элемента в рамках Системы
+          format: uuid
         name:
           type: object
           description: Наименование элемента
@@ -5055,9 +3966,13 @@ components:
               type: string
               description: На ином языке
               maxLength: 500
+          required:
+            - byDefault
       required:
         - directoryCode
         - directoryItemCode
+        - versionUuid
+        - name
       readOnly: true
       examples: []
     ValueOther:
@@ -5627,6 +4542,37 @@ components:
           type: string
           description: Глобальный уникальный идентификатор версии в рамках Системы
           readOnly: true
+        directoryType:
+          type: object
+          description: LДанные объекта. Приходят при typeCode=DIRECTORY_ITEM_ID.
+          properties:
+            directoryCode:
+              type: string
+              description: Код объекта
+            name:
+              type: object
+              description: Наименование объекта
+              properties:
+                byDefault:
+                  type: string
+                  description: Наименование на языке системы
+                rus:
+                  type: string
+                  description: на русском языке
+                eng:
+                  type: string
+                  description: на английском языке
+                tur:
+                  type: string
+                  description: на турецком языке
+                anotherLanguage:
+                  type: string
+                  description: на любом другом языке
+              required:
+                - byDefault
+          required:
+            - directoryCode
+            - name
         validFrom:
           type: string
           description: Дата и время начала действия версии
@@ -5643,7 +4589,7 @@ components:
           properties:
             byDefault:
               type: string
-              description: на русском языке
+              description: Наименование на языке системы
               minLength: 1
               maxLength: 500
               readOnly: true
@@ -5733,7 +4679,7 @@ components:
           items:
             oneOf:
               - $ref: '#/components/schemas/EnumValueString'
-              - $ref: '#/components/schemas/EnumValueRef'
+              - $ref: '#/components/schemas/ValueRef'
               - $ref: '#/components/schemas/EnumValueOther'
         attributeSpecification:
           type: string
@@ -5824,30 +4770,6 @@ components:
         - value
       readOnly: true
       examples: []
-    EnumValueRef:
-      type: object
-      title: Перечисляемое значение ссылка
-      description: Перечисляемое значение атрибута с типом "Ссылка на элемент"
-      properties:
-        type:
-          type: string
-          enum:
-            - DIRECTORY_ITEM_ID
-          description: Тип данных значения
-          readOnly: true
-        valueRef:
-          description: Значение ссылка (на запись справочника или класс классификатора)
-          oneOf:
-            - $ref: '#/components/schemas/DirectoryItemRef'
-      required:
-        - type
-        - valueRef
-      readOnly: true
-      examples:
-        - type: DIRECTORY_ITEM_ID
-          valueRef:
-            directoryCode: material_and_technical_resources
-            directoryItemCode: 6df58e56-7e0b-4cd9-a16c-8870348ba68d
     EnumValueOther:
       type: object
       title: Остальные перечисляемые значения
@@ -6225,6 +5147,9 @@ components:
           type: boolean
           description: Признак иерархии
           readOnly: true
+        topLevelClassifierCode:
+          type: string
+          description: Уникальный код таксономии
         name:
           type: object
           description: Наименование
@@ -6562,7 +5487,7 @@ components:
           properties:
             byDefault:
               type: string
-              description: на русском языке
+              description: на языке системы
               minLength: 1
               maxLength: 500
               readOnly: true
@@ -7296,6 +6221,37 @@ components:
           readOnly: true
           examples:
             - a6622863-b08d-4df0-b0f2-1886f00bd18b
+        directoryType:
+          type: object
+          description: Данные объекта. Приходит при typeCode=DIRECTORY_ITEM_ID
+          properties:
+            directoryCode:
+              type: string
+              description: Код объекта
+            name:
+              type: object
+              description: Наименование объекта
+              properties:
+                byDefault:
+                  type: string
+                  description: Наименование на языке Системы
+                rus:
+                  type: string
+                  description: На русском языке
+                eng:
+                  type: string
+                  description: На английском языке
+                tur:
+                  type: string
+                  description: На турецком языке
+                anotherLanguage:
+                  type: string
+                  description: На любом другом языке
+              required:
+                - byDefault
+          required:
+            - directoryCode
+            - name
         validFrom:
           type: string
           description: Дата и время начала действия версии
@@ -7314,7 +6270,7 @@ components:
           properties:
             byDefault:
               type: string
-              description: на русском языке
+              description: На языке системы
               minLength: 1
               maxLength: 500
               readOnly: true
@@ -7411,7 +6367,7 @@ components:
           items:
             oneOf:
               - $ref: '#/components/schemas/EnumValueString'
-              - $ref: '#/components/schemas/EnumValueRef'
+              - $ref: '#/components/schemas/ValueRef'
               - $ref: '#/components/schemas/EnumValueOther'
         attributeSpecification:
           type: string
@@ -7869,5 +6825,80 @@ components:
         - name
         - groupAttribute
       readOnly: true
+    Proposal:
+      title: Заявка
+      x-stoplight:
+        id: 6gmlb1a04xwqo
+      type: object
+      description: Заявка
+      required:
+        - type
+        - directory_code
+        - item_name
+      properties:
+        type:
+          x-stoplight:
+            id: rrpo2igqt6fkz
+          enum:
+            - CREATE
+          description: Тип заявки
+        directory_code:
+          type: string
+          x-stoplight:
+            id: j7aj5nkofl3x1
+          description: Код объекта
+          example: car_brend
+        item_name:
+          type: object
+          x-stoplight:
+            id: oafns3s73ov60
+          description: Наименование
+          properties:
+            byDefault:
+              type: string
+              x-stoplight:
+                id: 6zobr0ixybwpf
+              description: на языке системы
+            rus:
+              type: string
+              x-stoplight:
+                id: muo0sp5pyx0f7
+              example: БЕЛАРУС 1221.99
+              description: на русском языке
+            eng:
+              type: string
+              x-stoplight:
+                id: 1vd7t2hf2vfkp
+              description: на английском языке
+            tur:
+              type: string
+              x-stoplight:
+                id: azuiw5e9q6pg4
+              description: на турецком языке
+            anotherLanguage:
+              type: string
+              x-stoplight:
+                id: f4vdco6kc3g8m
+              description: на любом другом языке
+        classifier_code:
+          type: string
+          x-stoplight:
+            id: 0bielkr4mwpns
+          description: Код категорий
+          example: tractor
+        cells:
+          x-stoplight:
+            id: 1oitoki8pmqit
+          type: array
+          description: Ячейки
+          items:
+            x-stoplight:
+              id: ftmwdn59huqiz
+            oneOf:
+              - $ref: '#/components/schemas/CellValue'
+              - $ref: '#/components/schemas/CellRange'
+                x-stoplight:
+                  id: pd4k9z8607xg6
+            type: object
 security:
   - Authorization: []
