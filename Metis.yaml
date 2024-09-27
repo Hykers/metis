@@ -3109,7 +3109,11 @@ paths:
       responses:
         '201':
           description: Заявка успешно создана
-          content: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Proposal'
         '401':
           $ref: '#/components/responses/401-unauthorized'
         '403':
@@ -3140,14 +3144,14 @@ tags:
     description: Работа с элементами объекта (записи и классы)
   - name: parameters
     description: Работа с параметрами
+  - name: proposals
+    description: Работа с заявками
   - name: taxonomies
     description: Работа с таксономиями
   - name: uomGroups
     description: Работа с группами едениц измерения
   - name: uoms
     description: Работа с еденицами измерения
-  - name: proposals
-    description: Работа с заявками
   - name: v1
     description: Первая версия API
   - name: v2
@@ -6832,10 +6836,18 @@ components:
       type: object
       description: Заявка
       required:
+        - id
         - type
         - directory_code
         - item_name
       properties:
+        id:
+          type: integer
+          x-stoplight:
+            id: aj6fchzf7xytt
+          example: 101
+          description: Уникальный идентификатор заявки
+          readOnly: true
         type:
           x-stoplight:
             id: rrpo2igqt6fkz
