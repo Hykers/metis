@@ -413,6 +413,7 @@ paths:
         4. Свойством могут быть следующие значения:
            * `name.<language>` - указание, что фильтрация по наименованию элемента
            * `code` - указание, что фильтрация по коду элемента
+           * `status` - указание, что фильтрация по статусу элемента (MASTER или BLOCKED)
            * `attributeValueCode.<attributeCode>.<language>` - указание, что фильтрация по значению атрибута
         5. `<language>` необходимо указывать для значений, являющихся текстом. `<language>` может принимать следующие значения: `rus`, `eng`, `tur`, `byDefault`
         6. Значением могут быть следующие значения:
@@ -426,6 +427,7 @@ paths:
         * filter=EQ,attributeValueCode.positions,{"code": "CHIEF_STATE_ENGINEER-INSPECTOR", "directoryCode": "positions"}
         * filter=EQ,attributeValueCode.inspection.rus,87
         * filter=EQ,name.rus,Руководитель службы
+        * filter=EQ,status,MASTER
         * filter=EQ,code,CHIEF_STATE_ENGINEER-INSPECTOR_87
       operationId: getItemsV1
       parameters:
@@ -1183,7 +1185,7 @@ paths:
 
         Особенности фильтрации
 
-        1. Фильтр может использовать один параметр или несколько. Для фильтрации по нескольким параметрам необходимо несколько раз указать Query Parameter `filter`, соединив их символом `&`.
+        1. Фильтр может использовать один или несколько параметров. Для фильтрации по нескольким параметрам необходимо несколько раз указать Query Parameter `filter`, соединив их символом `&`.
         2. Синтаксис значения Query Parameter `filter` следующий `operator,property,value`
         3. Оператором могут быть следующие значения:
            * `GT` - больше;
@@ -1205,6 +1207,7 @@ paths:
         4. Свойством могут быть следующие значения:
            * `name.<language>` - указание, что фильтрация по наименованию элемента
            * `code` - указание, что фильтрация по коду элемента
+           * `status` - указание, что фильтрация по статусу элемента (MASTER или BLOCKED)
            * `attributeValueCode.<attributeCode>.<language>` - указание, что фильтрация по значению атрибута
         5. `<language>` необходимо указывать для значений, являющихся текстом. `<language>` может принимать следующие значения: `rus`, `eng`, `tur`, `byDefault`
         6. Значением могут быть следующие значения:
@@ -1218,6 +1221,7 @@ paths:
         * filter=EQ,attributeValueCode.positions,{"code": "CHIEF_STATE_ENGINEER-INSPECTOR", "directoryCode": "positions"}
         * filter=EQ,attributeValueCode.inspection.rus,87
         * filter=EQ,name.rus,Руководитель службы
+        * filter=EQ,status,MASTER
         * filter=EQ,code,CHIEF_STATE_ENGINEER-INSPECTOR_87
       operationId: getItemsV2
       parameters:
@@ -1375,6 +1379,7 @@ paths:
           $ref: '#/components/responses/500-server-error'
       security:
         - Authorization: []
+    parameters: []
   '/v2/directories/{directoryCode}/items/filter':
     post:
       tags:
@@ -1983,8 +1988,8 @@ paths:
       tags:
         - uoms
         - v2
-      summary: Получение всех ЕИ
-      description: Получение всех актуальных ЕИ
+      summary: Получение единиц измерения
+      description: Получение актуальных единиц измерения
       operationId: getUomsV2
       parameters:
         - $ref: '#/components/parameters/size'
@@ -1996,12 +2001,19 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Uom'
+                allOf:
+                  - type: object
+                    required:
+                      - content
+                    properties:
+                      content:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Uom'
+                  - $ref: '#/components/schemas/PageContent'
+                    x-stoplight:
+                      id: lcb8uovmbox5z
+              examples: {}
         '401':
           description: Учетная запись не авторизована
         '403':
@@ -2015,8 +2027,8 @@ paths:
       tags:
         - uoms
         - v2
-      summary: Получение конкретной ЕИ
-      description: Получение актуальной версии конкретной ЕИ
+      summary: Получение конкретной единиц
+      description: Получение актуальной версии конкретной единицы измерения
       operationId: getUomV2
       parameters:
         - $ref: '#/components/parameters/uomCode'
@@ -2026,7 +2038,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Uom'
+                $ref: '#/components/schemas/FullUom'
         '401':
           $ref: '#/components/responses/401-unauthorized'
         '403':
@@ -2042,8 +2054,8 @@ paths:
       tags:
         - v2
         - uoms
-      summary: Получение всех версий ЕИ
-      description: Получение всех версий конкретной актуальной ЕИ
+      summary: Получение всех версий единицы измерения
+      description: Получение всех версий конкретной единицы измерения
       operationId: getUomVersionsV2
       parameters:
         - $ref: '#/components/parameters/size'
@@ -2056,12 +2068,16 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Uom'
+                allOf:
+                  - type: object
+                    properties:
+                      content:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/FullUom'
+                  - $ref: '#/components/schemas/PageContent'
+                    x-stoplight:
+                      id: hor24epuegoms
         '401':
           $ref: '#/components/responses/401-unauthorized'
         '403':
@@ -2077,8 +2093,8 @@ paths:
       tags:
         - v2
         - uoms
-      summary: Получение конкретной версии ЕИ
-      description: Получение конкретной версии конкретной ЕИ
+      summary: Получение конкретной версии единицы измерения
+      description: Получение конкретной версии конкретной единицы измерения
       operationId: getUomVersionV2
       parameters:
         - $ref: '#/components/parameters/uomCode'
@@ -2089,7 +2105,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Uom'
+                $ref: '#/components/schemas/FullUom'
         '401':
           $ref: '#/components/responses/401-unauthorized'
         '403':
@@ -2105,8 +2121,8 @@ paths:
       tags:
         - uomGroups
         - v2
-      summary: Получение всех групп ЕИ
-      description: Получение всех групп ЕИ
+      summary: Получение всех групп единиц измерения
+      description: Получение всех групп единиц измерения
       operationId: getUomGroupsV2
       parameters:
         - $ref: '#/components/parameters/size'
@@ -2118,12 +2134,16 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/UomGroup'
+                allOf:
+                  - type: object
+                    properties:
+                      content:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/UomGroup'
+                  - $ref: '#/components/schemas/PageContent'
+                    x-stoplight:
+                      id: nef98rh1yaoje
         '401':
           $ref: '#/components/responses/401-unauthorized'
         '403':
@@ -2139,8 +2159,8 @@ paths:
       tags:
         - uomGroups
         - v2
-      summary: Получение группы ЕИ
-      description: Получение конкретной группы ЕИ
+      summary: Получение группы единицы измерения
+      description: Получение конкретной группы единицы измерения
       operationId: getUomGroupV2
       parameters:
         - $ref: '#/components/parameters/uomGroupCode'
@@ -3797,14 +3817,12 @@ components:
         status:
           type: string
           enum:
-            - MASTER_DEFAULT
-            - BLOCKED_DEFAULT
-            - MASTER_COUNTERPARTIES
-            - IRRELEVANT_COUNTERPARTIES
-          description: 'Статус - `MASTER_DEFAULT` (эталон), `BLOCKED_DEFAULT` (блокированная), `MASTER_COUNTERPARTIES` (эталон), `IRRELEVANT_COUNTERPARTIES` (неактуальная)'
-          readOnly: true
+            - MASTER
+            - BLOCKED
+          description: 'Статус - `MASTER` (эталон), `BLOCKED` (блокированная)'
           examples:
-            - MASTER_DEFAULT
+            - MASTER
+          readOnly: true
         reasonCode:
           type: string
           enum:
@@ -3823,6 +3841,15 @@ components:
           readOnly: true
           examples:
             - 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+        uom:
+          $ref: '#/components/schemas/Uom'
+          description: Базовая единица измерения
+        alternativeUom:
+          type: array
+          description: Альтернативные единицы измерения
+          items:
+            $ref: '#/components/schemas/AlternativeUom'
+          readOnly: true
         cells:
           type: array
           description: Ячейки записи
@@ -3842,27 +3869,30 @@ components:
       type: object
       title: Ячейка значений
       description: Ячейка без диапазонов
+      required:
+        - attributeCode
       properties:
         attributeCode:
           type: string
           description: Уникальный в рамках Системы код атрибута
-          readOnly: true
           examples:
             - pump_type
+          readOnly: true
         values:
           type: array
           description: 'Значение(я): если атрибут имеет признак список - то массив значений, если не имеет- то одно значение в массиве'
-          readOnly: true
           items:
             description: Один из объектов значения (в зависимости от типа)
             oneOf:
               - $ref: '#/components/schemas/ValueString'
               - $ref: '#/components/schemas/ValueRef'
               - $ref: '#/components/schemas/ValueOther'
-      required:
-        - attributeCode
+          readOnly: true
+        uom:
+          $ref: '#/components/schemas/Uom'
+          x-stoplight:
+            id: c90s9suz2t9xt
       readOnly: true
-      examples: []
     ValueString:
       type: object
       title: Значение строка
@@ -4010,23 +4040,27 @@ components:
       type: object
       title: Ячейка диапазонов
       description: Ячейка с диапазонами
+      examples: []
+      required:
+        - attributeCode
       properties:
         attributeCode:
           type: string
           description: Уникальный в рамках Системы код атрибута
-          readOnly: true
           examples:
             - pump_type
+          readOnly: true
         ranges:
           type: array
           description: 'Диапазон(ы): если атрибут имеет признак список - то массив диапазонов, если не имеет- то один диапазон в массиве'
-          readOnly: true
           items:
             $ref: '#/components/schemas/Range'
-      required:
-        - attributeCode
+          readOnly: true
+        uom:
+          $ref: '#/components/schemas/Uom'
+          x-stoplight:
+            id: 81kmta8lhdtpl
       readOnly: true
-      examples: []
     Range:
       type: object
       title: Диапазон
@@ -4052,76 +4086,79 @@ components:
       type: object
       title: Полная запись справочника
       description: 'Запись справочника, где есть только корневые атрибуты'
+      required:
+        - code
+        - name
+        - status
+        - cells
       properties:
         code:
           type: string
           description: Уникальный в рамках справочника код
-          readOnly: true
           examples:
             - 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
         classifierCode:
           type: string
           description: Уникальный код категории таксономии. Приходит при типе данных справочника - основные (мастер)
-          readOnly: true
           examples:
             - 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
         name:
           type: object
           description: Наименования
+          required:
+            - byDefault
           properties:
             byDefault:
               type: string
               description: на русском языке
               minLength: 1
               maxLength: 500
-              readOnly: true
               examples:
                 - Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              readOnly: true
             rus:
               type: string
               description: на русском языке
               minLength: 1
               maxLength: 500
-              readOnly: true
               examples:
                 - Насос циркуляционный UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              readOnly: true
             eng:
               type: string
               description: на английском языке
               minLength: 1
               maxLength: 500
-              readOnly: true
               examples:
                 - Pump circulation UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              readOnly: true
             tur:
               type: string
               description: на турецком языке
               minLength: 1
               maxLength: 500
-              readOnly: true
               examples:
                 - Pompa sirkülasyonu UPS 40-50 F 250 95906420 Q=8 м^3/ч H=до 5 м х250 мм U=230 В F=50 Гц Grundfos
+              readOnly: true
             anotherLanguage:
               type: string
               description: на любом другом языке
               minLength: 1
               maxLength: 500
-              readOnly: true
               examples:
                 - ___
-          required:
-            - byDefault
+              readOnly: true
         status:
           type: string
           enum:
-            - MASTER_DEFAULT
-            - BLOCKED_DEFAULT
-            - MASTER_COUNTERPARTIES
-            - IRRELEVANT_COUNTERPARTIES
-          description: 'Статус - `MASTER_DEFAULT` (эталон), `BLOCKED_DEFAULT` (блокированная), `MASTER_COUNTERPARTIES` (эталон), `IRRELEVANT_COUNTERPARTIES` (неактуальная)'
-          readOnly: true
+            - MASTER
+            - BLOCKED
+          description: 'Статус - `MASTER` (эталон), `BLOCKED` (блокированная)'
           examples:
-            - MASTER_DEFAULT
+            - MASTER
+          readOnly: true
         reasonCode:
           type: string
           enum:
@@ -4137,28 +4174,31 @@ components:
         masterItemCode:
           type: string
           description: Уникальный в рамках справочника код эталона. Приходит при reasonCode = DUPLICATE
-          readOnly: true
           examples:
             - 6df58e56-7e0b-4cd9-a16c-8870348ba68d
+          readOnly: true
+        uom:
+          $ref: '#/components/schemas/Uom'
+          description: Базовая единица измерения
+        alternativeUom:
+          type: array
+          description: Альтернативные единицы измерения
+          items:
+            $ref: '#/components/schemas/AlternativeUom'
+          readOnly: true
         cells:
           type: array
           description: Ячейки записи
-          readOnly: true
           items:
             description: Один из объектов ячейки (в зависимости от признака "диапазон" у атрибута)
             oneOf:
               - $ref: '#/components/schemas/CellValue'
               - $ref: '#/components/schemas/CellRange'
-      required:
-        - code
-        - name
-        - status
-        - cells
-      examples: []
+          readOnly: true
     ShortDirectoryItemV1:
       type: object
       title: Краткая запись справочника
-      description: 'Запись справочника, где нет атрибутов'
+      description: 'Запись справочника, где нет атрибутов и единиц измерения'
       properties:
         code:
           type: string
@@ -4221,14 +4261,12 @@ components:
         status:
           type: string
           enum:
-            - MASTER_DEFAULT
-            - BLOCKED_DEFAULT
-            - MASTER_COUNTERPARTIES
-            - IRRELEVANT_COUNTERPARTIES
-          description: 'Статус - `MASTER_DEFAULT` (эталон), `BLOCKED_DEFAULT` (блокированная), `MASTER_COUNTERPARTIES` (эталон), `IRRELEVANT_COUNTERPARTIES` (неактуальная)'
-          readOnly: true
+            - MASTER
+            - BLOCKED
+          description: 'Статус - `MASTER` (эталон), `BLOCKED` (блокированная)'
           examples:
-            - MASTER_DEFAULT
+            - MASTER
+          readOnly: true
         reasonCode:
           type: string
           enum:
@@ -4319,14 +4357,12 @@ components:
         status:
           type: string
           enum:
-            - MASTER_DEFAULT
-            - BLOCKED_DEFAULT
-            - MASTER_COUNTERPARTIES
-            - IRRELEVANT_COUNTERPARTIES
-          description: 'Статус - `MASTER_DEFAULT` (эталон), `BLOCKED_DEFAULT` (блокированная), `MASTER_COUNTERPARTIES` (эталон), `IRRELEVANT_COUNTERPARTIES` (неактуальная)'
-          readOnly: true
+            - MASTER
+            - BLOCKED
+          description: 'Статус - `MASTER` (эталон), `BLOCKED` (блокированная)'
           examples:
-            - MASTER_DEFAULT
+            - MASTER
+          readOnly: true
         reasonCode:
           type: string
           enum:
@@ -4360,7 +4396,7 @@ components:
             eng: 'Plant materials: living plants, bulbs, tubers and rhizomes, taps and cuttings, fungi'
             tur: 'Bitki malzemeleri: canlı bitkiler, ampuller, yumrular ve rizomlar, musluklar ve çelikler, mantarlar'
             anotherLanguage: ___
-          status: MASTER_DEFAULT
+          status: MASTER
           validFrom: '2022-09-01 07:18:10.983153+00'
           validTo: '2022-09-01 07:18:10.983153+00'
     ItemWithAttributesCollectionV1:
@@ -4804,34 +4840,96 @@ components:
       examples:
         - type: INT
           value: 44
+    FullUom:
+      title: Единица измерения в реестре
+      description: Единицы измерения в реестре
+      allOf:
+        - $ref: '#/components/schemas/Uom'
+          x-stoplight:
+            id: b7sak5v7a5gva
+        - type: object
+          required:
+            - versionUuid
+            - validFrom
+          properties:
+            versionUuid:
+              type: string
+              description: Глобальный уникальный идентификатор версии в рамках Системы
+              examples:
+                - dc3c0711-f16c-4a73-b467-5530f2a9c4c2
+              format: uuid
+              example: ec36fa6c-6b4e-4b1c-9239-9857480e898e
+              readOnly: true
+            validFrom:
+              type: string
+              description: Дата и время начала действия
+              format: date-time
+              examples:
+                - '2023-12-01'
+              readOnly: true
+            validTo:
+              type: string
+              description: Дата и время окончания действия
+              format: date-time
+              readOnly: true
+            group:
+              type: array
+              description: Группа ЕИ
+              items:
+                $ref: '#/components/schemas/UomGroup'
+              readOnly: true
+            alternativeUom:
+              type: array
+              description: Альтернативная ЕИ
+              items:
+                $ref: '#/components/schemas/AlternativeUom'
+      readOnly: true
+    AlternativeUom:
+      description: Альтернативная единица измерения
+      title: Альтернативная единица измерения
+      allOf:
+        - $ref: '#/components/schemas/Uom'
+          x-stoplight:
+            id: 6pvuh0frcp21f
+        - type: object
+          properties:
+            coefficient:
+              type: number
+              x-stoplight:
+                id: gxec85h0o8wsm
+              description: Коэффициент
+            type:
+              x-stoplight:
+                id: 1im7n1gjseyu3
+              enum:
+                - FIXED
+                - NOT_FIXED
+              description: 'Тип коэффициента: FIXED - фиксированный, NOT_FIXED - нефиксированный. Атрибут приходит только при работе с коллекцией единиц измерения, так как является настройкой'
+              readOnly: true
     Uom:
-      type: object
       title: Единица измерения
-      description: Единицы измерения
+      type: object
+      description: Единица измерения
+      required:
+        - code
+        - versionUuid
+        - name
+        - shortName
       properties:
         code:
           type: string
-          description: Код ЕИ
-          readOnly: true
+          description: Уникальный идентификатор единицы измерения в рамках Системы
           examples:
             - pascal
+          example: PAL
+          readOnly: true
         versionUuid:
           type: string
-          description: Глобальный уникальный идентификатор версии в рамках Системы
-          readOnly: true
+          description: Глобальный уникальный идентификатор версии единицы измерения в рамках Системы
           examples:
             - dc3c0711-f16c-4a73-b467-5530f2a9c4c2
-        validFrom:
-          type: string
-          description: Дата и время начала действия версии единицы измерения
-          format: date-time
-          readOnly: true
-          examples:
-            - '2023-12-01'
-        validTo:
-          type: string
-          description: Дата и время окончания действия версии единицы измерения
-          format: date-time
+          format: uuid
+          example: ec36fa6c-6b4e-4b1c-9239-9857480e898e
           readOnly: true
         name:
           type: object
@@ -4841,30 +4939,26 @@ components:
               type: string
               description: 'Наименование на языке по умолчанию, установленном в Системе'
               maxLength: 500
+              example: Паскаль
               readOnly: true
-              examples:
-                - Паскаль
             rus:
               type: string
               description: Наименование на русском языке
               maxLength: 500
+              example: Паскаль
               readOnly: true
-              examples:
-                - Паскаль
             eng:
               type: string
               description: Наименование на английском языке
               maxLength: 500
+              example: Pascal
               readOnly: true
-              examples:
-                - Pascal
             tur:
               type: string
               description: Наименование на турецком языке
               maxLength: 500
+              example: Pascal
               readOnly: true
-              examples:
-                - Pascal
             anotherLanguage:
               type: string
               description: Наименование на любом другом языке
@@ -4878,170 +4972,42 @@ components:
               type: string
               description: 'на языке по умолчанию, установленном в Системе'
               maxLength: 500
+              example: Па
               readOnly: true
-              examples:
-                - Па
             rus:
               type: string
               description: на русском языке
               maxLength: 500
+              example: Па
               readOnly: true
-              examples:
-                - Па
             eng:
               type: string
               description: на английском языке
               maxLength: 500
+              example: Pa
               readOnly: true
             tur:
               type: string
               description: на турецком языке
               maxLength: 500
+              example: Pa
               readOnly: true
             anotherLanguage:
               type: string
               description: на любом другом языке
               maxLength: 500
               readOnly: true
-        group:
-          type: array
-          description: Группа ЕИ
-          items:
-            $ref: '#/components/schemas/UomGroup'
-        alternativeUom:
-          type: array
-          description: Альтернативная ЕИ
-          items:
-            type: object
-            properties:
-              code:
-                type: string
-                description: Код альтернативной ЕИ
-                readOnly: true
-              name:
-                type: object
-                description: Наименование альтернативной единицы измерения
-                properties:
-                  byDefault:
-                    type: string
-                    description: 'Наименование на языке по умолчанию, установленном в Системе'
-                    maxLength: 500
-                    readOnly: true
-                  rus:
-                    type: string
-                    description: Наименование на русском языке
-                    maxLength: 500
-                    readOnly: true
-                  eng:
-                    type: string
-                    description: Наименование на английском языке
-                    maxLength: 500
-                    readOnly: true
-                  tur:
-                    type: string
-                    description: Наименование на турецком языке
-                    maxLength: 500
-                    readOnly: true
-                  anotherLanguage:
-                    type: string
-                    description: Наименование на любом другом языке
-                    maxLength: 500
-                    readOnly: true
-              shortName:
-                type: object
-                description: Краткое наименование альтернативной единицы измерения
-                properties:
-                  byDefault:
-                    type: string
-                    description: 'на языке по умолчанию, установленном в Системе'
-                    maxLength: 500
-                    readOnly: true
-                  rus:
-                    type: string
-                    description: на русском языке
-                    maxLength: 500
-                    readOnly: true
-                  eng:
-                    type: string
-                    description: на английском языке
-                    readOnly: true
-                  tur:
-                    type: string
-                    description: на турецком языке
-                    maxLength: 500
-                    readOnly: true
-                  anotherLanguage:
-                    type: string
-                    description: на любом другом языке
-                    maxLength: 500
-                    readOnly: true
-              coefficient:
-                type: number
-                description: Коэффициент альтернативной ЕИ
-                readOnly: true
-              type:
-                type: string
-                description: Тип коэффициента ЕИ (фиксированный/нефиксированный)
-                readOnly: true
-            required:
-              - code
-              - name
-      required:
-        - code
-        - versionUuid
-        - validFrom
-        - name
-        - shortName
-      readOnly: true
-      examples:
-        - code: pascal
-          versionUuid: dc3c0711-f16c-4a73-b467-5530f2a9c4c2
-          validFrom: '2023-12-01'
-          validTo: '2019-08-24T14:15:22Z'
-          name:
-            byDefault: Паскаль
-            rus: Паскаль
-            eng: Pascal
-            tur: Pascal
-            anotherLanguage: string
-          short_name:
-            byDefault: Па
-            rus: Па
-            eng: string
-            tur: string
-            anotherLanguage: string
-          group:
-            - code: pressure
-              name:
-                byDefault: Давление
-                rus: Давление
-                eng: Pressure
-                tur: Basınç
-                anotherLanguage: string
-          alternativeUom:
-            - code: string
-              name:
-                byDefault: string
-                rus: string
-                eng: string
-                tur: string
-                anotherLanguage: string
-              short_name:
-                byDefault: string
-                rus: string
-                eng: string
-                tur: string
-                anotherLanguage: string
-              coefficient: 0
-              type: string
     UomGroup:
       type: object
       title: Группа единиц измерения
       description: Группа единиц измерения
+      required:
+        - code
+        - name
       properties:
         code:
           type: string
-          description: Код группы ЕИ
+          description: Уникальный идентификатор группы единиц измерения
           readOnly: true
         name:
           type: object
@@ -5050,26 +5016,27 @@ components:
             byDefault:
               type: string
               description: 'на языке по умолчанию, установленном в Системе'
+              example: Давление
               readOnly: true
             rus:
               type: string
               description: на русском языке
+              example: Давление
               readOnly: true
             eng:
               type: string
               description: на английском языке
+              example: Pressure
               readOnly: true
             tur:
               type: string
               description: на турецком языке
+              example: Basınç
               readOnly: true
             anotherLanguage:
               type: string
               description: на любом другом языке
               readOnly: true
-      required:
-        - code
-        - name
     ItemWithoutAttributesV1:
       type: object
       title: Элемент без атрибутов
@@ -5535,14 +5502,12 @@ components:
         status:
           type: string
           enum:
-            - MASTER_DEFAULT
-            - BLOCKED_DEFAULT
-            - MASTER_COUNTERPARTIES
-            - IRRELEVANT_COUNTERPARTIES
-          description: 'Статус - `MASTER_DEFAULT` (эталон), `BLOCKED_DEFAULT` (блокированная), `MASTER_COUNTERPARTIES` (эталон), `IRRELEVANT_COUNTERPARTIES` (неактуальная)'
-          readOnly: true
+            - MASTER
+            - BLOCKED
+          description: 'Статус - `MASTER` (эталон), `BLOCKED` (блокированная)'
           examples:
-            - MASTER_DEFAULT
+            - MASTER
+          readOnly: true
         reasonCode:
           type: string
           enum:
@@ -5674,14 +5639,12 @@ components:
         status:
           type: string
           enum:
-            - MASTER_DEFAULT
-            - BLOCKED_DEFAULT
-            - MASTER_COUNTERPARTIES
-            - IRRELEVANT_COUNTERPARTIES
-          description: 'Статус - `MASTER_DEFAULT` (эталон), `BLOCKED_DEFAULT` (блокированная), `MASTER_COUNTERPARTIES` (эталон), `IRRELEVANT_COUNTERPARTIES` (неактуальная)'
-          readOnly: true
+            - MASTER
+            - BLOCKED
+          description: 'Статус - `MASTER` (эталон), `BLOCKED` (блокированная)'
           examples:
-            - MASTER_DEFAULT
+            - MASTER
+          readOnly: true
         reasonCode:
           type: string
           enum:
@@ -5813,14 +5776,12 @@ components:
         status:
           type: string
           enum:
-            - MASTER_DEFAULT
-            - BLOCKED_DEFAULT
-            - MASTER_COUNTERPARTIES
-            - IRRELEVANT_COUNTERPARTIES
-          description: 'Статус - `MASTER_DEFAULT` (эталон), `BLOCKED_DEFAULT` (блокированная), `MASTER_COUNTERPARTIES` (эталон), `IRRELEVANT_COUNTERPARTIES` (неактуальная)'
-          readOnly: true
+            - MASTER
+            - BLOCKED
+          description: 'Статус - `MASTER` (эталон), `BLOCKED` (блокированная)'
           examples:
-            - MASTER_DEFAULT
+            - MASTER
+          readOnly: true
         reasonCode:
           type: string
           enum:
@@ -5942,14 +5903,12 @@ components:
         status:
           type: string
           enum:
-            - MASTER_DEFAULT
-            - BLOCKED_DEFAULT
-            - MASTER_COUNTERPARTIES
-            - IRRELEVANT_COUNTERPARTIES
-          description: 'Статус - `MASTER_DEFAULT` (эталон), `BLOCKED_DEFAULT` (блокированная), `MASTER_COUNTERPARTIES` (эталон), `IRRELEVANT_COUNTERPARTIES` (неактуальная)'
-          readOnly: true
+            - MASTER
+            - BLOCKED
+          description: 'Статус - `MASTER` (эталон), `BLOCKED` (блокированная)'
           examples:
-            - MASTER_DEFAULT
+            - MASTER
+          readOnly: true
         reasonCode:
           type: string
           enum:
@@ -6000,7 +5959,7 @@ components:
             eng: 'Plant materials: living plants, bulbs, tubers and rhizomes, taps and cuttings, fungi'
             tur: 'Bitki malzemeleri: canlı bitkiler, ampuller, yumrular ve rizomlar, musluklar ve çelikler, mantarlar'
             anotherLanguage: ___
-          status: MASTER_DEFAULT
+          status: MASTER
           validFrom: '2022-09-01 07:18:10.983153+00'
           validTo: '2022-09-01 07:18:10.983153+00'
     ItemWithAttributesCollectionV2:
@@ -6831,8 +6790,6 @@ components:
       readOnly: true
     Proposal:
       title: Заявка
-      x-stoplight:
-        id: 6gmlb1a04xwqo
       type: object
       description: Заявка
       required:
@@ -6843,74 +6800,179 @@ components:
       properties:
         id:
           type: integer
-          x-stoplight:
-            id: aj6fchzf7xytt
           example: 101
           description: Уникальный идентификатор заявки
           readOnly: true
         type:
-          x-stoplight:
-            id: rrpo2igqt6fkz
           enum:
             - CREATE
           description: Тип заявки
         directory_code:
           type: string
-          x-stoplight:
-            id: j7aj5nkofl3x1
           description: Код объекта
           example: car_brend
         item_name:
           type: object
-          x-stoplight:
-            id: oafns3s73ov60
           description: Наименование
           properties:
             byDefault:
               type: string
-              x-stoplight:
-                id: 6zobr0ixybwpf
               description: на языке системы
             rus:
               type: string
-              x-stoplight:
-                id: muo0sp5pyx0f7
               example: БЕЛАРУС 1221.99
               description: на русском языке
             eng:
               type: string
-              x-stoplight:
-                id: 1vd7t2hf2vfkp
               description: на английском языке
             tur:
               type: string
-              x-stoplight:
-                id: azuiw5e9q6pg4
               description: на турецком языке
             anotherLanguage:
               type: string
-              x-stoplight:
-                id: f4vdco6kc3g8m
               description: на любом другом языке
         classifier_code:
           type: string
-          x-stoplight:
-            id: 0bielkr4mwpns
           description: Код категорий
           example: tractor
         cells:
-          x-stoplight:
-            id: 1oitoki8pmqit
           type: array
           description: Ячейки
           items:
-            x-stoplight:
-              id: ftmwdn59huqiz
             oneOf:
               - $ref: '#/components/schemas/CellValue'
               - $ref: '#/components/schemas/CellRange'
-                x-stoplight:
-                  id: pd4k9z8607xg6
             type: object
+    PageContent:
+      title: PageContent
+      type: object
+      properties:
+        pageable:
+          type: object
+          description: Параметры пагинации данных
+          properties:
+            sort:
+              type: object
+              description: Параметры сортировки
+              properties:
+                sorted:
+                  type: boolean
+                  description: 'Признак наличия сортировки, заданной пользователем'
+                  examples:
+                    - false
+                unsorted:
+                  type: boolean
+                  description: 'Признак отсутствия наличия сортировки, заданной пользователем'
+                  examples:
+                    - true
+                empty:
+                  type: boolean
+                  description: Признак наличия сортировки
+                  examples:
+                    - true
+            pageSize:
+              type: integer
+              description: Количество элементов на странице
+              format: int32
+              examples:
+                - 20
+            pageNumber:
+              type: integer
+              description: Номер отображаемой страницы
+              format: int32
+              examples:
+                - 20
+            offset:
+              type: integer
+              description: Смещение по отношению к первой странице с учётом её размера
+              format: int32
+              examples:
+                - 20
+            paged:
+              type: boolean
+              description: Признак постраничного отображения данных
+              examples:
+                - true
+            unpaged:
+              type: boolean
+              description: Признак отсутствия постраничного отображения данных
+              examples:
+                - false
+        sort:
+          type: object
+          description: Параметры сортировки
+          properties:
+            sorted:
+              type: boolean
+              description: 'Признак наличия сортировки, заданной пользователем'
+              examples:
+                - false
+            unsorted:
+              type: boolean
+              description: 'Признак отсутствия наличия сортировки, заданной пользователем'
+              examples:
+                - true
+            empty:
+              type: boolean
+              description: Признак наличия сортировки
+              examples:
+                - true
+        totalPages:
+          type: integer
+          description: Общее количество всех страниц
+          format: int32
+          examples:
+            - 1
+        totalElements:
+          type: integer
+          description: Общее количество всех элементов
+          format: int32
+          examples:
+            - 17
+        last:
+          type: boolean
+          description: Признак первой страницы
+          examples:
+            - true
+        first:
+          type: boolean
+          description: Признак последней страницы
+          examples:
+            - true
+        numberOfElements:
+          type: integer
+          description: Количество элементов на странице - фактическое
+          format: int32
+          examples:
+            - 17
+        size:
+          type: integer
+          description: Количество элементов на странице
+          format: int32
+          examples:
+            - 20
+        number:
+          type: integer
+          description: Номер отображаемой страницы
+          format: int32
+          examples:
+            - 0
+        empty:
+          type: boolean
+          description: Признак наличия content
+          examples:
+            - true
+      required:
+        - pageable
+        - sort
+        - totalPages
+        - totalElements
+        - last
+        - first
+        - numberOfElements
+        - size
+        - number
+        - empty
+      description: Пагинация
 security:
   - Authorization: []
